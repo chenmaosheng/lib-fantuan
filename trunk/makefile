@@ -2,18 +2,18 @@ WARNING=-Wall -Wextra -Winline -Wshadow -Wcast-qual -Wpointer-arith -Waggregate-
 OPTIMIZE=-O0
 DEBUG=-g3
 COMPILE=-c
-INCLUDE=-ICommon/Src/Base -ICommon/Src/DataStructure -ICommon/Src/Thread
+INCLUDE=-Icommon/src/UTool/Base -Icommon/src/UTool/DataStructure -Icommon/src/UTool/Thread
 PREPROCESSOR=-D_LINUX=1
 INLINE=-finline-functions
 CFLAGS=-lstdc++ -fno-rtti -Wreorder -Woverloaded-virtual -ansi
 PLATFORM=-m32
 CC=gcc
-LIB=Common/Lib/mylib.a
+LIB=common/bin/UTool.a
 
-main: main.cpp
-	(cd Common/Src/Base;make)
-	$(CC) $(WARNING) $(CFLAGS) $(OPTMIZE) $(DEBUG) $(INCLUDE) $(PREPROCESSOR) $(INLINE) $(PLATFORM) -o main main.cpp $(LIB)
+main: test/main.cpp
+	(cd common/;make)
+	$(CC) $(WARNING) $(CFLAGS) $(OPTMIZE) $(DEBUG) $(INCLUDE) $(PREPROCESSOR) $(INLINE) $(PLATFORM) -o main test/main.cpp $(LIB)
 
 clean:
 	rm main
-	rm Common/Lib/*.*
+	rm common/bin/*.*
