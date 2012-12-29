@@ -5,6 +5,8 @@
 #include "singleton.h"
 #ifdef WIN32
 	#include "win32_base.h"
+#else
+	#include <time.h>
 #endif
 
 namespace Fantuan
@@ -29,7 +31,7 @@ public:
 #else
 		timespec timeSpec;
 		clock_gettime(CLOCK_MONOTONIC, &timeSpec);
-		time = (uint64)timeSpec.tv.sec * 1000000000 + timeSpec.tv_nsec;
+		time = (uint64)timeSpec.tv_sec * 1000000000 + timeSpec.tv_nsec;
 #endif
 		return time;
 	}
