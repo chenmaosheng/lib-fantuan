@@ -1,6 +1,7 @@
 #include "base.h"
 #include <cstdio>
 #include "array.h"
+#include <cassert>
 
 using namespace Fantuan;
 

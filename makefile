@@ -5,7 +5,7 @@ COMPILE=-c
 INCLUDE=-Icommon/src/UTool/Base -Icommon/src/UTool/DataStructure -Icommon/src/UTool/Thread
 PREPROCESSOR=-D_LINUX=1
 INLINE=-finline-functions
-CFLAGS=-lstdc++ -fno-rtti -Wreorder -Woverloaded-virtual -ansi
+CFLAGS=-lstdc++ -fno-rtti -Wreorder -Woverloaded-virtual -ansi -lrt
 PLATFORM=-m32
 CC=gcc
 LIB=common/bin/UTool.a

@@ -1,7 +1,7 @@
 #ifndef _H_ARRAY
 #define _H_ARRAY
 
-#include "assert.h"
+#include "ft_assert.h"
 
 namespace Fantuan
 {
