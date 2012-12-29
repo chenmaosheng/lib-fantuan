@@ -2,8 +2,6 @@
 #define _H_BASE
 
 #ifdef WIN32
-	#define _CRTDBG_MAP_ALLOC
-	#include <crtdbg.h>
 	#include "win32_base.h"
 #endif
 
@@ -11,8 +9,16 @@
 	#include "linux_base.h"
 #endif
 
+#include <errno.h>
+#include <sys/types.h>
+#include <time.h>
+#include <stdexcept>
+
 #include "type.h"
 #include "util.h"
+#include "assert.h"
+#include "smart_ptr.h"
+#include "accurate_time.h"
 
 #endif
 

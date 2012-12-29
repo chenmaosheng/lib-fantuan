@@ -159,6 +159,14 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
+				RelativePath="..\src\UTool\Base\accurate_time.h"
+				>
+			</File>
+			<File
+				RelativePath="..\src\UTool\Base\assert.h"
+				>
+			</File>
+			<File
 				RelativePath="..\Src\UTool\Base\base.h"
 				>
 			</File>
@@ -179,6 +187,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\src\UTool\Base\smart_ptr.h"
+				>
+			</File>
+			<File
 				RelativePath="..\Src\UTool\Base\type.h"
 				>
 			</File>
@@ -192,6 +204,10 @@
 			</File>
 			<File
 				RelativePath="..\Src\UTool\Base\util.h"
+				>
+			</File>
+			<File
+				RelativePath="..\src\UTool\Base\win32_base.h"
 				>
 			</File>
 		</Filter>
