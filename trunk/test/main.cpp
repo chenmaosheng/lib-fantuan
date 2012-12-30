@@ -66,7 +66,7 @@ void Func(ArrayBase<std::string>& data)
 
 int main(int argc, char* argv[])
 {
-	argc; argv;
+	argc = argc; argv = argv;
 
 	std::string a("HelloHelloHelloHelloHelloHelloHelloHello");
 	
@@ -75,35 +75,26 @@ int main(int argc, char* argv[])
 		m.push_back(a);
 	}
 
-	for (int i = 0; i < 20; ++i)
-	{
-		m.erase(&m[i]);
-	}
-
 	DyArray< DyArray<std::string, 200> > n;
 	n.push_back(m);
 
 	//std::vector<std::string> m;
 	
 	uint64 time = GET_TIME();
-	/*for (int i = 0; i < 1000000; ++i){
+	for (int i = 0; i < 1000000; ++i){
 		m.push_back(a);
-	}*/
-	/*for (int i = 0; i < 50000000; ++i)
-	{
-		n[0][i / 1000000];
-	}*/
+	}
 
 	uint64 end = GET_TIME();
 	printf("time: %lluus\n", (end - time) / 1000);
 
 	//Func(m);
 
-	//DArray<int, 1> n;
-	//std::vector<int> n;
+	DyArray<int, 1> o;
+	//std::vector<int> o;
 	time = GET_TIME();
-	//for (int i = 0; i < 1000000; ++i)
-		//n.push_back(100);
+	for (int i = 0; i < 1000000; ++i)
+		o.push_back(100);
 
 	end = GET_TIME();
 	printf("time: %lluus\n", (end - time) / 1000);
