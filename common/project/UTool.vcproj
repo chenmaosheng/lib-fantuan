@@ -163,15 +163,19 @@
 				>
 			</File>
 			<File
-				RelativePath="..\src\UTool\Base\assert.h"
-				>
-			</File>
-			<File
 				RelativePath="..\Src\UTool\Base\base.h"
 				>
 			</File>
 			<File
+				RelativePath="..\src\UTool\Base\ft_assert.h"
+				>
+			</File>
+			<File
 				RelativePath="..\Src\UTool\Base\linux_base.h"
+				>
+			</File>
+			<File
+				RelativePath="..\src\UTool\Base\memory.h"
 				>
 			</File>
 			<File
@@ -196,6 +200,10 @@
 			</File>
 			<File
 				RelativePath="..\Src\UTool\Base\type_list.h"
+				>
+			</File>
+			<File
+				RelativePath="..\src\UTool\Base\type_traits.h"
 				>
 			</File>
 			<File
