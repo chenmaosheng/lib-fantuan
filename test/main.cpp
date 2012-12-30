@@ -56,21 +56,27 @@ int main(int argc, char* argv[])
 {
 	argc = argc;
 	argv = argv;
-	uint64 time = GET_TIME();
 
-	DArray<std::string, 1000> m;
-	//std::vector<std::string> m;
+	//DArray<std::string, 1000> m;
+	std::vector<std::string> m;
 	
+	uint64 time = GET_TIME();
 	for (int i = 0; i < 100000; ++i){
 		std::string a("HelloHelloHelloHelloHelloHelloHelloHello");
 		m.push_back(a);
 	}
 
-	printf("count: %d\n", AA::count);
-
 	uint64 end = GET_TIME();
 	printf("time: %lluus\n", (end - time) / 1000);
 
+	//DArray<int, 1000> n;
+	std::vector<int> n;
+	time = GET_TIME();
+	for (int i = 0; i < 1000000; ++i)
+		n.push_back(100);
+
+	end = GET_TIME();
+	printf("time: %lluus\n", (end - time) / 1000);
 	getchar();
 
 	return 0;

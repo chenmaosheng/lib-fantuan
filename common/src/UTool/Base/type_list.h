@@ -59,74 +59,49 @@ struct Type2Type
 template <typename T, typename U>
 struct IsSameType
 {
-private:
-    template<typename>
-    struct In 
-    { enum { value = false }; };
-
-    template<>
-    struct In<T>
-    { enum { value = true };  };
-
-public:
-    enum { value = In<U>::value };
+	enum { value = false };
 };
 
-template <typename TList, typename T> 
-struct IndexOf
+template <typename T>
+struct IsSameType<T, T>
 {
-    typedef typename TList::Head Head;
-    typedef typename TList::Tail Tail;
-
-private:
-	template<typename TList1>
-	struct In
-    {
-    private:
-        typedef typename TList1::Tail Tail;
-
-        enum { temp = (IndexOf<Tail, T>::value) };
-
-    public:
-        enum { value = temp == -1 ? -1 : 1 + temp  };
-    };
-
-    template<>
-    struct In< TypeList<T, Tail> >
-    {
-        enum { value = 0 };
-    };
-
-    template<>
-    struct In< NullType >
-    {
-        enum { value = -1 };
-    };
-
-public:
-    enum { value = In<TList>::value };
+	enum { value = true };
 };
 
-template<typename T>
-struct IndexOf< NullType, T >
+template <typename TList, typename T> struct IndexOf;
+
+template <typename T>
+struct IndexOf<NullType, T>
 {
 	enum { value = -1 };
+};
+
+template <typename T, typename Tail>
+struct IndexOf<TypeList<T, Tail>, T>
+{
+	enum { value = 0 };
+};
+
+template <typename Head, typename Tail, typename T>
+struct IndexOf<TypeList<Head, Tail>, T>
+{
+private:
+	enum { temp = IndexOf<Tail, T>::value };
+
+public:
+	enum { value = (temp == -1 ? -1 : 1 + temp) };
 };
 
 template <bool flag, typename T, typename U>
 struct Select
 {
-private:
-    template<bool>
-    struct In 
-    { typedef T Result; };
+	typedef T Result;
+};
 
-    template<>
-    struct In<false>
-    { typedef U Result; };
-
-public:
-    typedef typename In<flag>::Result Result;
+template <typename T, typename U>
+struct Select<false, T, U>
+{
+	typedef U Result;
 };
 
 }
