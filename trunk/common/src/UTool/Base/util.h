@@ -20,18 +20,16 @@ uint8 NumberPower(uint32 iNumber);
 
 // object swap
 template<typename T>
-inline void object_swap(T& lhs, const T& val)
+inline void object_swap(T& lhs, T& rhs)
 {
-	//std::swap(lhs, const_cast<T&>(val));
-	lhs = val;
+	std::swap(lhs, rhs);
 }
 
 // construct object
 template<typename T>
 inline void object_construct(T* ptr, const T& val)
 {
-	void *_Vptr = ptr;
-	new (_Vptr) T(val);
+	new ((void*)ptr) T(val);
 }
 
 // destruct object
@@ -43,7 +41,7 @@ inline void object_destruct(T* ptr)
 
 // allocate object
 template<typename T>
-inline T* object_allocate(size_t count)
+inline T* object_allocate(size_t count, T*)
 {
 	return (T*)::operator new(count * sizeof(T));
 }

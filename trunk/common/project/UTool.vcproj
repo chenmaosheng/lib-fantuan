@@ -228,6 +228,10 @@
 				RelativePath="..\Src\UTool\DataStructure\array.h"
 				>
 			</File>
+			<File
+				RelativePath="..\src\UTool\Base\dy_array.h"
+				>
+			</File>
 		</Filter>
 	</Files>
 	<Globals>

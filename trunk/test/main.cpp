@@ -1,5 +1,6 @@
 #include "base.h"
 #include <cstdio>
+#include "dy_array.h"
 #include "array.h"
 #include <vector>
 
@@ -49,9 +50,9 @@ namespace Fantuan
 {
 
 template<>
-inline void object_swap(std::string& lhs, const std::string& val)
+inline void object_swap(std::string& lhs, std::string& rhs)
 {
-	lhs = val;
+	lhs.swap(rhs);
 }
 
 }
@@ -60,30 +61,49 @@ int AA::count = 0;
 
 void Func(ArrayBase<std::string>& data)
 {
-	printf("%s\n", data[1].c_str());
+	printf("%s\n", data[100].c_str());
 }
 
 int main(int argc, char* argv[])
 {
+	argc; argv;
+
 	std::string a("HelloHelloHelloHelloHelloHelloHelloHello");
-	//DArray<std::string, 1000> m;
-	std::vector<std::string> m;
 	
-	uint64 time = GET_TIME();
-	for (int i = 0; i < 1000000; ++i){
+	DyArray<std::string, 200> m;
+	for (int i = 0; i < 100; ++i){
 		m.push_back(a);
 	}
+
+	for (int i = 0; i < 20; ++i)
+	{
+		m.erase(&m[i]);
+	}
+
+	DyArray< DyArray<std::string, 200> > n;
+	n.push_back(m);
+
+	//std::vector<std::string> m;
+	
+	uint64 time = GET_TIME();
+	/*for (int i = 0; i < 1000000; ++i){
+		m.push_back(a);
+	}*/
+	/*for (int i = 0; i < 50000000; ++i)
+	{
+		n[0][i / 1000000];
+	}*/
 
 	uint64 end = GET_TIME();
 	printf("time: %lluus\n", (end - time) / 1000);
 
 	//Func(m);
 
-	DArray<int, 1000> n;
+	//DArray<int, 1> n;
 	//std::vector<int> n;
 	time = GET_TIME();
-	for (int i = 0; i < 1000000; ++i)
-		n.push_back(100);
+	//for (int i = 0; i < 1000000; ++i)
+		//n.push_back(100);
 
 	end = GET_TIME();
 	printf("time: %lluus\n", (end - time) / 1000);
