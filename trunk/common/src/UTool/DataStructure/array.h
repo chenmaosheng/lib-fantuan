@@ -4,9 +4,9 @@
 #include "ft_assert.h"
 #include "type_traits.h"
 
+#ifdef WIN32
 #pragma warning(push)
 #pragma warning (disable: 4127)
-#ifdef WIN32
 #pragma warning (disable: 4996)	// evil std::copy check
 #endif
 
@@ -73,9 +73,12 @@ template<typename T, std::size_t N=ARRAY_MIN_SIZE>
 class Array : public ArrayBase<T>
 {
 public:
+	typedef ArrayBase<T> baseClass;
+	typedef typename baseClass::size_type size_type;
+	
 	Array()
 	{
-		m_pElements = m_Elements;
+		baseClass::m_pElements = m_Elements;
 	}
 
 	size_type		max_size() const
@@ -97,6 +100,13 @@ template<typename T>
 class Array<T, 0> : public ArrayBase<T>
 {
 public:
+	typedef ArrayBase<T> baseClass;
+	typedef typename baseClass::iterator iterator;
+	typedef typename baseClass::const_iterator const_iterator;
+	typedef typename baseClass::size_type size_type;
+	typedef typename baseClass::reference reference;
+	typedef typename baseClass::const_reference const_reference;
+
 	// iterator support
 	iterator		begin()
 	{
@@ -153,9 +163,25 @@ template<typename T, std::size_t N=ARRAY_MIN_SIZE>
 class DArray : public ArrayBase<T>
 {
 public:
-	DArray() : m_iMaxSize(N), m_iCount(0), m_pDynamicElements(0)
+	typedef ArrayBase<T>	baseClass;
+	typedef typename baseClass::size_type	size_type;
+
+	DArray() : m_pDynamicElements(0), m_iMaxSize(N), m_iCount(0)
 	{
-		m_pElements = m_Elements;
+		baseClass::m_pElements = m_Elements;
+	}
+
+	~DArray()
+	{
+		if (TypeTraits<T>::isClass)
+		{
+			for (size_type i = 0; i < m_iMaxSize; ++i)
+			{
+				(&m_pDynamicElements[i])->~T();
+			}
+		}
+
+		SAFE_DELETE(m_pDynamicElements);
 	}
 
 	void			push_back(const T& value)
@@ -166,11 +192,11 @@ public:
 			{
 				if (TypeTraits<T>::isScalar)
 				{
-					m_pElements[m_iCount] = value;
+					baseClass::m_pElements[m_iCount] = value;
 				}
 				else if (TypeTraits<T>::isClass)
 				{
-					object_swap(m_pElements[m_iCount], value);
+					object_swap(baseClass::m_pElements[m_iCount], value);
 				}
 			}
 			else
@@ -181,7 +207,7 @@ public:
 				if (TypeTraits<T>::isScalar)
 				{
 					m_pDynamicElements = (T*)pData;
-					std::copy(m_pElements, m_pElements + N, m_pDynamicElements);
+					std::copy(baseClass::m_pElements, baseClass::m_pElements + N, m_pDynamicElements);
 					m_pDynamicElements[m_iCount] = value;
 				}
 				else if (TypeTraits<T>::isClass)
@@ -195,7 +221,7 @@ public:
 
 					for (size_type i = 0; i < N; ++i)
 					{
-						object_swap(m_pDynamicElements[i], m_pElements[i]);
+						object_swap(m_pDynamicElements[i], baseClass::m_pElements[i]);
 					}
 					object_swap(m_pDynamicElements[m_iCount], value);
 				}
@@ -223,7 +249,7 @@ public:
 				if (TypeTraits<T>::isScalar)
 				{
 					std::copy(m_pDynamicElements, m_pDynamicElements + iOldSize, pData);
-					SAFE_DELETE_ARRAY(m_pDynamicElements);
+					SAFE_DELETE(m_pDynamicElements);
 					m_pDynamicElements = pData;
 					m_pDynamicElements[m_iCount] = value;
 				}
@@ -237,10 +263,10 @@ public:
 					for (size_type i = 0; i < iOldSize; ++i)
 					{
 						object_swap(pData[i], m_pDynamicElements[i]);
-						_DESTRUCTOR(T, &m_pDynamicElements[i]);
+						(&m_pDynamicElements[i])->~T();
 					}
 
-					SAFE_DELETE( m_pDynamicElements );
+					SAFE_DELETE(m_pDynamicElements);
 					m_pDynamicElements = pData;
 					object_swap(m_pDynamicElements[m_iCount], value);
 				}
@@ -276,6 +302,9 @@ template<typename T>
 class DArray<T, 0> : public ArrayBase<T>
 {
 public:
+	typedef ArrayBase<T> baseClass;
+	typedef typename baseClass::size_type size_type;
+
 	size_type		max_size() const
 	{
 		return 0;
@@ -289,7 +318,9 @@ public:
 
 }
 
+#ifdef WIN32
 #pragma warning(pop)
+#endif
 
 #endif
 

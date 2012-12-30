@@ -1,4 +1,7 @@
-WARNING=-Wall -Wextra -Winline -Wshadow -Wcast-qual -Wpointer-arith -Waggregate-return -Wundef -Wredundant-decls -Wcast-align -Wsign-compare -Wpacked -Wpadded -Werror
+WARNING=-Wall -Wcast-align -Wsign-compare -Wpacked -Werror \
+		-Winline -Wunused-variable -Wunused-value -Wunused-function \
+		-Wextra -Wshadow -Wpointer-arith -Wcast-qual -Wundef \
+		-Wredundant-decls
 OPTIMIZE=-O0
 DEBUG=-g3
 COMPILE=-c

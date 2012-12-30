@@ -2,6 +2,9 @@
 #define _H_UTIL
 
 #include "type.h"
+#ifndef WIN32
+#include <algorithm>
+#endif
 
 namespace Fantuan
 {
