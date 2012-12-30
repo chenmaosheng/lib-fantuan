@@ -29,34 +29,34 @@ public:
 	typedef std::size_t	size_type;
 
 	// iterator support
-	iterator			begin()
+	inline iterator				begin()
 	{
 		return m_pElements;
 	}
 
-	const_iterator		begin() const
+	inline const_iterator		begin() const
 	{
 		return m_pElements;
 	}
 
-	iterator			end()
+	inline iterator				end()
 	{
 		return m_pElements + size();
 	}
 
-	const_iterator		end()	const
+	inline const_iterator		end()	const
 	{
 		return m_pElements + size();
 	}
 
 	// operator[]
-	reference			operator[](size_type i)
+	inline reference			operator[](size_type i)
 	{
 		FT_ASSERT(i < size() && "out of range");
 		return m_pElements[i];
 	}
 
-	const_reference		operator[](size_type i) const
+	inline const_reference		operator[](size_type i) const
 	{
 		FT_ASSERT(i < size() && "out of range");
 		return m_pElements[i];
@@ -66,27 +66,27 @@ public:
 	virtual size_type			size() const = 0;
 
 protected:
-	T*			m_pElements;
+	T*							m_pElements;
 };
 
 template<typename T, std::size_t N=ARRAY_MIN_SIZE>
 class Array : public ArrayBase<T>
 {
 public:
-	typedef ArrayBase<T> baseClass;
-	typedef typename baseClass::size_type size_type;
+	typedef ArrayBase<T>					baseClass;
+	typedef typename baseClass::size_type	size_type;
 	
 	Array()
 	{
 		baseClass::m_pElements = m_Elements;
 	}
 
-	size_type		max_size() const
+	inline size_type	max_size() const
 	{
 		return N;
 	}
 
-	size_type		size() const
+	inline size_type	size() const
 	{
 		return N;
 	}
@@ -100,51 +100,51 @@ template<typename T>
 class Array<T, 0> : public ArrayBase<T>
 {
 public:
-	typedef ArrayBase<T> baseClass;
-	typedef typename baseClass::iterator iterator;
-	typedef typename baseClass::const_iterator const_iterator;
-	typedef typename baseClass::size_type size_type;
-	typedef typename baseClass::reference reference;
-	typedef typename baseClass::const_reference const_reference;
+	typedef ArrayBase<T>						baseClass;
+	typedef typename baseClass::iterator		iterator;
+	typedef typename baseClass::const_iterator	const_iterator;
+	typedef typename baseClass::size_type		size_type;
+	typedef typename baseClass::reference		reference;
+	typedef typename baseClass::const_reference	const_reference;
 
 	// iterator support
-	iterator		begin()
+	inline iterator			begin()
 	{
 		return iterator( reinterpret_cast<T*>(this) );
 	}
 
-	const_iterator	begin() const
+	inline const_iterator	begin() const
 	{
 		return iterator( reinterpret_cast<const T*>(this) );
 	}
 
-	iterator		end()
+	inline iterator			end()
 	{
 		return begin();
 	}
 
-	const_iterator	end()	const
+	inline const_iterator	end()	const
 	{
 		return begin();
 	}
 
 	// operator[]
-	reference operator[](size_type)
+	inline reference		operator[](size_type)
 	{
 		return failed_rangecheck();
 	}
 
-	const_reference operator[](size_type) const
+	inline const_reference	operator[](size_type) const
 	{
 		return failed_rangecheck();
 	}
 
-	size_type		max_size() const
+	inline size_type		max_size() const
 	{
 		return 0;
 	}
 
-	size_type		size() const
+	inline size_type		size() const
 	{
 		return 0;
 	}
@@ -163,10 +163,12 @@ template<typename T, std::size_t N=ARRAY_MIN_SIZE>
 class DArray : public ArrayBase<T>
 {
 public:
-	typedef ArrayBase<T>	baseClass;
+	typedef ArrayBase<T>					baseClass;
 	typedef typename baseClass::size_type	size_type;
 
-	DArray() : m_pDynamicElements(0), m_iMaxSize(N), m_iCount(0)
+	DArray() :	m_pDynamicElements(0), 
+				m_iMaxSize(N), 
+				m_iCount(0)
 	{
 		baseClass::m_pElements = m_Elements;
 	}
@@ -184,99 +186,28 @@ public:
 		SAFE_DELETE(m_pDynamicElements);
 	}
 
-	void			push_back(const T& value)
+	inline void				push_back(const T& value)
 	{
-		if (!m_pDynamicElements)
+		if (m_iCount < m_iMaxSize)
 		{
-			if (m_iCount < m_iMaxSize)
+			if (!m_pDynamicElements)
 			{
-				if (TypeTraits<T>::isScalar)
-				{
-					baseClass::m_pElements[m_iCount] = value;
-				}
-				else if (TypeTraits<T>::isClass)
-				{
-					object_swap(baseClass::m_pElements[m_iCount], value);
-				}
+				_insert(baseClass::m_pElements, value);
 			}
 			else
 			{
-				m_iMaxSize = N * ARRAY_INC_FACTOR;
-				T* pData = (T*)::operator new(sizeof(T) * m_iMaxSize);
-
-				if (TypeTraits<T>::isScalar)
-				{
-					m_pDynamicElements = (T*)pData;
-					std::copy(baseClass::m_pElements, baseClass::m_pElements + N, m_pDynamicElements);
-					m_pDynamicElements[m_iCount] = value;
-				}
-				else if (TypeTraits<T>::isClass)
-				{
-					for (size_type i = 0; i < m_iMaxSize; ++i)
-					{
-						new (&pData[i]) T;
-					}
-
-					m_pDynamicElements = pData;
-
-					for (size_type i = 0; i < N; ++i)
-					{
-						object_swap(m_pDynamicElements[i], baseClass::m_pElements[i]);
-					}
-					object_swap(m_pDynamicElements[m_iCount], value);
-				}
+				_insert(m_pDynamicElements, value);
 			}
 		}
 		else
 		{
-			if (m_iCount < m_iMaxSize)
-			{
-				if (TypeTraits<T>::isScalar)
-				{
-					m_pDynamicElements[m_iCount] = value;
-				}
-				else if (TypeTraits<T>::isClass)
-				{
-					object_swap(m_pDynamicElements[m_iCount], value);
-				}
-			}
-			else
-			{
-				size_type iOldSize = m_iMaxSize;
-				m_iMaxSize *= ARRAY_INC_FACTOR;
-				T* pData = (T*)::operator new(sizeof(T) * m_iMaxSize);
-				
-				if (TypeTraits<T>::isScalar)
-				{
-					std::copy(m_pDynamicElements, m_pDynamicElements + iOldSize, pData);
-					SAFE_DELETE(m_pDynamicElements);
-					m_pDynamicElements = pData;
-					m_pDynamicElements[m_iCount] = value;
-				}
-				else if (TypeTraits<T>::isClass)
-				{
-					for (size_type i = 0; i < m_iMaxSize; ++i)
-					{
-						new (&pData[i]) T;
-					}
-
-					for (size_type i = 0; i < iOldSize; ++i)
-					{
-						object_swap(pData[i], m_pDynamicElements[i]);
-						(&m_pDynamicElements[i])->~T();
-					}
-
-					SAFE_DELETE(m_pDynamicElements);
-					m_pDynamicElements = pData;
-					object_swap(m_pDynamicElements[m_iCount], value);
-				}
-			}
+			_grow(value);
 		}
 
 		++m_iCount;
 	}
 
-	size_type		max_size() const
+	inline size_type		max_size() const
 	{
 		if (!m_pDynamicElements)
 		{
@@ -286,9 +217,71 @@ public:
 		return m_iMaxSize;
 	}
 
-	size_type		size() const
+	inline size_type		size() const
 	{
 		return m_iCount;
+	}
+
+private:
+	void					_insert(T* pElements, const T& value)
+	{
+		if (TypeTraits<T>::isScalar)
+		{
+			pElements[m_iCount] = value;
+		}
+		else if (TypeTraits<T>::isClass)
+		{
+			object_construct(&pElements[m_iCount], value);
+		}
+	}
+
+	void					_grow(const T& value)
+	{
+		size_type iOldSize = m_iMaxSize;
+		m_iMaxSize *= ARRAY_INC_FACTOR;
+		T* pData = object_allocate<T>(m_iMaxSize);
+
+		if (TypeTraits<T>::isScalar)
+		{
+			if (!m_pDynamicElements)
+			{
+				std::copy(baseClass::m_pElements, baseClass::m_pElements + iOldSize, pData);	
+			}
+			else
+			{
+				std::copy(m_pDynamicElements, m_pDynamicElements + iOldSize, pData);
+				SAFE_DELETE(m_pDynamicElements);
+			}
+
+			m_pDynamicElements = pData;
+			m_pDynamicElements[m_iCount] = value;
+		}
+		else if (TypeTraits<T>::isClass)
+		{
+			// add new stuff
+			object_construct(&pData[m_iCount], value);
+			// move old stuff
+			if (!m_pDynamicElements)
+			{
+				for (size_type i = 0; i < iOldSize; ++i)
+				{
+					object_construct(&pData[i], baseClass::m_pElements[i]);
+				}
+			}
+			else
+			{
+				for (size_type i = 0; i < iOldSize; ++i)
+				{
+					object_construct(&pData[i], m_pDynamicElements[i]);
+					object_swap(pData[i], m_pDynamicElements[i]);
+					object_destruct(&m_pDynamicElements[i]);
+				}
+
+				object_free(m_pDynamicElements);
+			}
+
+			m_pDynamicElements = pData;
+		}
 	}
 
 private:
@@ -302,15 +295,15 @@ template<typename T>
 class DArray<T, 0> : public ArrayBase<T>
 {
 public:
-	typedef ArrayBase<T> baseClass;
-	typedef typename baseClass::size_type size_type;
+	typedef ArrayBase<T>					baseClass;
+	typedef typename baseClass::size_type	size_type;
 
-	size_type		max_size() const
+	inline size_type	max_size() const
 	{
 		return 0;
 	}
 
-	size_type		size() const
+	inline size_type	size() const
 	{
 		return 0;
 	}

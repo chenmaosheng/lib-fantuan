@@ -45,32 +45,42 @@ inline void object_swap(AA& lhs, const AA& val)
 	lhs.TransferOwnership(val);
 }
 
+namespace Fantuan
+{
+
+template<>
+inline void object_swap(std::string& lhs, const std::string& val)
+{
+	lhs = val;
+}
+
+}
+
 int AA::count = 0;
 
-void Func(ArrayBase<int>& data)
+void Func(ArrayBase<std::string>& data)
 {
-	printf("%d\n", data[1]);
+	printf("%s\n", data[1].c_str());
 }
 
 int main(int argc, char* argv[])
 {
-	argc = argc;
-	argv = argv;
-
+	std::string a("HelloHelloHelloHelloHelloHelloHelloHello");
 	//DArray<std::string, 1000> m;
 	std::vector<std::string> m;
 	
 	uint64 time = GET_TIME();
-	for (int i = 0; i < 100000; ++i){
-		std::string a("HelloHelloHelloHelloHelloHelloHelloHello");
+	for (int i = 0; i < 1000000; ++i){
 		m.push_back(a);
 	}
 
 	uint64 end = GET_TIME();
 	printf("time: %lluus\n", (end - time) / 1000);
 
-	//DArray<int, 1000> n;
-	std::vector<int> n;
+	//Func(m);
+
+	DArray<int, 1000> n;
+	//std::vector<int> n;
 	time = GET_TIME();
 	for (int i = 0; i < 1000000; ++i)
 		n.push_back(100);
