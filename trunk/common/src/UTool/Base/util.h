@@ -14,6 +14,15 @@ uint8 NumberPower(uint32 iNumber);
 
 // case sensitive transform
 
+
+// object swap
+template<typename T>
+inline void object_swap(T& lhs, const T& val)
+{
+	//T temp(val);
+	std::swap(lhs, const_cast<T&>(val));
+}
+
 }
 
 #endif
