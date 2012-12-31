@@ -134,7 +134,7 @@ public:
 		{
 			if (m_pDynamicElements)
 			{
-				destroy(begin(), end());
+				destroy(baseClass::begin(), baseClass::end());
 			}
 		}
 		
@@ -145,7 +145,7 @@ public:
 	{
 		if (m_iCount < m_iMaxSize)
 		{
-			_insert(m_pHead, value);
+			_insert(baseClass::m_pHead, value);
 		}
 		else
 		{
@@ -160,12 +160,12 @@ public:
 		iterator _where = const_cast<iterator>(value);
 		if (TypeTraits<T>::isScalar)
 		{
-			std::copy(_where + 1, end(), _where);
+			std::copy(_where + 1, baseClass::end(), _where);
 		}
 		else
 		{
 			iterator it = _where + 1;
-			for (; it != end(); it += 1)
+			for (; it != baseClass::end(); it += 1)
 			{
 				object_construct(it - 1, *it); 
 			}
@@ -180,7 +180,7 @@ public:
 		iterator _first = const_cast<iterator>(first);
 		iterator _last = const_cast<iterator>(last);
 	
-		if (_first > _last || end() < _last)
+		if (_first > _last || baseClass::end() < _last)
 		{
 			FT_ASSERT(false && "out of range");
 			return;
@@ -190,11 +190,11 @@ public:
 
 		if (TypeTraits<T>::isScalar)
 		{
-			std::copy(_last, end(), _first);
+			std::copy(_last, baseClass::end(), _first);
 		}
 		else if (TypeTraits<T>::isClass)
 		{
-			for(; _last != end(); _last += 1, _first += 1)
+			for(; _last != baseClass::end(); _last += 1, _first += 1)
 			{
 				object_construct(_first, *_last);
 				object_destruct(_last);
@@ -206,7 +206,7 @@ public:
 
 	inline void			clear()
 	{
-		erase(begin(), end());
+		erase(baseClass::begin(), baseClass::end());
 	}
 
 	inline void			destroy(const_iterator first, const_iterator last)
@@ -216,7 +216,7 @@ public:
 
 		size_type _off = _last - _first;
 	
-		if (_first > _last || end() < _last)
+		if (_first > _last || baseClass::end() < _last)
 		{
 			FT_ASSERT(false && "out of range");
 			return;
