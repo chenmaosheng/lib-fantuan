@@ -83,37 +83,36 @@ struct TimeScope
 void ArrayTest1()
 {
 	printf("Array<int, 1000> with 1M times access\n");
+	Array<int, ARRAY_SIZE> a;
 	{
-		Array<int, ARRAY_SIZE> a;
 		TimeScope t;
 		for (int i = 0; i < ARRAY_TEST_TIME; ++i)
 			a[i / 1000];
-
 	}
 
 	printf("DyArray<int, 1000> with 1M times access\n");
+	DyArray<int, ARRAY_SIZE> b;
 	{
-		DyArray<int, ARRAY_SIZE> a;
 		for (int i = 0; i < ARRAY_SIZE; ++i)
-			a.push_back(100);
+			b.push_back(100);
 		TimeScope t;
 		for (int i = 0; i < ARRAY_TEST_TIME; ++i)
-			a[i / 1000];
+			b[i / 1000];
 
 	}
 
 	printf("int a[1000] with 1M times access\n");
+	int c[ARRAY_SIZE];
 	{
-		int a[ARRAY_SIZE];
 		TimeScope t;
 		for (int i = 0; i < ARRAY_TEST_TIME; ++i)
-			a[i / 1000];
+			c[i / 1000];
 	}
 
 	printf("vector<int, 1000> with 1M times access\n");
+	std::vector<int> d;
 	{
-		std::vector<int> a;
-		a.resize(ARRAY_SIZE);
+		d.resize(ARRAY_SIZE);
 		TimeScope t;
 		for (int i = 0; i < ARRAY_TEST_TIME; ++i)
 			a[i / 1000];
@@ -123,134 +122,132 @@ void ArrayTest1()
 void ArrayTest2()
 {
 	printf("Array<std::string, 1000> with 1M times access\n");
+	Array<std::string, ARRAY_SIZE> a;
 	{
-		Array<std::string, ARRAY_SIZE> a;
 		TimeScope t;
 		for (int i = 0; i < ARRAY_TEST_TIME; ++i)
 			a[i / 1000];
-
 	}
 
 	printf("DyArray<std::string, 1000> with 1M times access\n");
-	{
-		std::string temp = "hello";
-		DyArray<std::string, ARRAY_SIZE> a;
+	std::string temp = "hello";
+	DyArray<std::string, ARRAY_SIZE> b;
+	{	
 		for (int i = 0; i < ARRAY_SIZE; ++i)
-			a.push_back(temp);
+			b.push_back(temp);
 		TimeScope t;
 		for (int i = 0; i < ARRAY_TEST_TIME; ++i)
-			a[i / 1000];
-
+			b[i / 1000];
 	}
 
 	printf("std::string a[1000] with 1M times access\n");
+	std::string c[ARRAY_SIZE];
 	{
-		std::string a[ARRAY_SIZE];
 		TimeScope t;
 		for (int i = 0; i < ARRAY_TEST_TIME; ++i)
-			a[i / 1000];
+			c[i / 1000];
 	}
 
 	printf("vector<std::string, 1000> with 1M times access\n");
+	std::vector<std::string> d;
 	{
-		std::vector<std::string> a;
-		a.resize(ARRAY_SIZE);
+		d.resize(ARRAY_SIZE);
 		TimeScope t;
 		for (int i = 0; i < ARRAY_TEST_TIME; ++i)
-			a[i / 1000];
+			d[i / 1000];
 	}
 }
 
 void ArrayTest3()
 {
 	printf("Array<Array<int>, 1000> with 1M times access\n");
+	Array< Array<int>, ARRAY_SIZE > a;
 	{
-		Array< Array<int>, ARRAY_SIZE > a;
 		TimeScope t;
 		for (int i = 0; i < ARRAY_TEST_TIME; ++i)
 			a[i / 1000];
 	}
 
 	printf("Array<vector<int>, 1000> with 1M times access\n");
+	Array< std::vector<int>, ARRAY_SIZE > b;
 	{
-		Array< std::vector<int>, ARRAY_SIZE > a;
 		TimeScope t;
 		for (int i = 0; i < ARRAY_TEST_TIME; ++i)
-			a[i / 1000];
+			b[i / 1000];
 	}
 
 	printf("DyArray<DyArray<int>, 1000> with 1M times access\n");
+	DyArray<int> temp;
+	DyArray< DyArray<int>, ARRAY_SIZE > c;
 	{
-		DyArray<int> temp;
-		DyArray< DyArray<int>, ARRAY_SIZE > a;
 		for (int i = 0; i < ARRAY_SIZE; ++i)
-			a.push_back(temp);
+			c.push_back(temp);
 
 		TimeScope t;
 		for (int i = 0; i < ARRAY_TEST_TIME; ++i)
-			a[i / 1000];
+			c[i / 1000];
 	}
 
 	printf("DyArray<vector<int>, 1000> with 1M times access\n");
+	std::vector<int> temp2;
+	DyArray< std::vector<int>, ARRAY_SIZE > d;
 	{
-		std::vector<int> temp;
-		DyArray< std::vector<int>, ARRAY_SIZE > a;
 		for (int i = 0; i < ARRAY_SIZE; ++i)
-			a.push_back(temp);
+			d.push_back(temp2);
 		TimeScope t;
 		for (int i = 0; i < ARRAY_TEST_TIME; ++i)
-			a[i / 1000];
+			d[i / 1000];
 	}
 
 	printf("vector<Array<int>, 1000> with 1M times access\n");
+	std::vector< Array<int> > e;
 	{
-		std::vector< Array<int> > a;
-		a.resize(ARRAY_SIZE);
+		e.resize(ARRAY_SIZE);
 		TimeScope t;
 		for (int i = 0; i < ARRAY_TEST_TIME; ++i)
-			a[i / 1000];
+			e[i / 1000];
 	}
 
 	printf("vector<DyArray<int>, 1000> with 1M times access\n");
+	std::vector< DyArray<int> > f;
 	{
-		std::vector< DyArray<int> > a;
-		a.resize(ARRAY_SIZE);
+		f.resize(ARRAY_SIZE);
 		TimeScope t;
 		for (int i = 0; i < ARRAY_TEST_TIME; ++i)
-			a[i / 1000];
+			f[i / 1000];
 	}
 
 	printf("vector<vector<int>, 1000> with 1M times access\n");
-	{
-		std::vector< std::vector<int> > a;
-		a.resize(ARRAY_SIZE);
+	std::vector< std::vector<int> > g;
+	{	
+		g.resize(ARRAY_SIZE);
 		TimeScope t;
 		for (int i = 0; i < ARRAY_TEST_TIME; ++i)
-			a[i / 1000];
+			g[i / 1000];
 	}
 
 	printf("Array<int> a[1000] with 1M times access\n");
+	Array<int> h[ARRAY_SIZE];
 	{
-		Array<int> a[ARRAY_SIZE];
 		TimeScope t;
 		for (int i = 0; i < ARRAY_TEST_TIME; ++i)
-			a[i / 1000];
+			h[i / 1000];
 	}
 
 	printf("DyArray<int> a[1000] with 1M times access\n");
+	DyArray<int> j[ARRAY_SIZE];
 	{
-		DyArray<int> a[ARRAY_SIZE];
 		TimeScope t;
 		for (int i = 0; i < ARRAY_TEST_TIME; ++i)
-			a[i / 1000];
+			j[i / 1000];
 	}
 
 	printf("vector<int> a[1000] with 1M times access\n");
+	std::vector<int> k[ARRAY_SIZE];
 	{
-		std::vector<int> a[ARRAY_SIZE];
 		TimeScope t;
 		for (int i = 0; i < ARRAY_TEST_TIME; ++i)
-			a[i / 1000];
+			k[i / 1000];
 	}
 }
 
@@ -335,13 +332,6 @@ int main(int argc, char* argv[])
 	std::string hello("HelloHelloHelloHelloHelloHelloHelloHello");
 	
 	std::vector<std::string> m;
-	//DyArray<std::string> m;
-	/*for (int i = 0; i < 4; ++i)
-		m.push_back(a);
-	
-	DyArray< DyArray<std::string, 2> > n;
-	n.push_back(m);*/
-
 	uint64 time = GET_TIME();
 	for (int i = 0; i < 1000000; ++i){
 		m.push_back(hello);
@@ -350,12 +340,12 @@ int main(int argc, char* argv[])
 	uint64 end = GET_TIME();
 	printf("time: %lluus\n", (end - time) / 1000);
 
-	/*ArrayTest1();
+	ArrayTest1();
 	printf("\n\n");
 	ArrayTest2();
 	printf("\n\n");
 	ArrayTest3();
-	printf("\n\n");*/
+	printf("\n\n");
 	DyArrayTest1();
 	printf("\n\n");
 	DyArrayTest2();
