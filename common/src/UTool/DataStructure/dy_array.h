@@ -82,11 +82,15 @@ public:
 	typedef typename baseClass::reference		reference;
 	typedef typename baseClass::const_reference	const_reference;
 
+	using baseClass::m_pHead;
+	using baseClass::begin;
+	using baseClass::end;
+
 	DyArray() :	m_pDynamicElements(0), 
 				m_iMaxSize(N), 
 				m_iCount(0)
 	{
-		baseClass::m_pHead = m_Elements;
+		m_pHead = m_Elements;
 	}
 
 	DyArray(const thisClass& rhs) :	m_pDynamicElements(0),
@@ -108,7 +112,7 @@ public:
 					object_construct(&m_Elements[i], rhs.m_Elements[i]);
 				}
 			}
-			baseClass::m_pHead = m_Elements;
+			m_pHead = m_Elements;
 		}
 		else
 		{
@@ -124,7 +128,7 @@ public:
 					object_construct(&m_pDynamicElements[i], rhs.m_pDynamicElements[i]);
 				}
 			}
-			baseClass::m_pHead = m_pDynamicElements;
+			m_pHead = m_pDynamicElements;
 		}
 	}
 
@@ -134,7 +138,7 @@ public:
 		{
 			if (m_pDynamicElements)
 			{
-				destroy(baseClass::begin(), baseClass::end());
+				destroy(begin(), end());
 			}
 		}
 		
@@ -145,7 +149,7 @@ public:
 	{
 		if (m_iCount < m_iMaxSize)
 		{
-			_insert(baseClass::m_pHead, value);
+			_insert(m_pHead, value);
 		}
 		else
 		{
@@ -160,12 +164,12 @@ public:
 		iterator _where = const_cast<iterator>(value);
 		if (TypeTraits<T>::isScalar)
 		{
-			std::copy(_where + 1, baseClass::end(), _where);
+			std::copy(_where + 1, end(), _where);
 		}
 		else
 		{
 			iterator it = _where + 1;
-			for (; it != baseClass::end(); it += 1)
+			for (; it != end(); it += 1)
 			{
 				object_construct(it - 1, *it); 
 			}
@@ -180,7 +184,7 @@ public:
 		iterator _first = const_cast<iterator>(first);
 		iterator _last = const_cast<iterator>(last);
 	
-		if (_first > _last || baseClass::end() < _last)
+		if (_first > _last || end() < _last)
 		{
 			FT_ASSERT(false && "out of range");
 			return;
@@ -190,11 +194,11 @@ public:
 
 		if (TypeTraits<T>::isScalar)
 		{
-			std::copy(_last, baseClass::end(), _first);
+			std::copy(_last, end(), _first);
 		}
 		else if (TypeTraits<T>::isClass)
 		{
-			for(; _last != baseClass::end(); _last += 1, _first += 1)
+			for(; _last != end(); _last += 1, _first += 1)
 			{
 				object_construct(_first, *_last);
 				object_destruct(_last);
@@ -206,7 +210,7 @@ public:
 
 	inline void			clear()
 	{
-		erase(baseClass::begin(), baseClass::end());
+		erase(begin(), end());
 	}
 
 	inline void			destroy(const_iterator first, const_iterator last)
@@ -216,7 +220,7 @@ public:
 
 		size_type _off = _last - _first;
 	
-		if (_first > _last || baseClass::end() < _last)
+		if (_first > _last || end() < _last)
 		{
 			FT_ASSERT(false && "out of range");
 			return;
@@ -310,7 +314,7 @@ private:
 			}
 
 			m_pDynamicElements = pData;
-			baseClass::m_pHead = m_pDynamicElements;
+			m_pHead = m_pDynamicElements;
 		}
 	}
 
