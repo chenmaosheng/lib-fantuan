@@ -32,6 +32,12 @@ inline void object_construct(T* ptr, const T& val)
 	new ((void*)ptr) T(val);
 }
 
+template<typename T>
+inline void object_construct(T* ptr)
+{
+	new ((void*)ptr) T;
+}
+
 // destruct object
 template<typename T>
 inline void object_destruct(T* ptr)

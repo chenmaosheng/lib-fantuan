@@ -299,10 +299,9 @@ private:
 			}
 			else
 			{
-				value_type emptyVal;
 				for (size_type i = 0; i < iOldSize; ++i)
 				{
-					object_construct(&pData[i], emptyVal);
+					object_construct(&pData[i]);
 					object_swap(pData[i], m_pDynamicElements[i]);
 					object_destruct(&m_pDynamicElements[i]);
 				}
