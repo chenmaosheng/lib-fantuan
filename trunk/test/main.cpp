@@ -291,7 +291,7 @@ void DyArrayTest2()
 {
 	std::string temp("HelloHelloHelloHelloHelloHelloHelloHello");
 
-	printf("DyArray<std::string> with 1M times push\n");
+	/*printf("DyArray<std::string> with 1M times push\n");
 	DyArray<std::string> a;
 	{
 		TimeScope t;
@@ -305,7 +305,7 @@ void DyArrayTest2()
 		TimeScope t;
 		for (int i = 0; i < ARRAY_TEST_TIME; ++i)
 			b.push_back(temp);
-	}
+	}*/
 
 	printf("vector<std::string> with 1M times push\n");
 	std::vector<std::string> c;
@@ -331,16 +331,16 @@ int main(int argc, char* argv[])
 
 	std::string hello("HelloHelloHelloHelloHelloHelloHelloHello");
 	
-	std::vector<std::string> m;
+	DyArray<std::string> m;
 	uint64 time = GET_TIME();
-	for (int i = 0; i < 1000000; ++i){
+	for (int i = 0; i < 20000000; ++i){
 		m.push_back(hello);
 	}
 
 	uint64 end = GET_TIME();
 	printf("time: %lluus\n", (end - time) / 1000);
 
-	ArrayTest1();
+	/*ArrayTest1();
 	printf("\n\n");
 	ArrayTest2();
 	printf("\n\n");
@@ -348,7 +348,7 @@ int main(int argc, char* argv[])
 	printf("\n\n");
 	DyArrayTest1();
 	printf("\n\n");
-	DyArrayTest2();
+	DyArrayTest2();*/
 
 	getchar();
 
