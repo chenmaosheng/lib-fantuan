@@ -49,7 +49,10 @@ inline T* object_allocate(size_t count, T*)
 // free object
 inline void object_free(void* ptr)
 {
-	::operator delete(ptr);
+	if (ptr)
+	{
+		::operator delete(ptr);
+	}
 }
 
 }

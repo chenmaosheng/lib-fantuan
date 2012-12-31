@@ -65,7 +65,6 @@ public:
 									m_iMaxSize(N),
 									m_iCount(0)
 	{
-		_buy(rhs.max_size());
 		size_type _size = rhs.size();
 		if (TypeTraits<T>::isScalar)
 		{
@@ -75,6 +74,7 @@ public:
 			}
 			else
 			{
+				_buy(rhs.max_size());
 				std::copy(rhs.m_pDynamicElements, rhs.m_pDynamicElements + _size, m_pDynamicElements);
 			}
 		}
@@ -89,6 +89,7 @@ public:
 			}
 			else
 			{
+				_buy(rhs.max_size());
 				for (size_type i = 0; i < _size; ++i)
 				{
 					object_construct(&m_pDynamicElements[i], rhs.m_pDynamicElements[i]);
@@ -106,22 +107,13 @@ public:
 	{
 		if (TypeTraits<T>::isClass)
 		{
-			for (size_type i = 0; i < m_iCount; ++i)
+			if (m_pDynamicElements)
 			{
-				if (m_pDynamicElements)
-				{
-					(&m_pDynamicElements[i])->~T();
-				}
-				else
-				{
-					(&m_Elements[i])->~T();
-				}
+				destroy(begin(), end());
 			}
-
-			m_iCount = 0;
 		}
 		
-		SAFE_DELETE(m_pDynamicElements);
+		object_free(m_pDynamicElements);
 	}
 
 	inline void			push_back(const T& value)
@@ -163,6 +155,20 @@ public:
 		}
 
 		--m_iCount;
+	}
+
+	inline void		destroy(iterator lhs, iterator rhs)
+	{
+		if (lhs > rhs || end() < rhs)
+		{
+			FT_ASSERT(false && "out of range");
+			return;
+		}
+
+		for (; lhs != rhs; lhs += 1)
+		{
+			object_destruct(lhs);
+		}
 	}
 
 	// iterator operation
@@ -259,10 +265,7 @@ private:
 
 	void					_buy(size_type newSize)
 	{
-		if (newSize > max_size())
-		{
-			m_pDynamicElements = object_allocate(newSize, (T*)0);
-		}
+		m_pDynamicElements = object_allocate(newSize, (T*)0);
 	}
 
 	void					_grow(const T& value)
@@ -280,7 +283,7 @@ private:
 			else
 			{
 				std::copy(m_pDynamicElements, m_pDynamicElements + iOldSize, pData);
-				SAFE_DELETE(m_pDynamicElements);
+				object_free(m_pDynamicElements);
 			}
 
 			m_pDynamicElements = pData;
