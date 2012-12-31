@@ -3,6 +3,7 @@
 #include "dy_array.h"
 #include "array.h"
 #include <vector>
+#include <type_traits>
 
 using namespace Fantuan;
 
@@ -41,6 +42,11 @@ struct AA
 	static int count;
 };
 
+struct BB
+{
+	int x;
+};
+
 inline void object_swap(AA& lhs, const AA& val)
 {
 	lhs.TransferOwnership(val);
@@ -70,34 +76,21 @@ int main(int argc, char* argv[])
 
 	std::string a("HelloHelloHelloHelloHelloHelloHelloHello");
 	
-	DyArray<std::string, 200> m;
-	for (int i = 0; i < 100; ++i){
+	DyArray<std::string, 2> m;
+	for (int i = 0; i < 4; ++i)
 		m.push_back(a);
-	}
-
-	DyArray< DyArray<std::string, 200> > n;
+	
+	DyArray< DyArray<std::string, 2> > n;
 	n.push_back(m);
-
-	//std::vector<std::string> m;
 	
 	uint64 time = GET_TIME();
-	for (int i = 0; i < 1000000; ++i){
+	for (int i = 0; i < 100; ++i){
 		m.push_back(a);
 	}
 
 	uint64 end = GET_TIME();
 	printf("time: %lluus\n", (end - time) / 1000);
 
-	//Func(m);
-
-	DyArray<int, 1> o;
-	//std::vector<int> o;
-	time = GET_TIME();
-	for (int i = 0; i < 1000000; ++i)
-		o.push_back(100);
-
-	end = GET_TIME();
-	printf("time: %lluus\n", (end - time) / 1000);
 	getchar();
 
 	return 0;
