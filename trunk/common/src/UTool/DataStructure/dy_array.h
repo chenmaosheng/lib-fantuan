@@ -29,17 +29,44 @@ public:
 	typedef std::size_t	size_type;
 
 	// iterator support
-	virtual iterator			begin() = 0;
-	virtual const_iterator		begin() const = 0;
-	virtual iterator			end() = 0;
-	virtual const_iterator		end() const = 0;
+	inline iterator			begin()
+	{
+		return m_pHead;
+	}
+
+	inline const_iterator	begin() const
+	{
+		return m_pHead;
+	}
+	
+	inline iterator			end()
+	{
+		return m_pHead + size();
+	}
+
+	inline const_iterator	end() const
+	{
+		return m_pHead + size();
+	}
 
 	// operator[]
-	virtual reference			operator[](size_type i) = 0;
-	virtual const_reference		operator[](size_type i) const = 0;
+	inline reference		operator[](size_type i)
+	{
+		FT_ASSERT(i < size() && "out of range");
+		return m_pHead[i];
+	}
 
-	virtual size_type			max_size() const = 0;
-	virtual size_type			size() const = 0;
+	inline const_reference	operator[](size_type i) const
+	{
+		FT_ASSERT(i < size() && "out of range");
+		return m_pHead[i];
+	}
+
+	virtual size_type		max_size() const = 0;
+	virtual size_type		size() const = 0;
+
+protected:
+	T*						m_pHead;
 };
 
 template<typename T, std::size_t N=ARRAY_MIN_SIZE>
@@ -59,6 +86,7 @@ public:
 				m_iMaxSize(N), 
 				m_iCount(0)
 	{
+		baseClass::m_pHead = m_Elements;
 	}
 
 	DyArray(const thisClass& rhs) :	m_pDynamicElements(0),
@@ -66,42 +94,39 @@ public:
 									m_iCount(0)
 	{
 		size_type _size = rhs.size();
-		if (TypeTraits<T>::isScalar)
+
+		if (!rhs.m_pDynamicElements)
 		{
-			if (!rhs.m_pDynamicElements)
+			if (TypeTraits<T>::isScalar)
 			{
-				std::copy(rhs.m_Elements, rhs.m_Elements + _size, m_Elements);	
+				std::copy(rhs.m_Elements, rhs.m_Elements + _size, m_Elements);
 			}
-			else
-			{
-				_buy(rhs.max_size());
-				std::copy(rhs.m_pDynamicElements, rhs.m_pDynamicElements + _size, m_pDynamicElements);
-			}
-		}
-		else if (TypeTraits<T>::isClass)
-		{
-			if (!rhs.m_pDynamicElements)
+			else if (TypeTraits<T>::isClass)
 			{
 				for (size_type i = 0; i < _size; ++i)
 				{
 					object_construct(&m_Elements[i], rhs.m_Elements[i]);
 				}
 			}
-			else
+			baseClass::m_pHead = m_Elements;
+		}
+		else
+		{
+			_buy(rhs.max_size());
+			if (TypeTraits<T>::isScalar)
 			{
-				_buy(rhs.max_size());
+				std::copy(rhs.m_pDynamicElements, rhs.m_pDynamicElements + _size, m_pDynamicElements);
+			}
+			else if (TypeTraits<T>::isClass)
+			{
 				for (size_type i = 0; i < _size; ++i)
 				{
 					object_construct(&m_pDynamicElements[i], rhs.m_pDynamicElements[i]);
 				}
 			}
+			baseClass::m_pHead = m_pDynamicElements;
 		}
 	}
-
-	//thisClass& operator=(const thisClass& rhs)
-	//{
-	//	
-	//}
 
 	~DyArray()
 	{
@@ -120,14 +145,7 @@ public:
 	{
 		if (m_iCount < m_iMaxSize)
 		{
-			if (!m_pDynamicElements)
-			{
-				_insert(m_Elements, value);
-			}
-			else
-			{
-				_insert(m_pDynamicElements, value);
-			}
+			_insert(m_pHead, value);
 		}
 		else
 		{
@@ -157,101 +175,78 @@ public:
 		--m_iCount;
 	}
 
-	inline void		destroy(iterator lhs, iterator rhs)
+	inline void			erase(const_iterator first, const_iterator last)
 	{
-		if (lhs > rhs || end() < rhs)
+		iterator _first = const_cast<iterator>(first);
+		iterator _last = const_cast<iterator>(last);
+	
+		if (_first > _last || end() < _last)
 		{
 			FT_ASSERT(false && "out of range");
 			return;
 		}
 
-		for (; lhs != rhs; lhs += 1)
+		size_type _off = _last - _first;
+
+		if (TypeTraits<T>::isScalar)
 		{
-			object_destruct(lhs);
+			std::copy(_last, end(), _first);
+		}
+		else if (TypeTraits<T>::isClass)
+		{
+			for(; _last != end(); _last += 1, _first += 1)
+			{
+				object_construct(_first, *_last);
+				object_destruct(_last);
+			}
+		}
+
+		m_iCount -= _off;
+	}
+
+	inline void			clear()
+	{
+		erase(begin(), end());
+	}
+
+	inline void			destroy(const_iterator first, const_iterator last)
+	{
+		iterator _first = const_cast<iterator>(first);
+		iterator _last = const_cast<iterator>(last);
+
+		size_type _off = _last - _first;
+	
+		if (_first > _last || end() < _last)
+		{
+			FT_ASSERT(false && "out of range");
+			return;
+		}
+
+		if (TypeTraits<T>::isScalar)
+		{
+			memset((void*)first, 0, sizeof(T)*_off);
+		}
+		else if (TypeTraits<T>::isClass)
+		{
+			for (; _first != _last; _first += 1)
+			{
+				object_destruct(_first);
+			}
 		}
 	}
 
-	// iterator operation
-	inline iterator		begin()
+	inline size_type	max_size() const
 	{
-		if (!m_pDynamicElements)
-		{
-			return m_Elements;
-		}
-
-		return m_pDynamicElements;
-	}
-
-	inline const_iterator	begin() const
-	{
-		if (!m_pDynamicElements)
-		{
-			return m_Elements;
-		}
-
-		return m_pDynamicElements;
-	}
-
-	inline iterator			end()
-	{
-		if (!m_pDynamicElements)
-		{
-			return m_Elements + size();
-		}
-
-		return m_pDynamicElements + size();
-	}
-
-	inline const_iterator	end() const
-	{
-		if (!m_pDynamicElements)
-		{
-			return m_Elements + size();
-		}
-
-		return m_pDynamicElements + size();
-	}
-
-	// operator[]
-	inline reference		operator[](size_type i)
-	{
-		FT_ASSERT(i < size() && "out of range");
-		if (!m_pDynamicElements)
-		{
-			return m_Elements[i];
-		}
-
-		return m_pDynamicElements[i];
-	}
-
-	inline const_reference	operator[](size_type i) const
-	{
-		FT_ASSERT(i < size() && "out of range");
-		if (!m_pDynamicElements)
-		{
-			return m_Elements[i];
-		}
-
-		return m_pDynamicElements[i];
-	}
-
-	inline size_type		max_size() const
-	{
-		if (!m_pDynamicElements)
-		{
-			return N;
-		}
-
 		return m_iMaxSize;
 	}
 
-	inline size_type		size() const
+	inline size_type	size() const
 	{
 		return m_iCount;
 	}
 
 private:
-	void					_insert(T* pElements, const T& value)
+	void				_insert(T* pElements, const T& value)
 	{
 		if (TypeTraits<T>::isScalar)
 		{
@@ -263,12 +258,12 @@ private:
 		}
 	}
 
-	void					_buy(size_type newSize)
+	void				_buy(size_type newSize)
 	{
 		m_pDynamicElements = object_allocate(newSize, (T*)0);
 	}
 
-	void					_grow(const T& value)
+	void				_grow(const T& value)
 	{
 		size_type iOldSize = m_iMaxSize;
 		m_iMaxSize += m_iMaxSize / ARRAY_INC_FACTOR >= 1 ? m_iMaxSize / ARRAY_INC_FACTOR : 1;
@@ -287,6 +282,7 @@ private:
 			}
 
 			m_pDynamicElements = pData;
+			baseClass::m_pHead = m_pDynamicElements;
 			m_pDynamicElements[m_iCount] = value;
 		}
 		else if (TypeTraits<T>::isClass)
@@ -315,6 +311,7 @@ private:
 			}
 
 			m_pDynamicElements = pData;
+			baseClass::m_pHead = m_pDynamicElements;
 		}
 	}
 
@@ -348,7 +345,7 @@ public:
 		return 0;
 	}
 
-	inline reference			operator[](size_type i)
+	inline reference	operator[](size_type i)
 	{
 		return failed_rangecheck();
 	}
