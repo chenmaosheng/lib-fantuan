@@ -229,6 +229,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\src\UTool\DataStructure\ds_aux.h"
+				>
+			</File>
+			<File
 				RelativePath="..\src\UTool\DataStructure\dy_array.h"
 				>
 			</File>

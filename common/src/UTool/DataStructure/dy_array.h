@@ -3,6 +3,7 @@
 
 #include "ft_assert.h"
 #include "type_traits.h"
+#include "ds_aux.h"
 
 #ifdef WIN32
 #pragma warning(push)
@@ -258,7 +259,14 @@ private:
 		}
 		else if (TypeTraits<T>::isClass)
 		{
-			object_construct(&pElements[m_iCount], value);
+			if (!m_pDynamicElements)
+			{
+				pElements[m_iCount] = value;
+			}
+			else
+			{
+				object_construct(&pElements[m_iCount], value);
+			}
 		}
 	}
 
@@ -286,7 +294,7 @@ private:
 			}
 
 			m_pDynamicElements = pData;
-			baseClass::m_pHead = m_pDynamicElements;
+			m_pHead = m_pDynamicElements;
 			m_pDynamicElements[m_iCount] = value;
 		}
 		else if (TypeTraits<T>::isClass)
@@ -306,6 +314,7 @@ private:
 				for (size_type i = 0; i < iOldSize; ++i)
 				{
 					object_construct(&pData[i]);
+					// default swap need another one construct, one construct means one destruct, attention!
 					object_swap(pData[i], m_pDynamicElements[i]);
 					object_destruct(&m_pDynamicElements[i]);
 				}
