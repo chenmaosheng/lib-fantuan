@@ -41,12 +41,14 @@ struct AA
 	static int count;
 };
 
+int AA::count = 0;
+
 struct BB
 {
 	int x;
 };
 
-inline void object_swap(AA& lhs, const AA& val)
+inline void object_swap(AA& lhs, AA& val)
 {
 	lhs.TransferOwnership(val);
 }
@@ -291,7 +293,7 @@ void DyArrayTest2()
 {
 	std::string temp("HelloHelloHelloHelloHelloHelloHelloHello");
 
-	/*printf("DyArray<std::string> with 1M times push\n");
+	printf("DyArray<std::string> with 1M times push\n");
 	DyArray<std::string> a;
 	{
 		TimeScope t;
@@ -305,7 +307,7 @@ void DyArrayTest2()
 		TimeScope t;
 		for (int i = 0; i < ARRAY_TEST_TIME; ++i)
 			b.push_back(temp);
-	}*/
+	}
 
 	printf("vector<std::string> with 1M times push\n");
 	std::vector<std::string> c;
@@ -325,20 +327,63 @@ void DyArrayTest2()
 	}
 }
 
+void DyArrayTest3()
+{
+	AA aa;
+
+	printf("DyArray<AA> with 1M times push\n");
+	DyArray<AA> a;
+	{
+		TimeScope t;
+		for (int i = 0; i < ARRAY_TEST_TIME; ++i)
+			a.push_back(aa);
+	}
+
+	printf("DyArray<AA, 1000> with 1M times push\n");
+	DyArray<AA, 1000> b;
+	{
+		TimeScope t;
+		for (int i = 0; i < ARRAY_TEST_TIME; ++i)
+			b.push_back(aa);
+	}
+
+	printf("std::vector<AA> with 1M times push\n");
+	std::vector<AA> c;
+	{
+		TimeScope t;
+		for (int i = 0; i < ARRAY_TEST_TIME; ++i)
+			c.push_back(aa);
+	}
+
+	printf("std::vector<AA, 1000> with 1M times push\n");
+	std::vector<AA> d;
+	{
+		d.resize(1000);
+		TimeScope t;
+		for (int i = 0; i < ARRAY_TEST_TIME; ++i)
+			d.push_back(aa);
+	}
+}
+
 int main(int argc, char* argv[])
 {
 	argc = argc; argv = argv;
 
 	std::string hello("HelloHelloHelloHelloHelloHelloHelloHello");
 	
-	DyArray<std::string> m;
+	AA aa;
+
+	{//DyArray<AA> m;
+	std::vector<AA> m;
 	uint64 time = GET_TIME();
-	for (int i = 0; i < 20000000; ++i){
-		m.push_back(hello);
+	for (int i = 0; i < 10000000; ++i){
+		m.push_back(aa);
 	}
 
 	uint64 end = GET_TIME();
-	printf("time: %lluus\n", (end - time) / 1000);
+	printf("time: %lluus\n", (end - time) / 1000);}
+
+	printf("destruct count: %d\n", AA::count);
 
 	/*ArrayTest1();
 	printf("\n\n");
@@ -348,7 +393,9 @@ int main(int argc, char* argv[])
 	printf("\n\n");
 	DyArrayTest1();
 	printf("\n\n");
-	DyArrayTest2();*/
+	DyArrayTest2();
+	printf("\n\n");
+	DyArrayTest3();*/
 
 	getchar();
 
