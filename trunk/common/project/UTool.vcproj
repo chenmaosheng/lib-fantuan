@@ -237,6 +237,14 @@
 				>
 			</File>
 		</Filter>
+		<Filter
+			Name="Memory"
+			>
+			<File
+				RelativePath="..\src\UTool\Memory\allocator.h"
+				>
+			</File>
+		</Filter>
 	</Files>
 	<Globals>
 	</Globals>
