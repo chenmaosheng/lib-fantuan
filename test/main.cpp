@@ -3,8 +3,29 @@
 #include "dy_array.h"
 #include "array.h"
 #include <vector>
+#include "allocator.h"
 
 using namespace Fantuan;
+
+void* operator new(size_t n)
+{
+	return FT_Alloc::allocate(n);
+}
+
+void* operator new[](size_t n)
+{
+	return ::operator new(n);
+}
+
+void operator delete(void* ptr, size_t n)
+{
+	FT_Alloc::deallocate(ptr, n);
+}
+
+void operator delete[](void* ptr, size_t n)
+{
+	operator delete(ptr, n);
+}
 
 struct AA
 {
@@ -27,7 +48,7 @@ struct AA
 
 	~AA()
 	{
-		delete data;
+		::operator delete(data, 50);
 		++count;
 	}
 
@@ -373,8 +394,8 @@ int main(int argc, char* argv[])
 	
 	AA aa;
 
-	{//DyArray<AA> m;
-	std::vector<AA> m;
+	{DyArray<AA> m;
+	//std::vector<AA> m;
 	uint64 time = GET_TIME();
 	for (int i = 0; i < 10000000; ++i){
 		m.push_back(aa);
