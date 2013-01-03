@@ -12,10 +12,10 @@ class DefaultAllocator
 {
 	enum { ALIGNMENT = 8, MAX_BYTES = 256, NUM_LIST = 32, };
 
-	union Object
+	struct Object
 	{
-		union Object*	free_list_link;
-		char			chunk[1];
+		struct Object*	free_list_link;
+		size_t			obj_size;
 	};
 
 	static size_t		freelist_index(size_t bytes);
@@ -25,6 +25,7 @@ class DefaultAllocator
 public:
 	static void*		allocate(size_t bytes);
 	static void			deallocate(void* ptr, size_t bytes);
+	static void			deallocate(void* ptr);
 	static void*		reallocate(void* ptr, size_t old_size, size_t new_size);
 
 private:
@@ -106,6 +107,24 @@ void DefaultAllocator<N>::deallocate(void* ptr, size_t n)
 }
 
 template<size_t N>
+void DefaultAllocator<N>::deallocate(void* ptr)
+{
+	Object* temp = (Object*)ptr;
+	if (temp->obj_size > MAX_BYTES)
+	{
+		free(ptr);
+	}
+	else
+	{
+		Object* volatile* freelist = m_pFreeList + freelist_index(temp->obj_size);
+
+		//AutoLocker locker(&m_Mutex);
+		temp->free_list_link = *freelist;
+		*freelist = temp;
+	}
+}
+
+template<size_t N>
 void* DefaultAllocator<N>::reallocate(void* ptr, size_t old_size, size_t new_size)
 {
 	void* result;
@@ -134,7 +153,7 @@ char* DefaultAllocator<N>::chunk_alloc(size_t size, int &_nobject)
 	char* result;
 	size_t total_bytes = size * _nobject;
 	size_t bytes_left = m_pEndFree - m_pStartFree;
-
+	
 	if (bytes_left >= total_bytes)
 	{
 		result = m_pStartFree;
@@ -150,7 +169,7 @@ char* DefaultAllocator<N>::chunk_alloc(size_t size, int &_nobject)
 		return result;
 	}
 
-	size_t new_bytes = total_bytes * 2 + ROUND_UP((m_iTotalSize >> 4), ALIGNMENT);
+	size_t new_bytes = total_bytes * 4;// + ROUND_UP((m_iTotalSize >> 8), ALIGNMENT);
 
 	if (bytes_left > 0)
 	{
@@ -159,8 +178,19 @@ char* DefaultAllocator<N>::chunk_alloc(size_t size, int &_nobject)
 		*freelist = (Object*)m_pStartFree;
 	}
 
-	m_pStartFree = (char*)malloc(new_bytes);
+	printf("start malloc, new_bytes: %d\n", new_bytes);
+	try
+	{
+		m_pStartFree = (char*)malloc(new_bytes);
+	}
+	catch (...)
+	{
+		printf("bad malloc\n");	
+	}
+	
+	printf("end malloc\n");
 	m_iTotalSize += new_bytes;
+	printf("total: %d, new: %d, align: %d\n", m_iTotalSize, new_bytes, new_bytes - total_bytes * 2);
 	m_pEndFree = m_pStartFree + new_bytes;
 	return chunk_alloc(size, _nobject);
 }
@@ -183,13 +213,17 @@ void* DefaultAllocator<N>::refill(size_t size)
 	freelist = m_pFreeList + freelist_index(size);
 	
 	result = (Object*)chunk;
+	result->obj_size = size;
 	*freelist = next_obj = (Object*)(chunk + size);
+	next_obj->obj_size = size;
 	for (i = 1; ; i++)
 	{
 		curr_obj = next_obj;
 		next_obj = (Object*)((char*)next_obj + size);
+		next_obj->obj_size = size;
 		if (_nobject - 1 == i)
 		{
+			curr_obj->obj_size = size;
 			curr_obj->free_list_link = 0;
 			break;
 		}
@@ -221,6 +255,11 @@ public:
 	void deallocate(T* ptr, size_t n)
 	{
 		_Alloc::deallocate(ptr, n * sizeof(T));
+	}
+
+	void deallocate(T* ptr)
+	{
+		_Alloc::deallocate(ptr);
 	}
 };
 
