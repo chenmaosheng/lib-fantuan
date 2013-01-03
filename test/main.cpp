@@ -9,7 +9,15 @@ using namespace Fantuan;
 
 void* operator new(size_t n)
 {
-	return FT_Alloc::allocate(n);
+	for ( ; ; )
+		try
+		{
+			return FT_Alloc::allocate(n);
+		}
+		catch(...)
+		{
+			printf("bad alloc\n");
+		}
 }
 
 void* operator new[](size_t n)
@@ -17,14 +25,14 @@ void* operator new[](size_t n)
 	return ::operator new(n);
 }
 
-void operator delete(void* ptr, size_t n)
+void operator delete(void* ptr)
 {
-	FT_Alloc::deallocate(ptr, n);
+	FT_Alloc::deallocate(ptr);
 }
 
-void operator delete[](void* ptr, size_t n)
+void operator delete[](void* ptr)
 {
-	operator delete(ptr, n);
+	operator delete(ptr);
 }
 
 struct AA
@@ -48,7 +56,7 @@ struct AA
 
 	~AA()
 	{
-		::operator delete(data, 50);
+		delete data;
 		++count;
 	}
 
@@ -389,22 +397,31 @@ void DyArrayTest3()
 int main(int argc, char* argv[])
 {
 	argc = argc; argv = argv;
-
-	std::string hello("HelloHelloHelloHelloHelloHelloHelloHello");
-	
-	AA aa;
-
-	{DyArray<AA> m;
-	//std::vector<AA> m;
 	uint64 time = GET_TIME();
-	for (int i = 0; i < 10000000; ++i){
-		m.push_back(aa);
+	for (int i = 0; i < 1000000; ++i)
+	{
+		//printf("%d ", i);
+		new AA;
 	}
-
+	//delete a;
 	uint64 end = GET_TIME();
-	printf("time: %lluus\n", (end - time) / 1000);}
+	printf("time: %lluus\n", (end - time) / 1000);
 
-	printf("destruct count: %d\n", AA::count);
+	//std::string hello("HelloHelloHelloHelloHelloHelloHelloHello");
+	//
+	//AA aa;
+
+	//{DyArray<AA> m;
+	////std::vector<AA> m;
+	//uint64 time = GET_TIME();
+	//for (int i = 0; i < 10000000; ++i){
+	//	m.push_back(aa);
+	//}
+
+	//uint64 end = GET_TIME();
+	//printf("time: %lluus\n", (end - time) / 1000);}
+
+	//printf("destruct count: %d\n", AA::count);
 
 	/*ArrayTest1();
 	printf("\n\n");
