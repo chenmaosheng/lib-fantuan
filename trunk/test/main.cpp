@@ -1,6 +1,7 @@
 #include "base.h"
 #include "allocator.h"
 #include "array_test.h"
+#include "allocator_test.h"
 #include <vector>
 #include "dy_array.h"
 #include <tchar.h>
@@ -104,17 +105,9 @@ void CreateMiniDump(_EXCEPTION_POINTERS* ExceptionInfo)
 	CloseHandle(hDmp);
 }
 
-#include <iostream>
-
-void allocate_failed()
-{
-	std::cerr << " allocate failed\n";
-	abort();
-}
-
 void* operator new(size_t n)
 {
-	return Allocator::FT_Alloc::allocate(n);
+	return FT_Alloc::allocate(n);
 }
 
 void* operator new[](size_t n)
@@ -124,7 +117,7 @@ void* operator new[](size_t n)
 
 void operator delete(void* ptr)
 {
-	Allocator::FT_Alloc::deallocate(ptr);
+	FT_Alloc::deallocate(ptr);
 }
 
 void operator delete[](void* ptr)
@@ -132,42 +125,12 @@ void operator delete[](void* ptr)
 	operator delete(ptr);
 }
 
-
-
-struct BB
-{
-	//char x[50];
-	int x[16];
-};
-
 int main(int argc, char* argv[])
 {
 	argc = argc; argv = argv;
 	InitDump();
-	std::set_new_handler(allocate_failed);
-	//uint64 time = GET_TIME();
-	//for (int i = 0; i < 1000; ++i)
-	//{
-	//	//printf("%d ", i);
-	//	new int;
-	//	//delete b;
-	//}
-	//uint64 end = GET_TIME();
-	//printf("time: %lluus\n", (end - time) / 1000);
-
-	//std::string hello("HelloHelloHelloHelloHelloHelloHelloHello");
-	BB b;
-
-	//DyArray<BB> m;
-	std::vector<BB> m;
-	uint64 time = GET_TIME();
-	for (int i = 0; i < 5000000; ++i)
-		m.push_back(b);
-
-	uint64 end = GET_TIME();
-	printf("time: %lluus\n", (end - time) / 1000);
-
-	/*ArrayTest1();
+	
+	ArrayTest1();
 	printf("\n\n");
 	ArrayTest2();
 	printf("\n\n");
@@ -177,7 +140,14 @@ int main(int argc, char* argv[])
 	printf("\n\n");
 	DyArrayTest2();
 	printf("\n\n");
-	DyArrayTest3();*/
+	DyArrayTest3();
+
+	AllocatorTest1();
+	printf("\n\n");
+	AllocatorTest2();
+	printf("\n\n");
+	AllocatorTest3();
+	printf("\n\n");
 
 	getchar();
 

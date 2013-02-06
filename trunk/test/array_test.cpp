@@ -3,27 +3,12 @@
 #include "dy_array.h"
 #include "array.h"
 #include <vector>
-#include "accurate_time.h"
+#include "time_scope.h"
 
 #define ARRAY_TEST_TIME	1000000
 #define ARRAY_SIZE		1000
 
 using namespace Fantuan;
-
-struct TimeScope
-{
-	TimeScope()
-	{
-		start = GET_TIME();
-	}
-
-	~TimeScope()
-	{
-		printf("cost time: %lluus\n", (GET_TIME() - start) / 1000);
-	}
-
-	uint64 start;
-};
 
 struct AA
 {
