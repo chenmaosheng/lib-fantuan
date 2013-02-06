@@ -30,24 +30,24 @@ public:
 
 	inline iterator			end()
 	{
-		return m_Elements + size();
+		return (T*)m_Elements + size();
 	}
 
 	inline const_iterator	end() const
 	{
-		return m_Elements + size();
+		return (T*)m_Elements + size();
 	}
 
 	inline reference		operator[](size_type i)
 	{
 		FT_ASSERT(i < size() && "out of range");
-		return m_Elements[i];
+		return ((T*)m_Elements)[i];
 	}
 
 	inline const_reference	operator[](size_type i) const
 	{
 		FT_ASSERT(i < size() && "out of range");
-		return m_Elements[i];
+		return ((T*)m_Elements)[i];
 	}
 
 	inline size_type		max_size() const
@@ -60,8 +60,13 @@ public:
 		return N;
 	}
 
+	inline void*			data() const
+	{
+		return (void*)m_Elements;
+	}
+
 private:
-	T						m_Elements[N];
+	char					m_Elements[N * sizeof(T)];
 };
 
 // template specification

@@ -92,7 +92,7 @@ public:
 				m_iMaxSize(N), 
 				m_iCount(0)
 	{
-		m_pHead = m_Elements;
+		m_pHead = (T*)m_Elements;
 	}
 
 	DyArray(const thisClass& rhs) :	m_pDynamicElements(0),
@@ -105,16 +105,16 @@ public:
 		{
 			if (TypeTraits<T>::isScalar)
 			{
-				std::copy(rhs.m_Elements, rhs.m_Elements + _size, m_Elements);
+				std::copy((T*)rhs.m_Elements, (T*)rhs.m_Elements + _size, (T*)m_Elements);
 			}
 			else if (TypeTraits<T>::isClass)
 			{
 				for (size_type i = 0; i < _size; ++i)
 				{
-					object_construct(&m_Elements[i], rhs.m_Elements[i]);
+					object_construct(&((T*)m_Elements)[i], ((T*)rhs.m_Elements)[i]);
 				}
 			}
-			m_pHead = m_Elements;
+			m_pHead = (T*)m_Elements;
 		}
 		else
 		{
@@ -260,14 +260,7 @@ private:
 		}
 		else if (TypeTraits<T>::isClass)
 		{
-			if (!m_pDynamicElements)
-			{
-				pElements[m_iCount] = value;
-			}
-			else
-			{
-				object_construct(&pElements[m_iCount], value);
-			}
+			object_construct(&pElements[m_iCount], value);
 		}
 	}
 
@@ -286,7 +279,7 @@ private:
 		{
 			if (!m_pDynamicElements)
 			{
-				std::copy(m_Elements, m_Elements + iOldSize, pData);	
+				std::copy((T*)m_Elements, (T*)m_Elements + iOldSize, pData);	
 			}
 			else
 			{
@@ -307,7 +300,7 @@ private:
 			{
 				for (size_type i = 0; i < iOldSize; ++i)
 				{
-					object_construct(&pData[i], m_Elements[i]);
+					object_construct(&pData[i], ((T*)m_Elements)[i]);
 				}
 			}
 			else
@@ -329,7 +322,7 @@ private:
 	}
 
 private:
-	T			m_Elements[N];
+	char		m_Elements[N * sizeof(T)];
 	T*			m_pDynamicElements;
 	size_type	m_iMaxSize;
 	size_type	m_iCount;

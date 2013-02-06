@@ -185,10 +185,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\src\UTool\Base\memory.h"
-				>
-			</File>
-			<File
 				RelativePath="..\Src\UTool\Base\noncopyable.h"
 				>
 			</File>
