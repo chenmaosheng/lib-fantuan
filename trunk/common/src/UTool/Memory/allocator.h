@@ -1,7 +1,8 @@
 #ifndef _H_ALLOCATOR
 #define _H_ALLOCATOR
 
-#include "../thread/scoped_locker.h"
+#include "..\thread\scoped_locker.h"
+#include "..\base\util.h"
 
 namespace Fantuan
 {
@@ -18,13 +19,13 @@ namespace Fantuan
 		};
 
 		enum { OBJECT_OFFSET = FIELD_OFFSET(Object, data), };
+		enum { ALIGNMENT = 8, MAX_BYTES = 256, NUM_LIST = MAX_BYTES / ALIGNMENT,};
 
 		class DefaultAllocator
 		{
 		public:
-			static void*		allocate(size_t bytes);
-			static void			deallocate(void* ptr, size_t = 0);
-			static void*		reallocate(void* ptr, size_t, size_t new_size);
+			static void*	allocate(size_t bytes);
+			static void		deallocate(void* ptr, size_t = 0);
 		};
 
 		class FTAllocator
@@ -44,32 +45,27 @@ namespace Fantuan
 				}
 			};
 
-			enum { ALIGNMENT = 8, MAX_BYTES = 256, NUM_LIST = 32, };
-
-			static size_t		round_up(size_t bytes) 
-			{ 
-				return (((bytes) + (size_t) ALIGNMENT-1) & ~((size_t) ALIGNMENT - 1)); 
-			}
-
-			static size_t		freelist_index(size_t bytes)
-			{
-				return (((bytes) + (size_t)ALIGNMENT-1)/(size_t)ALIGNMENT - 1);
-			}
-
-			static uint8*		refill(size_t bytes);
-			static uint8*		chunk_alloc(size_t bytes, int& num_object);
-
 		public:
-			static void*		allocate(size_t bytes);
-			static void			deallocate(void* ptr);
-			static void*		reallocate(void* ptr, size_t old_size, size_t new_size);
+			static void*	allocate(size_t bytes);
+			static void		deallocate(void* ptr);
 
 		private:
-			static Object* volatile
-				m_pFreeList[NUM_LIST];
-			static uint8*		m_pStartFree[NUM_LIST];
-			static uint8*		m_pEndFree[NUM_LIST];
-			static size_t		m_iTotalSize[NUM_LIST];
+			static size_t	_round_up(size_t bytes)
+			{
+				return ROUND_UP(bytes, ALIGNMENT);
+			}
+			
+			static size_t	_index(size_t bytes)
+			{
+				return (bytes + ALIGNMENT - 1) / ALIGNMENT - 1;
+			}
+
+			static uint8*	_refill(size_t bytes);
+			static uint8*	_chunk_alloc(size_t bytes, int32& num_object);
+
+		private:
+			static Object*	m_pFreeList[NUM_LIST];
+			static size_t	m_iTotalSize[NUM_LIST];
 
 			static ScopedLocker	m_Locker;
 		};
@@ -78,4 +74,4 @@ namespace Fantuan
 	typedef Allocator::FTAllocator FT_Alloc;
 }
 
-#endif
+#endif // _H_ALLOCATOR
