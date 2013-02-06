@@ -41,6 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
+				AdditionalIncludeDirectories=".\thread;.\base;.\memory;.\datastructure"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -104,6 +105,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
+				AdditionalIncludeDirectories=".\thread;.\base;.\memory;.\datastructure"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -150,6 +152,10 @@
 			>
 			<File
 				RelativePath="..\Src\UTool\Thread\auto_locker.h"
+				>
+			</File>
+			<File
+				RelativePath="..\src\UTool\Thread\scoped_locker.h"
 				>
 			</File>
 		</Filter>
@@ -240,6 +246,10 @@
 		<Filter
 			Name="Memory"
 			>
+			<File
+				RelativePath="..\src\UTool\Memory\allocator.cpp"
+				>
+			</File>
 			<File
 				RelativePath="..\src\UTool\Memory\allocator.h"
 				>
