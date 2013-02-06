@@ -4,6 +4,7 @@
 #include "array.h"
 #include <vector>
 #include "time_scope.h"
+#include <string>
 
 #define ARRAY_TEST_TIME	1000000
 #define ARRAY_SIZE		1000

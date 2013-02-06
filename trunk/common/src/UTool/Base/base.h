@@ -17,7 +17,6 @@
 #include "type.h"
 #include "util.h"
 #include "ft_assert.h"
-#include "smart_ptr.h"
 #include "accurate_time.h"
 #include "type_list.h"
 #include "type_traits.h"

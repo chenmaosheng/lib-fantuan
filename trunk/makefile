@@ -17,7 +17,7 @@ LIB=common/bin/UTool.a
 
 main: test/main.cpp
 	(cd common/;make)
-	$(CC) $(WARNING) $(CFLAGS) $(OPTMIZE) $(DEBUG) $(INCLUDE) $(PREPROCESSOR) $(INLINE) $(PLATFORM) -o main test/main.cpp $(LIB)
+	$(CC) $(WARNING) $(CFLAGS) $(OPTMIZE) $(DEBUG) $(INCLUDE) $(PREPROCESSOR) $(INLINE) $(PLATFORM) -o main test/main.cpp test/allocator_test.cpp test/array_test.cpp $(LIB)
 
 clean:
 	rm main
