@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=""
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)\..\src\UTool\Thread&quot;;&quot;$(ProjectDir)\..\src\UTool\Base&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_LIB"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -105,7 +105,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories=""
+				AdditionalIncludeDirectories="&quot;$(ProjectDir)\..\src\UTool\Thread&quot;;&quot;$(ProjectDir)\..\src\UTool\Base&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -155,7 +155,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\src\UTool\Thread\scoped_locker.h"
+				RelativePath="..\src\UTool\Thread\mutex.h"
+				>
+			</File>
+			<File
+				RelativePath="..\src\UTool\Thread\mutex_locker.h"
 				>
 			</File>
 		</Filter>
