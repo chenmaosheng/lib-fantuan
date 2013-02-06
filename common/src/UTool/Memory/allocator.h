@@ -1,8 +1,9 @@
 #ifndef _H_ALLOCATOR
 #define _H_ALLOCATOR
 
-#include "..\thread\scoped_locker.h"
-#include "..\base\util.h"
+#include "mutex_locker.h"
+#include "util.h"
+#include "type.h"
 
 namespace Fantuan
 {
@@ -18,7 +19,7 @@ namespace Fantuan
 			};
 		};
 
-		enum { OBJECT_OFFSET = FIELD_OFFSET(Object, data), };
+		enum { OBJECT_OFFSET = DATA_OFFSET(Object, data), };
 		enum { ALIGNMENT = 8, MAX_BYTES = 256, NUM_LIST = MAX_BYTES / ALIGNMENT,};
 
 		class DefaultAllocator
@@ -36,12 +37,12 @@ namespace Fantuan
 			public:
 				AllocatorAutoLocker()
 				{
-					FTAllocator::m_Locker.Lock();
+					FTAllocator::m_Locker.AcquireLock();
 				}
 
 				~AllocatorAutoLocker()
 				{
-					FTAllocator::m_Locker.Unlock();
+					FTAllocator::m_Locker.ReleaseLock();
 				}
 			};
 
@@ -67,7 +68,7 @@ namespace Fantuan
 			static Object*	m_pFreeList[NUM_LIST];
 			static size_t	m_iTotalSize[NUM_LIST];
 
-			static ScopedLocker	m_Locker;
+			static MutexLocker	m_Locker;
 		};
 	}
 
@@ -75,3 +76,4 @@ namespace Fantuan
 }
 
 #endif // _H_ALLOCATOR
+

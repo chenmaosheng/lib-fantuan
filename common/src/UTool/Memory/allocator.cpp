@@ -18,7 +18,7 @@ namespace Fantuan
 
 		Object* FTAllocator::m_pFreeList[NUM_LIST] = {0};
 		size_t	FTAllocator::m_iTotalSize[NUM_LIST] = {0};
-		ScopedLocker FTAllocator::m_Locker;
+		MutexLocker FTAllocator::m_Locker;
 		
 		void* FTAllocator::allocate(size_t bytes)
 		{
@@ -99,3 +99,4 @@ namespace Fantuan
 		}
 	}
 }
+

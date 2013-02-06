@@ -7,7 +7,7 @@ WARNING=-Wall #\
 OPTIMIZE=-O0
 DEBUG=-g3
 COMPILE=-c
-INCLUDE=-Icommon/src/UTool/Base -Icommon/src/UTool/DataStructure -Icommon/src/UTool/Thread
+INCLUDE=-Icommon/src/UTool/Base -Icommon/src/UTool/DataStructure -Icommon/src/UTool/Thread -Icommon/src/UTool/Memory -Itest
 PREPROCESSOR=-D_LINUX=1
 INLINE=-finline-functions
 CFLAGS=-lstdc++ -fno-rtti -Wreorder -Woverloaded-virtual -ansi -lrt
