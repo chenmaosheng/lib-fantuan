@@ -4,6 +4,7 @@
 #include "ft_assert.h"
 #include "type_traits.h"
 #include "ds_aux.h"
+#include <stdexcept>
 
 #ifdef WIN32
 #pragma warning(push)

@@ -31,7 +31,7 @@ int main(int argc, char* argv[])
 {
 	argc = argc; argv = argv;
 	
-	/*ArrayTest1();
+	ArrayTest1();
 	printf("\n\n");
 	ArrayTest2();
 	printf("\n\n");
@@ -48,9 +48,8 @@ int main(int argc, char* argv[])
 	AllocatorTest2();
 	printf("\n\n");
 	AllocatorTest3();
-	printf("\n\n");*/
+	printf("\n\n");
 
-	int* a = new int;
 	getchar();
 
 	return 0;
