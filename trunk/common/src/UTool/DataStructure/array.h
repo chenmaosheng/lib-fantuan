@@ -1,41 +1,28 @@
 #ifndef _H_ARRAY
 #define _H_ARRAY
 
-#include "ft_assert.h"
+#include "array_base.h"
 
 namespace Fantuan
 {
 
 template<typename T, std::size_t N=ARRAY_MIN_SIZE>
-class Array
+class Array : public ArrayBase<T>
 {
 public:
-	typedef T				value_type;
-	typedef T*				iterator;
-	typedef const T*		const_iterator;
-	typedef T&				reference;
-	typedef const T&		const_reference;
-	typedef std::size_t		size_type;
+	typedef ArrayBase<T>						baseClass;
+	typedef Array<T, N>							thisClass;
+	typedef typename baseClass::size_type		size_type;
+	typedef typename baseClass::value_type		value_type;
+	typedef typename baseClass::iterator		iterator;
+	typedef typename baseClass::const_iterator	const_iterator;
+	typedef typename baseClass::reference		reference;
+	typedef typename baseClass::const_reference	const_reference;
 
-	// iterator support
-	inline iterator			begin()
+	Array()
 	{
-		return m_Elements;
-	}
-
-	inline const_iterator	begin() const
-	{
-		return m_Elements;
-	}
-
-	inline iterator			end()
-	{
-		return (T*)m_Elements + size();
-	}
-
-	inline const_iterator	end() const
-	{
-		return (T*)m_Elements + size();
+		memset(m_Elements, 0, sizeof(m_Elements));
+		baseClass::m_pHead = (T*)m_Elements;
 	}
 
 	inline reference		operator[](size_type i)
@@ -71,35 +58,17 @@ private:
 
 // template specification
 template<typename T>
-class Array<T, 0>
+class Array<T, 0> : public ArrayBase<T>
 {
 public:
-	typedef T				value_type;
-	typedef T*				iterator;
-	typedef const T*		const_iterator;
-	typedef T&				reference;
-	typedef const T&		const_reference;
-	typedef std::size_t		size_type;
-	// iterator support
-	inline iterator			begin()
-	{
-		return iterator( reinterpret_cast<T*>(this) );
-	}
-
-	inline const_iterator	begin() const
-	{
-		return iterator( reinterpret_cast<const T*>(this) );
-	}
-
-	inline iterator			end()
-	{
-		return begin();
-	}
-
-	inline const_iterator	end()	const
-	{
-		return begin();
-	}
+	typedef ArrayBase<T>						baseClass;
+	typedef Array<T, 0>							thisClass;
+	typedef typename baseClass::size_type		size_type;
+	typedef typename baseClass::value_type		value_type;
+	typedef typename baseClass::iterator		iterator;
+	typedef typename baseClass::const_iterator	const_iterator;
+	typedef typename baseClass::reference		reference;
+	typedef typename baseClass::const_reference	const_reference;
 
 	inline size_type		max_size() const
 	{

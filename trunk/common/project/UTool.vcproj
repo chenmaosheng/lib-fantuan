@@ -235,11 +235,27 @@
 				>
 			</File>
 			<File
+				RelativePath="..\src\UTool\DataStructure\array_base.h"
+				>
+			</File>
+			<File
 				RelativePath="..\src\UTool\DataStructure\ds_aux.h"
 				>
 			</File>
 			<File
 				RelativePath="..\src\UTool\DataStructure\dy_array.h"
+				>
+			</File>
+			<File
+				RelativePath="..\src\UTool\DataStructure\dy_string.h"
+				>
+			</File>
+			<File
+				RelativePath="..\src\UTool\DataStructure\local_string.h"
+				>
+			</File>
+			<File
+				RelativePath="..\src\UTool\DataStructure\string_base.h"
 				>
 			</File>
 		</Filter>
