@@ -53,10 +53,11 @@ int main(int argc, char* argv[])
 	AllocatorTest3();
 	printf("\n\n");*/
 
-	LocalString<10> aa;
+	LocalString<32> aa("I love you, yanxi");
 	printf("%d\n", aa.strlen());
-	String bb;
-
+	LocalString<32> bb;
+	bb = "Hello, World";
+	printf("%d\n", bb.strlen());
 	getchar();
 
 	return 0;

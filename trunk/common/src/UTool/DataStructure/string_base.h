@@ -12,7 +12,6 @@ class StringBase
 public:
 	size_t		strlen() const
 	{
-		// todo: efficiency
 		size_t len = 0;
 		while (*(*m_pData)++)
 		{
@@ -30,6 +29,15 @@ public:
 protected:
 	StringBase(ArrayBase<T>* pData) : m_pData(pData)
 	{
+	}
+
+	void		set(const T* pData)
+	{
+		size_t len = strlen(pData);
+		size_t max_size = m_pData->max_size();
+		len = len > max_size ? max_size : len;
+		memcpy(m_pData->data(), pData, len*sizeof(T));
+		(*m_pData)[len] = '\0';
 	}
 
 	size_t		strlen(const T* pData) const

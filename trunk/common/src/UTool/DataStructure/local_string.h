@@ -11,23 +11,50 @@ template<typename T, size_t size>
 class FTLocalString : public StringBase<T>
 {
 public:
-	FTLocalString() : StringBase<T>(&m_Buffer)
-	{
-	}
-
-	FTLocalString(const T* pData) : StringBase<T>(&m_Buffer)
-	{
-	}
+	FTLocalString() : StringBase<T>(&m_Buffer){}
 
 private:
 	Array<T, size> m_Buffer;
 };
 
 template<size_t size>
-class LocalString : public FTLocalString<char, size>{};
+class LocalString : public FTLocalString<char, size>
+{
+public:
+	typedef StringBase<char> baseClass;
+
+	LocalString() : FTLocalString<char, size>(){}
+
+	LocalString(const char* pData) : FTLocalString<char, size>()
+	{
+		baseClass::set(pData);
+	}
+
+	LocalString& operator=(const char* pData)
+	{
+		baseClass::set(pData);
+		return *this;
+	}
+};
 
 template<size_t size>
-class LocalWString : public FTLocalString<wchar_t, size>{};
+class LocalWString : public FTLocalString<wchar_t, size>
+{
+	typedef StringBase<wchar_t> baseClass;
+
+	LocalWString() : FTLocalString<wchar_t, size>(){}
+
+	LocalWString(const wchar_t* pData) : FTLocalString<wchar_t, size>()
+	{
+		baseClass::set(pData);
+	}
+
+	LocalWString& operator=(const wchar_t* pData)
+	{
+		baseClass::set(pData);
+		return *this;
+	}
+};
 
 }
 
