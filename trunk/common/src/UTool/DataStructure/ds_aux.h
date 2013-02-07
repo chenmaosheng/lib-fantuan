@@ -2,6 +2,7 @@
 #define _H_DS_AUX
 
 #include "type_traits.h"
+#include "ft_assert.h"
 
 #ifdef WIN32
 #pragma warning(push)
