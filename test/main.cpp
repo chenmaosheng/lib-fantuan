@@ -5,6 +5,8 @@
 #include <vector>
 #include "dy_array.h"
 #include "array.h"
+#include "local_string.h"
+#include "dy_string.h"
 
 using namespace Fantuan;
 
@@ -27,32 +29,6 @@ void operator delete[](void* ptr)
 {
 	operator delete(ptr);
 }
-
-template<size_t size>
-class SimpleString
-{
-public:
-	const static size_t string_size = size;
-
-	SimpleString(const char* strString)
-	{
-		int32 i = 0;
-		while (strString[i] != '\0' && i < string_size)
-		{
-			m_Data[i] = strString[i];
-			++i;
-		}
-		m_Data[i] = '\0';
-	}
-
-	char* c_str() const
-	{
-		return (char*)m_Data.data();
-	}
-
-private:
-	Array<char, size>	m_Data;
-};
 
 int main(int argc, char* argv[])
 {
@@ -77,8 +53,9 @@ int main(int argc, char* argv[])
 	AllocatorTest3();
 	printf("\n\n");*/
 
-	SimpleString<256> str("I love you");
-	printf("%s\n", str.c_str());
+	LocalString<10> aa;
+	printf("%d\n", aa.strlen());
+	String bb;
 
 	getchar();
 
