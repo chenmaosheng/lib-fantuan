@@ -59,11 +59,17 @@ public:
 
 	inline T*				operator++(int)
 	{
+		T* pHead = m_pHead;
 		m_pHead += 1;
-		return m_pHead;
+		return pHead;
 	}
 
 	inline T*				data() const
+	{
+		return m_pHead;
+	}
+
+	inline T*				data()
 	{
 		return m_pHead;
 	}
