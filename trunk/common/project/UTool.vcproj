@@ -173,6 +173,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\src\UTool\Base\arg.h"
+				>
+			</File>
+			<File
 				RelativePath="..\Src\UTool\Base\base.h"
 				>
 			</File>
@@ -252,6 +256,10 @@
 			</File>
 			<File
 				RelativePath="..\src\UTool\DataStructure\local_string.h"
+				>
+			</File>
+			<File
+				RelativePath="..\src\UTool\DataStructure\string_base.cpp"
 				>
 			</File>
 			<File
