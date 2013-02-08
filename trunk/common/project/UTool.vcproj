@@ -259,10 +259,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\src\UTool\DataStructure\string_base.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\src\UTool\DataStructure\string_base.h"
 				>
 			</File>
