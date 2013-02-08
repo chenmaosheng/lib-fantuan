@@ -31,12 +31,12 @@ protected:
 	{
 	}
 
-	void		set(const T* pData)
+	void		assign(const T* pData)
 	{
 		size_t len = strlen(pData);
 		size_t max_size = m_pData->max_size();
 		len = len > max_size ? max_size : len;
-		memcpy(m_pData->data(), pData, len*sizeof(T));
+		m_pData->assign(pData, len+1);
 		(*m_pData)[len] = '\0';
 	}
 
@@ -54,6 +54,30 @@ protected:
 private:
 	ArrayBase<T>* m_pData;
 };
+
+template<>
+size_t	StringBase<char>::strlen()	const
+{
+	return ::strlen(m_pData->data());
+}
+
+template<>
+size_t	StringBase<char>::strlen(const char* pData)	const
+{
+	return ::strlen(pData);
+}
+
+template<>
+size_t	StringBase<wchar_t>::strlen()	const
+{
+	return ::wcslen(m_pData->data());
+}
+
+template<>
+size_t	StringBase<wchar_t>::strlen(const wchar_t* pData)	const
+{
+	return ::wcslen(pData);
+}
 
 
 }
