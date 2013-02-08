@@ -188,6 +188,10 @@
 				RelativePath=".\main.cpp"
 				>
 			</File>
+			<File
+				RelativePath=".\string_test.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -200,6 +204,10 @@
 			</File>
 			<File
 				RelativePath=".\array_test.h"
+				>
+			</File>
+			<File
+				RelativePath=".\string_test.h"
 				>
 			</File>
 			<File

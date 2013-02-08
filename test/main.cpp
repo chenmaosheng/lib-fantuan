@@ -2,11 +2,7 @@
 #include "allocator.h"
 #include "array_test.h"
 #include "allocator_test.h"
-#include <vector>
-#include "dy_array.h"
-#include "array.h"
-#include "local_string.h"
-#include "dy_string.h"
+#include "string_test.h"
 
 using namespace Fantuan;
 
@@ -17,7 +13,7 @@ void* operator new(size_t n)
 
 void* operator new[](size_t n)
 {
-	return ::operator new(n);
+	return operator new(n);
 }
 
 void operator delete(void* ptr)
@@ -53,23 +49,8 @@ int main(int argc, char* argv[])
 	AllocatorTest3();
 	printf("\n\n");*/
 
-	LocalString<32> aa("I love you, yanxi");
-	printf("len=%d, data=%s\n", aa.strlen(), aa.c_str());
-	LocalString<32> bb;
-	bb = "Hello, World";
-	printf("len=%d, data=%s\n", bb.strlen(), bb.c_str());
-
-	String cc("I love you, too");
-	printf("len=%d, data=%s\n", cc.strlen(), cc.c_str());
-	String dd;
-	dd = "Hello, World, too";
-	printf("len=%d, data=%s\n", dd.strlen(), dd.c_str());
-	aa.strcpy(bb.c_str(), bb.strlen());
-	printf("len=%d, data=%s\n", aa.strlen(), aa.c_str());
-	cc.strcpy(dd);
-	printf("len=%d, data=%s\n", cc.strlen(), cc.c_str());
-	dd.clear();
-	printf("len=%d, data=%s\n", dd.strlen(), dd.c_str());
+	StringTest1();
+	printf("\n\n");
 	
 	getchar();
 
