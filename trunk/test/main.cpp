@@ -54,10 +54,16 @@ int main(int argc, char* argv[])
 	printf("\n\n");*/
 
 	LocalString<32> aa("I love you, yanxi");
-	printf("%d\n", aa.strlen());
+	printf("len=%d, data=%s\n", aa.strlen(), aa.c_str());
 	LocalString<32> bb;
 	bb = "Hello, World";
-	printf("%d\n", bb.strlen());
+	printf("len=%d, data=%s\n", bb.strlen(), bb.c_str());
+
+	String cc("I love you, too");
+	printf("len=%d, data=%s\n", cc.strlen(), cc.c_str());
+	String dd;
+	dd = "Hello, World, too";
+	printf("len=%d, data=%s\n", dd.strlen(), dd.c_str());
 	getchar();
 
 	return 0;

@@ -201,6 +201,12 @@ public:
 		return m_iCount;
 	}
 
+	inline void			assign(const T* pData, size_type len)
+	{
+		memcpy(m_Elements, pData, sizeof(T)*len);
+		m_iCount = len;
+	}
+
 private:
 	void				_insert(T* pElements, const T& value)
 	{
@@ -299,6 +305,10 @@ public:
 	inline size_type	size() const
 	{
 		return 0;
+	}
+
+	inline void			assign(const T* pData, size_type len)
+	{
 	}
 
 	inline reference	operator[](size_type i)

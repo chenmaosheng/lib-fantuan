@@ -27,12 +27,12 @@ public:
 
 	LocalString(const char* pData) : FTLocalString<char, size>()
 	{
-		baseClass::set(pData);
+		baseClass::assign(pData);
 	}
 
 	LocalString& operator=(const char* pData)
 	{
-		baseClass::set(pData);
+		baseClass::assign(pData);
 		return *this;
 	}
 };
@@ -46,12 +46,12 @@ class LocalWString : public FTLocalString<wchar_t, size>
 
 	LocalWString(const wchar_t* pData) : FTLocalString<wchar_t, size>()
 	{
-		baseClass::set(pData);
+		baseClass::assign(pData);
 	}
 
 	LocalWString& operator=(const wchar_t* pData)
 	{
-		baseClass::set(pData);
+		baseClass::assign(pData);
 		return *this;
 	}
 };
