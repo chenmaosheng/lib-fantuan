@@ -12,7 +12,6 @@
 #pragma warning (disable: 4996)	// evil std::copy check
 #endif
 
-#define ARRAY_MIN_SIZE		1
 #define ARRAY_INC_FACTOR	2
 
 namespace Fantuan

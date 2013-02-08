@@ -6,6 +6,8 @@
 namespace Fantuan
 {
 
+#define ARRAY_MIN_SIZE		1
+
 template<typename T>
 class ArrayBase
 {
