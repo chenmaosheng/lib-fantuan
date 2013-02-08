@@ -97,18 +97,30 @@ public:
 		object_free(m_pDynamicElements);
 	}
 
-	inline void			push_back(const T& value)
+	inline void			push_back(size_type n, const T& value)
 	{
-		if (m_iCount < m_iMaxSize)
+		size_type extra = 0;
+		if (m_iCount + n > m_iMaxSize)
 		{
-			_insert(m_pHead, value);
-		}
-		else
-		{
-			_grow(value);
+			extra = m_iCount + n - m_iMaxSize;
 		}
 
-		++m_iCount;
+		if (m_iMaxSize > m_iCount)
+		{
+			_insert_n(m_iMaxSize - m_iCount, value);
+		}
+		
+		if (extra != 0)
+		{
+			_grow_n(extra, value);
+		}
+
+		m_iCount += n;
+	}
+
+	inline void			push_back(const T& value)
+	{
+		push_back(1, value);
 	}
 
 	inline void			erase(const_iterator value)
@@ -203,21 +215,48 @@ public:
 
 	inline void			assign(const T* pData, size_type len)
 	{
-		memcpy(m_Elements, pData, sizeof(T)*len);
+		if (len >= m_iMaxSize)
+		{
+			resize(len);
+		}
+
+		memset(m_pHead, 0, m_iMaxSize);
+		memcpy(m_pHead, pData, sizeof(T)*len);
 		m_iCount = len;
 	}
 
-private:
-	void				_insert(T* pElements, const T& value)
+	inline void			copy(const T* pData, size_type len)
 	{
-		if (TypeTraits<T>::isScalar)
+		if (len >= m_iMaxSize)
 		{
-			pElements[m_iCount] = value;
+			resize(len);
 		}
-		else if (TypeTraits<T>::isClass)
+
+		memcpy(m_pHead, pData, sizeof(T)*len);
+		m_iCount = m_iCount > len ? m_iCount : len;
+	}
+
+	inline void			resize(size_type newSize)
+	{
+		if (newSize <= m_iCount)
 		{
-			object_construct(&pElements[m_iCount], value);
+			m_iCount = newSize;
 		}
+		else
+		{
+			push_back(newSize - m_iCount, T());
+		}
+	}
+
+private:
+	void				_insert_n(size_type n, const T& value)
+	{
+		object_fill_n(&m_pHead[m_iCount], n, value);
+	}
+
+	void				_insert(const T& value)
+	{
+		_insert_n(1, value);
 	}
 
 	void				_buy(size_type newSize)
@@ -225,10 +264,10 @@ private:
 		m_pDynamicElements = object_allocate(newSize, (T*)0);
 	}
 
-	void				_grow(const T& value)
+	void				_grow_n(size_type n, const T& value)
 	{
 		size_type iOldSize = m_iMaxSize;
-		m_iMaxSize += m_iMaxSize / ARRAY_INC_FACTOR >= 1 ? m_iMaxSize / ARRAY_INC_FACTOR : 1;
+		m_iMaxSize += n;
 		T* pData = object_allocate(m_iMaxSize, (T*)0);
 
 		if (TypeTraits<T>::isScalar)
@@ -277,6 +316,11 @@ private:
 		}
 	}
 
+	void				_grow(const T& value)
+	{
+		_grow_n(m_iMaxSize / ARRAY_INC_FACTOR >= 1 ? m_iMaxSize / ARRAY_INC_FACTOR : 1, value);
+	}
+
 private:
 	char		m_Elements[N * sizeof(T)];
 	T*			m_pDynamicElements;
@@ -308,6 +352,14 @@ public:
 	}
 
 	inline void			assign(const T* pData, size_type len)
+	{
+	}
+
+	inline void			copy(const T* pData, size_type len)
+	{
+	}
+
+	inline void			resize(size_type newSize)
 	{
 	}
 

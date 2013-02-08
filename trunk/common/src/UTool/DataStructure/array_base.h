@@ -64,6 +64,12 @@ public:
 		return pHead;
 	}
 
+	inline T*				operator++()
+	{
+		m_pHead += 1;
+		return m_pHead;
+	}
+
 	inline T*				data() const
 	{
 		return m_pHead;
@@ -73,10 +79,17 @@ public:
 	{
 		return m_pHead;
 	}
+
+	inline void				clear()
+	{
+		memset(m_pHead, 0, max_size());
+	}
 	
 	virtual size_type		max_size() const = 0;
 	virtual size_type		size() const = 0;
 	virtual void			assign(const T* pData, size_type len) = 0;
+	virtual void			copy(const T* pData, size_type len) = 0;
+	virtual void			resize(size_type newSize) = 0;
 	
 protected:
 	T*						m_pHead;

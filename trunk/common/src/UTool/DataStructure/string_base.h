@@ -10,6 +10,21 @@ template<typename T>
 class StringBase
 {
 public:
+	void		strcpy(const T* pData, size_t num)
+	{
+		m_pData->copy(pData, num);
+	}
+
+	void		strcpy(StringBase<T>& rhs)
+	{
+		strcpy(rhs.c_str(), rhs.strlen()+1);
+	}
+
+	void		clear()
+	{
+		m_pData->clear();
+	}
+
 	size_t		strlen() const
 	{
 		size_t len = 0;
@@ -31,13 +46,14 @@ protected:
 	{
 	}
 
+	void		assign(const T* pData, size_t num)
+	{
+		m_pData->assign(pData, num);
+	}
+
 	void		assign(const T* pData)
 	{
-		size_t len = strlen(pData);
-		size_t max_size = m_pData->max_size();
-		len = len > max_size ? max_size : len;
-		m_pData->assign(pData, len+1);
-		(*m_pData)[len] = '\0';
+		assign(pData, strlen(pData)+1);
 	}
 
 	size_t		strlen(const T* pData) const
