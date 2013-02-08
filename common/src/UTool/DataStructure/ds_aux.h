@@ -105,6 +105,22 @@ inline T* object_uninit_copy(T* first, T* last, T* result)
 	return NULL;
 }
 
+template<typename T>
+inline void object_fill_n(T* first, size_t count, const T& value)
+{
+	for (; count > 0; --count, ++first)
+	{
+		if (TypeTraits<T>::isScalar)
+		{
+			*first = value;
+		}
+		else if (TypeTraits<T>::isClass)
+		{
+			object_construct(first, value);
+		}
+	}
+}
+
 }
 
 #endif

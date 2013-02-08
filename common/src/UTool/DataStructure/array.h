@@ -49,7 +49,21 @@ public:
 
 	inline void				assign(const T* pData, size_type len)
 	{
+		FT_ASSERT(len <= N && "out of range");
+		memset(m_Elements, 0, sizeof(m_Elements));
 		memcpy(m_Elements, pData, sizeof(T)*len);
+	}
+
+	inline void				copy(const T* pData, size_type len)
+	{
+		FT_ASSERT(len <= N && "out of range");
+		memcpy(m_Elements, pData, sizeof(T)*len);
+	}
+
+	inline void				resize(size_type newSize)
+	{
+		FT_ASSERT(newSize <= N && "out of range");
+		// do nothing
 	}
 
 private:
@@ -81,6 +95,14 @@ public:
 	}
 
 	inline void				assign(const T* pData, size_type len)
+	{
+	}
+
+	inline void				copy(const T* pData, size_type len)
+	{
+	}
+
+	inline void				resize(size_type newSize)
 	{
 	}
 

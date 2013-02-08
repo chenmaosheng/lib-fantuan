@@ -64,6 +64,13 @@ int main(int argc, char* argv[])
 	String dd;
 	dd = "Hello, World, too";
 	printf("len=%d, data=%s\n", dd.strlen(), dd.c_str());
+	aa.strcpy(bb.c_str(), bb.strlen());
+	printf("len=%d, data=%s\n", aa.strlen(), aa.c_str());
+	cc.strcpy(dd);
+	printf("len=%d, data=%s\n", cc.strlen(), cc.c_str());
+	dd.clear();
+	printf("len=%d, data=%s\n", dd.strlen(), dd.c_str());
+	
 	getchar();
 
 	return 0;
