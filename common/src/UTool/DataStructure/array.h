@@ -54,6 +54,12 @@ public:
 		memcpy(m_Elements, pData, sizeof(T)*len);
 	}
 
+	inline void				append(const T* pData, size_type len, size_type pos)
+	{
+		FT_ASSERT(len + pos <= N && "out of range");
+		memcpy(m_Elements + pos, pData, sizeof(T)*len);
+	}
+
 	inline void				copy(const T* pData, size_type len)
 	{
 		FT_ASSERT(len <= N && "out of range");
@@ -95,6 +101,10 @@ public:
 	}
 
 	inline void				assign(const T* pData, size_type len)
+	{
+	}
+
+	inline void				append(const T* pData, size_type len, size_type pos)
 	{
 	}
 

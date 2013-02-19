@@ -90,6 +90,7 @@ public:
 	virtual size_type		max_size() const = 0;
 	virtual size_type		size() const = 0;
 	virtual void			assign(const T* pData, size_type len) = 0;
+	virtual void			append(const T* pData, size_type len, size_type pos) = 0;
 	virtual void			copy(const T* pData, size_type len) = 0;
 	virtual void			resize(size_type newSize) = 0;
 	

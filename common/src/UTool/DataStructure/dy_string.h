@@ -24,12 +24,6 @@ public:
 		baseClass::assign(pData);
 	}
 
-	FTString& operator=(const T* pData)
-	{
-		baseClass::assign(pData);
-		return *this;
-	}
-
 private:
 	DyArray<T, size> m_Buffer;
 };
