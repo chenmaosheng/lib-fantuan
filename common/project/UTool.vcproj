@@ -235,6 +235,10 @@
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
 			<File
+				RelativePath="..\src\UTool\DataStructure\arg.h"
+				>
+			</File>
+			<File
 				RelativePath="..\Src\UTool\DataStructure\array.h"
 				>
 			</File>
@@ -252,6 +256,10 @@
 			</File>
 			<File
 				RelativePath="..\src\UTool\DataStructure\dy_string.h"
+				>
+			</File>
+			<File
+				RelativePath="..\src\UTool\DataStructure\format.h"
 				>
 			</File>
 			<File
