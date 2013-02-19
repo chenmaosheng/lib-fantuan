@@ -224,6 +224,17 @@ public:
 		m_iCount = len;
 	}
 
+	inline void			append(const T* pData, size_type len, size_type pos)
+	{
+		if (len + m_iCount >= m_iMaxSize)
+		{
+			resize(len + m_iCount);
+		}
+
+		memcpy(m_pHead + pos, pData, sizeof(T)*len);
+		m_iCount += len;
+	}
+
 	inline void			copy(const T* pData, size_type len)
 	{
 		if (len >= m_iMaxSize)
@@ -351,6 +362,10 @@ public:
 	}
 
 	inline void			assign(const T* pData, size_type len)
+	{
+	}
+
+	inline void			append(const T* pData, size_type len, size_type pos)
 	{
 	}
 
