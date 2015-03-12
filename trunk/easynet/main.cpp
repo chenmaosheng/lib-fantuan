@@ -8,12 +8,25 @@
 #include <arpa/inet.h>
 #include <errno.h>
 #include <stdlib.h>
+#include <stddef.h>
+
+#define SOCKETOFFSET offsetof(struct EasyConnection, socket_)
 
 struct EasyAcceptor
 {
 	int		socket_;
 	int		epfd_;
 	epoll_event ev_;
+	epoll_event events_[20];
+};
+
+struct EasyConnection
+{
+	int socket_;
+	sockaddr_in addr_;
+	EasyAcceptor* acceptor_;
+	epoll_event ev_;
+	char buffer_[1024];
 };
 
 EasyAcceptor* CreateAcceptor(unsigned int ip, unsigned short port)
@@ -32,14 +45,6 @@ EasyAcceptor* CreateAcceptor(unsigned int ip, unsigned short port)
 	listen(pAcceptor->socket_, SOMAXCONN);
 	return pAcceptor;
 }
-
-struct EasyConnection
-{
-	int socket_;
-	sockaddr_in addr_;
-	EasyAcceptor* acceptor_;
-	epoll_event ev_;
-};
 
 EasyConnection* CreateConnection(EasyAcceptor* pAcceptor)
 {
@@ -70,14 +75,19 @@ void AcceptConnection(EasyAcceptor* pAcceptor)
 	epoll_ctl(pAcceptor->epfd_, EPOLL_CTL_ADD, pConnection->socket_, &pConnection->ev_);
 }
 
-int handle_message(int connfd)
+int handle_message(int* connfd)
 {
-	char buf[1024] = {0};
 	int len;
-	len = recv(connfd, buf, 1024, 0);
+	EasyConnection* pConnection = (EasyConnection*)((char*)connfd - SOCKETOFFSET);
+	len = recv(pConnection->socket_, pConnection->buffer_, 1024, 0);
 	if (len > 0)
 	{
-		printf("message=%s, len=%d\n", buf, len);
+		printf("message=%s, len=%d\n", pConnection->buffer_, len);
+		//send(pConnection->socket_, pConnection->buffer_, len, 0);
+	}
+	else
+	{
+		printf("client left\n");
 	}
 
 	return len;
@@ -85,20 +95,19 @@ int handle_message(int connfd)
 
 int main(int argc, char* argv[])
 {
-	struct epoll_event events[20];
 	EasyAcceptor* pAcceptor = CreateAcceptor(0, 9001);
 	for (;;)
 	{
-		int nfds = epoll_wait(pAcceptor->epfd_, events, 20, 500);
+		int nfds = epoll_wait(pAcceptor->epfd_, pAcceptor->events_, 20, 500);
 		for (int i = 0; i < nfds; ++i)
 		{
-			if (events[i].data.fd == pAcceptor->socket_)
+			if (pAcceptor->events_[i].data.fd == pAcceptor->socket_)
 			{
 				AcceptConnection(pAcceptor);
 			}
-			else if (events[i].events & EPOLLIN)	
+			else if (pAcceptor->events_[i].events & EPOLLIN)	
 			{
-				handle_message(events[i].data.fd);
+				handle_message(&pAcceptor->events_[i].data.fd);
 			}
 		}
 	}
