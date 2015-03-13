@@ -10,8 +10,6 @@
 #include <stdlib.h>
 #include <stddef.h>
 
-#define SOCKETOFFSET offsetof(struct EasyConnection, socket_)
-
 struct EasyAcceptor
 {
 	int		socket_;
@@ -27,6 +25,7 @@ struct EasyConnection
 	EasyAcceptor* acceptor_;
 	epoll_event ev_;
 	char buffer_[1024];
+	int len;
 };
 
 EasyAcceptor* CreateAcceptor(unsigned int ip, unsigned short port)
@@ -71,26 +70,39 @@ void AcceptConnection(EasyAcceptor* pAcceptor)
 	printf("connected, addr=%s\n", inet_ntoa(pConnection->addr_.sin_addr));
 	setnonblocking(pConnection->socket_);
 	pConnection->ev_.data.fd = pConnection->socket_;
+	pConnection->ev_.data.ptr = pConnection;
 	pConnection->ev_.events = EPOLLIN | EPOLLET;
 	epoll_ctl(pAcceptor->epfd_, EPOLL_CTL_ADD, pConnection->socket_, &pConnection->ev_);
 }
 
-int handle_message(int* connfd)
+int handle_message(void* ptr)
 {
-	int len;
-	EasyConnection* pConnection = (EasyConnection*)((char*)connfd - SOCKETOFFSET);
-	len = recv(pConnection->socket_, pConnection->buffer_, 1024, 0);
-	if (len > 0)
+	EasyConnection* pConnection = (EasyConnection*)(ptr);
+	pConnection->len = recv(pConnection->socket_, pConnection->buffer_, 1024, 0);
+	if (pConnection->len > 0)
 	{
-		printf("message=%s, len=%d\n", pConnection->buffer_, len);
+		printf("message=%s, len=%d\n", pConnection->buffer_, pConnection->len, pConnection->acceptor_);
 		//send(pConnection->socket_, pConnection->buffer_, len, 0);
 	}
 	else
 	{
 		printf("client left\n");
 	}
+	pConnection->ev_.events = EPOLLOUT | EPOLLET;
+	epoll_ctl(pConnection->acceptor_->epfd_, EPOLL_CTL_MOD, pConnection->socket_, &pConnection->ev_);
 
-	return len;
+	return pConnection->len;
+}
+
+int send_message(void* ptr)
+{
+	EasyConnection* pConnection = (EasyConnection*)(ptr);
+	printf("message=%s, len=%d\n", pConnection->buffer_, pConnection->len);
+	send(pConnection->socket_, pConnection->buffer_, pConnection->len, 0);
+
+	pConnection->ev_.events = EPOLLIN | EPOLLET;
+	epoll_ctl(pConnection->acceptor_->epfd_, EPOLL_CTL_MOD, pConnection->socket_, &pConnection->ev_);
+	return 0;
 }
 
 int main(int argc, char* argv[])
@@ -107,7 +119,11 @@ int main(int argc, char* argv[])
 			}
 			else if (pAcceptor->events_[i].events & EPOLLIN)	
 			{
-				handle_message(&pAcceptor->events_[i].data.fd);
+				handle_message(pAcceptor->events_[i].data.ptr);
+			}
+			else if (pAcceptor->events_[i].events & EPOLLOUT)
+			{
+				send_message(pAcceptor->events_[i].data.ptr);
 			}
 		}
 	}
