@@ -24,7 +24,7 @@ struct EasyConnection
 	sockaddr_in addr_;
 	EasyAcceptor* acceptor_;
 	epoll_event ev_;
-	char buffer_[1024];
+	char buffer_[32768];
 	int len;
 };
 
@@ -49,6 +49,8 @@ EasyConnection* CreateConnection(EasyAcceptor* pAcceptor)
 {
 	EasyConnection* pConnection = new EasyConnection();
 	pConnection->acceptor_ = pAcceptor;
+	pConnection->len = 0;
+	pConnection->buffer_[0] = '\0';
 	return pConnection;
 }
 
@@ -74,30 +76,64 @@ void AcceptConnection(EasyAcceptor* pAcceptor)
 	epoll_ctl(pAcceptor->epfd_, EPOLL_CTL_ADD, pConnection->socket_, &pConnection->ev_);
 }
 
+#define MAXLINE 2
+int send_packet(EasyConnection*, char*, int);
 int handle_message(void* ptr)
 {
 	EasyConnection* pConnection = (EasyConnection*)(ptr);
 	EasyAcceptor* pAcceptor = pConnection->acceptor_;
 	printf("ready to receive\n");
-	pConnection->len = recv(pConnection->socket_, pConnection->buffer_, 1024, 0);
-	printf("receive something, len=%d\n", pConnection->len);
 	bool bReadOK = false;
-	if (pConnection->len < 0)
+	int recvNum = 0;
+	while (true)
 	{
-		if (errno == EAGAIN)
+		recvNum = recv(pConnection->socket_, pConnection->buffer_ + recvNum, MAXLINE, 0);
+		if (recvNum < 0)
 		{
-			printf("no data to receive\n");
+			if (errno == EAGAIN)
+			{
+				printf("no data to receive\n");
+				bReadOK = true;
+				break;
+			}
+			else if (errno == EINTR)
+			{
+				continue;
+			}
+			else
+			{
+				printf("unrecovable error\n");
+				break;
+			}
+		}
+		else if (recvNum == 0)
+		{
+			printf("client left\n");
+			close(pConnection->socket_);
+			delete pConnection;
+			break;
+		}
+
+		pConnection->len += recvNum;
+		if (recvNum == MAXLINE)
+		{
+			printf("recvNum=%d, len=%d\n", recvNum, pConnection->len);
+			continue;
+		}
+		else
+		{
+			printf("receive all\n");
+			bReadOK = true;
+			break;
 		}
 	}
-	else if (pConnection->len > 0)
+	if (bReadOK)
 	{
+		pConnection->buffer_[pConnection->len] = '\0';
+
 		printf("message=%s, len=%d\n", pConnection->buffer_, pConnection->len, pConnection->acceptor_);
 		//send(pConnection->socket_, pConnection->buffer_, len, 0);
-	}
-	else
-	{
-		printf("client left\n");
-		close(pConnection->socket_);
+		send_packet(pConnection, pConnection->buffer_, pConnection->len);
 	}
 
 	return pConnection->len;
@@ -105,37 +141,86 @@ int handle_message(void* ptr)
 
 int send_packet(EasyConnection* pConnection, char* buffer, int len)
 {
-	int sentlen = send(pConnection->socket_, buffer, len, 0);
-	if (len == -1)
+	bool bWriteOK = false;
+	int writeNum = 0;
+	int total = pConnection->len;
+	char* p = pConnection->buffer_;
+	while (true)
 	{
-		if (errno == EAGAIN)
+		writeNum = send(pConnection->socket_, p, total, 0);
+		if (writeNum == -1)
 		{
-			
+			if (errno == EAGAIN)
+			{
+				printf("send_packet, eagain\n");
+				pConnection->len = total;
+				pConnection->ev_.events = EPOLLOUT | EPOLLET;
+				epoll_ctl(pConnection->acceptor_->epfd_, EPOLL_CTL_MOD, pConnection->socket_, &pConnection->ev_);
+				break;
+			}
 		}
+		else if (writeNum == 0)
+		{
+			printf("close and leave\n");
+			close(pConnection->socket_);
+			delete pConnection;
+			break;
+		}
+		if (writeNum == total)
+		{
+			bWriteOK = true;
+			break;
+		}
+		total -= writeNum;
+		p += writeNum;
 	}
-	
-	if (sentlen < len)
-	{
-
-	}
-}
+}	
 
 int send_message(void* ptr)
 {
 	EasyConnection* pConnection = (EasyConnection*)(ptr);
 	EasyAcceptor* pAcceptor = pConnection->acceptor_;
-	printf("message=%s, len=%d\n", pConnection->buffer_, pConnection->len);
-	int len = send(pConnection->socket_, pConnection->buffer_, pConnection->len, 0);
-	printf("len=%d\n", len);
-	if (len == -1)
+	int writeNum = 0;
+	int total = pConnection->len;
+	char* p = pConnection->buffer_;
+	bool bWriteOK = false;
+	while (true)
 	{
-		if (errno == EAGAIN)
+		writeNum = send(pConnection->socket_, p, total, 0);
+		if (writeNum == -1)
 		{
-			pConnection->ev_.events = EPOLLIN | EPOLLET;
-			epoll_ctl(pAcceptor->epfd_, EPOLL_CTL_MOD, pConnection->socket_, &pConnection->ev_);
+			if (errno == EAGAIN)
+			{
+				bWriteOK = true;
+				break;
+			}
+			else if (errno == EINTR)
+			{
+				continue;
+			}
+			else
+			{
+				printf("other errors\n");
+				break;
+			}
 		}
+		else if (writeNum == 0)
+		{
+			printf("close and leave\n");
+			close(pConnection->socket_);
+			delete pConnection;
+			break;
+		}
+
+		if (writeNum == total)
+		{
+			bWriteOK = true;
+			break;
+		}
+		total -= writeNum;
+		p += writeNum;
 	}
-	else if (len > 0)
+	if (bWriteOK)
 	{
 		pConnection->ev_.events = EPOLLIN | EPOLLET;
 		epoll_ctl(pAcceptor->epfd_, EPOLL_CTL_MOD, pConnection->socket_, &pConnection->ev_);
@@ -161,6 +246,7 @@ int main(int argc, char* argv[])
 			}
 			else if (pAcceptor->events_[i].events & EPOLLOUT)
 			{
+				printf("trigger, epollout\n");
 				send_message(pAcceptor->events_[i].data.ptr);
 			}
 		}
