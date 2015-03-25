@@ -3,6 +3,7 @@
 
 #include "common.h"
 
+struct EasyConnection;
 struct EasyAcceptor
 {
 	EasyAcceptor(unsigned int ip, unsigned short port);
@@ -13,6 +14,7 @@ struct EasyAcceptor
 	int			epfd_;
 	epoll_event	ev_;
 	epoll_event	events_[20];
+	EasyConnection* conn_;
 };
 
 #endif
