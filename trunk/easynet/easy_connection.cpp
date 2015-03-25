@@ -1,6 +1,15 @@
 #include "easy_connection.h"
 #include "easy_acceptor.h"
-#include 
+#include "easy_context.h"
+
+EasyConnection::EasyConnection(EasyAcceptor* pAcceptor) : acceptor_(pAcceptor)
+{
+	len_ = 0;
+	buffer_[0] = '\0';
+	pConnection->recv_context_ = new EasyContext(OPERATION_RECV, this);
+	pConnection->send_context_ = new EasyContext(OPERATION_SEND, this);
+}
+
 int EasyConnection::HandleMessage()
 {
 	bool bReadOK = false;
