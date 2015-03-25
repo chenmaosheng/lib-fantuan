@@ -10,7 +10,7 @@ struct EasyContext
 {
 	EasyContext(int iOperationType, EasyConnection* pConnection)
 	{
-		buffer_[0] = '\0';
+		buffer_ = NULL;
 		len_ = 0;
 		operation_type_ = iOperationType;
 		connection_ = pConnection;

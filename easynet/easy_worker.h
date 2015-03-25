@@ -2,7 +2,9 @@
 #define _H_EASY_WORKER
 
 #include "common.h"
+#include <pthread.h>
 
+struct EasyAcceptor;
 struct EasyWorker
 {
 	EasyWorker(EasyAcceptor* pAcceptor);

@@ -5,7 +5,7 @@
 EasyConnection::EasyConnection(EasyAcceptor* pAcceptor) : acceptor_(pAcceptor)
 {
 	recv_context_ = new EasyContext(OPERATION_RECV, this);
-	recv_context_->buffer_ = malloc(1024);
+	recv_context_->buffer_ = (char*)malloc(1024);
 	send_context_ = new EasyContext(OPERATION_SEND, this);
 }
 
@@ -13,6 +13,7 @@ int EasyConnection::HandleMessage()
 {
 	bool bReadOK = false;
 	int recvNum = 0;
+	printf("start to receve message\n");
 	recv_context_->buffer_[0] = '\n';
 	recv_context_->len_ = 0;
 	while (true)
@@ -22,15 +23,18 @@ int EasyConnection::HandleMessage()
 		{
 			if (errno == EAGAIN)
 			{
+				printf("recv eagain\n");
 				bReadOK = true;
 				break;
 			}
 			else if (errno == EINTR)
 			{
+				printf("recv eintr\n");
 				continue;
 			}
 			else
 			{
+				printf("other recv error\n");
 				break;
 			}
 		}
@@ -44,6 +48,7 @@ int EasyConnection::HandleMessage()
 		recv_context_->len_ += recvNum;
 		if (recvNum == MAXLINE)
 		{
+			printf("hit maxline, continue\n");
 			continue;
 		}
 		else
@@ -59,7 +64,7 @@ int EasyConnection::HandleMessage()
 		printf("message=%s, len=%d\n", recv_context_->buffer_, recv_context_->len_);
 	}
 
-	return len_;
+	return recv_context_->len_;
 }
 
 int EasyConnection::SendMessage()
@@ -75,31 +80,36 @@ int EasyConnection::SendMessage()
 		{
 			if (errno == EAGAIN)
 			{
+				printf("send eagain\n");
 				bWriteOK = true;
 				break;
 			}
 			else if (errno = EINTR)
 			{
+				printf("send eintr\n");
 				continue;
 			}
 			else
 			{
-				printf("other errors\n");
+				printf("other send errors\n");
 				break;
 			}
 		}
 		else if (writeNum == 0)
 		{
-			printf("close and leave\n");
+			printf("send close and leave\n");
 			close(socket_);
 			break;
 		}
 
 		if (writeNum == total)
 		{
+			printf("send all\n");
 			bWriteOK = true;
 			break;
 		}
+
+		printf("send partially\n");
 
 		total -= writeNum;
 		p += writeNum;
@@ -136,19 +146,23 @@ int EasyConnection::SendMessage(char* buffer, int len)
 		}
 		else if (writeNum == 0)
 		{
-			printf("send close and leave\n");
+			printf("sendmessage close and leave\n");
 			close(socket_);
 			break;
 		}
 
 		if (writeNum == send_context_->len_)
 		{
+			printf("sendmessage all\n");
 			bWriteOK = true;
 			break;
 		}
+		printf("sendmessage partially\n");
+
 		send_context_->len_ -= writeNum;
 		send_context_->buffer_ += writeNum;
 	}
 
 	return 0;
 }
+
