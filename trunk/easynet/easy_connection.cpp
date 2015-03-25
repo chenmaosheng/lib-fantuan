@@ -69,6 +69,11 @@ int EasyConnection::HandleMessage()
 
 int EasyConnection::SendMessage()
 {
+	if (send_context_->len_ == 0)
+	{
+		return 0;
+	}
+	printf("send the left\n");
 	int writeNum = 0;
 	int total = send_context_->len_;
 	char* p = send_context_->buffer_;
@@ -76,6 +81,7 @@ int EasyConnection::SendMessage()
 	while (true)
 	{
 		writeNum = send(socket_, p, total, 0);
+		printf("send len=%d\n", total);
 		if (writeNum == -1)
 		{
 			if (errno == EAGAIN)
@@ -117,6 +123,8 @@ int EasyConnection::SendMessage()
 
 	if (bWriteOK)
 	{
+		send_context_->buffer_[0] = '\0';
+		send_context_->len_ = 0;
 		ev_.events = EPOLLIN | EPOLLET;
 		epoll_ctl(acceptor_->epfd_, EPOLL_CTL_MOD, socket_, &ev_);
 	}
@@ -130,6 +138,7 @@ int EasyConnection::SendMessage(char* buffer, int len)
 	int writeNum = 0;
 	send_context_->buffer_ = buffer;
 	send_context_->len_ = len;
+	printf("sendmessage len=%d\n", send_context_->len_);
 
 	while (true)
 	{
@@ -161,6 +170,13 @@ int EasyConnection::SendMessage(char* buffer, int len)
 
 		send_context_->len_ -= writeNum;
 		send_context_->buffer_ += writeNum;
+		printf("sendmessage len=%d\n", send_context_->len_);
+	}
+
+	if (bWriteOK)
+	{
+		send_context_->buffer_[0] = '\0';
+		send_context_->len_ = 0;
 	}
 
 	return 0;

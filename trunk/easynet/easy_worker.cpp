@@ -19,16 +19,20 @@ void* EasyWorker::WorkerThread(void* ptr)
 			{
 				pAcceptor->AcceptConnection();
 			}
-			else if (pAcceptor->events_[i].events & EPOLLIN)
+			else
 			{
-				EasyConnection* pConnection = (EasyConnection*)pAcceptor->events_[i].data.ptr;
-				pConnection->HandleMessage();
-			}
-			else if (pAcceptor->events_[i].events & EPOLLOUT)
-			{
-				printf("trigger, epolllout\n");
-				EasyConnection* pConnection = (EasyConnection*)pAcceptor->events_[i].data.ptr;
-				pConnection->SendMessage();
+				if (pAcceptor->events_[i].events & EPOLLIN)
+				{
+					EasyConnection* pConnection = (EasyConnection*)pAcceptor->events_[i].data.ptr;
+					pAcceptor->conn_ = pConnection;
+					pConnection->HandleMessage();
+				}
+				else if (pAcceptor->events_[i].events & EPOLLOUT)
+				{
+					EasyConnection* pConnection = (EasyConnection*)pAcceptor->events_[i].data.ptr;
+					printf("trigger, epolllout\n");
+					pConnection->SendMessage();
+				}
 			}
 		}
 	}while (true);
