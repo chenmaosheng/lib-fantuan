@@ -3,12 +3,8 @@
 
 #include "easy_connection.h"
 
-enum
-{
-	INVALID_OPERATION,
-	OPERATION_RECV,			// receive data operation
-	OPERATION_SEND,			// send data operation
-};
+#define OPERATION_RECV 1
+#define OPERATION_SEND 2
 
 struct EasyContext
 {
@@ -25,3 +21,5 @@ struct EasyContext
 	int				len_;
 	int				operation_type_;
 };
+
+#endif
