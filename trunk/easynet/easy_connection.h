@@ -7,13 +7,7 @@ struct EasyAcceptor;
 struct EasyContext;
 struct EasyConnection
 {
-	EasyConnection(EasyAcceptor* pAcceptor) : acceptor_(pAcceptor)
-	{
-		len_ = 0;
-		buffer_[0] = '\0';
-		pConnection->recv_context_ = new EasyContext(OPERATION_RECV, this);
-		pConnection->send_context_ = new EasyContext(OPERATION_SEND, this);
-	}
+	EasyConnection(EasyAcceptor* pAcceptor);
 
 	int HandleMessage();
 	int SendMessage();
@@ -28,3 +22,4 @@ struct EasyConnection
 };
 
 #endif
+
