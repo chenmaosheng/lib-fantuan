@@ -4,6 +4,7 @@
 #include "common.h"
 
 struct EasyAcceptor;
+struct EasyContext;
 struct EasyConnection
 {
 	EasyConnection(EasyAcceptor* pAcceptor) : acceptor_(pAcceptor)
