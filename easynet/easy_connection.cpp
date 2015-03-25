@@ -4,8 +4,9 @@
 
 EasyConnection::EasyConnection(EasyAcceptor* pAcceptor) : acceptor_(pAcceptor)
 {
-	pConnection->recv_context_ = new EasyContext(OPERATION_RECV, this);
-	pConnection->send_context_ = new EasyContext(OPERATION_SEND, this);
+	recv_context_ = new EasyContext(OPERATION_RECV, this);
+	recv_context_->buffer_ = malloc(1024);
+	send_context_ = new EasyContext(OPERATION_SEND, this);
 }
 
 int EasyConnection::HandleMessage()
@@ -117,7 +118,7 @@ int EasyConnection::SendMessage(char* buffer, int len)
 {
 	bool bWriteOK = false;
 	int writeNum = 0;
-	memcpy(send_context_->buffer, buffer, len);
+	send_context_->buffer_ = buffer;
 	send_context_->len_ = len;
 
 	while (true)

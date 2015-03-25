@@ -17,7 +17,7 @@ struct EasyContext
 	}
 
 	EasyConnection* connection_;
-	char			buffer_[1024];
+	char*			buffer_;
 	int				len_;
 	int				operation_type_;
 };
