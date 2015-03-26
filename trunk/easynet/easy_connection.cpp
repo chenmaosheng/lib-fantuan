@@ -7,8 +7,6 @@ EasyConnection::EasyConnection(EasyAcceptor* pAcceptor) : acceptor_(pAcceptor)
 	recv_context_ = new EasyContext;
 	recv_context_->buffer_ = (char*)malloc(1024);
 	send_context_ = new EasyContext;
-	send_context_plus_ = new EasyContext;
-	send_context_plus_->buffer_ = (char*)malloc(1024*64);
 	sem_init(&sem_, 0, 1);
 }
 
@@ -72,14 +70,14 @@ int EasyConnection::HandleMessage()
 
 int EasyConnection::SendMessage()
 {
-	if (send_context_plus_->len_ == 0)
+	if (send_context_->len_ == 0)
 	{
 		return 0;
 	}
 	printf("send the left\n");
 	int writeNum = 0;
-	int total = send_context_plus_->len_;
-	char* p = send_context_plus_->buffer_;
+	int total = send_context_->len_;
+	char* p = send_context_->buffer_;
 	bool bWriteOK = false;
 	while (true)
 	{
@@ -126,8 +124,8 @@ int EasyConnection::SendMessage()
 
 	if (bWriteOK)
 	{
-		send_context_plus_->buffer_[0] = '\0';
-		send_context_plus_->len_ = 0;
+		send_context_->buffer_[0] = '\0';
+		send_context_->len_ = 0;
 		ev_.events = EPOLLIN | EPOLLET;
 		epoll_ctl(acceptor_->epfd_, EPOLL_CTL_MOD, socket_, &ev_);
 	}
@@ -154,8 +152,6 @@ int EasyConnection::SendMessage(char* buffer, int len)
 			if (errno == EAGAIN)
 			{
 				printf("sendmessage, eagain, go\n");
-				memcpy(send_context_plus_->buffer_, send_context_->buffer_, send_context_->len_);
-				send_context_plus_->len_ = send_context_->len_;
 				ev_.events = EPOLLOUT | EPOLLET;
 				epoll_ctl(acceptor_->epfd_, EPOLL_CTL_MOD, socket_, &ev_);
 				return 0;
