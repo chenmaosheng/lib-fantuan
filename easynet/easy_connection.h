@@ -20,7 +20,6 @@ struct EasyConnection
 	epoll_event		ev_;
 	EasyContext*	recv_context_;
 	EasyContext*	send_context_;
-	EasyContext*	send_context_plus_;
 	sem_t			sem_;
 };
 
