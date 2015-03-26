@@ -2,6 +2,7 @@
 #define _H_EASY_CONNECTION
 
 #include "common.h"
+#include <semaphore.h>
 
 struct EasyAcceptor;
 struct EasyContext;
@@ -19,6 +20,8 @@ struct EasyConnection
 	epoll_event		ev_;
 	EasyContext*	recv_context_;
 	EasyContext*	send_context_;
+	EasyContext*	send_context_plus_;
+	sem_t			sem_;
 };
 
 #endif
