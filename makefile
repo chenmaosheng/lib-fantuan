@@ -10,14 +10,14 @@ COMPILE=-c
 INCLUDE=-Icommon/src -Itest/src/ArrayTest -Itest/src/NetworkTest -Inetwork/src
 PREPROCESSOR=-D_LINUX=1
 INLINE=-finline-functions
-CFLAGS=-lstdc++ -fno-rtti -Wreorder -Woverloaded-virtual -ansi -lrt
+CFLAGS=-lstdc++ -fno-rtti -Wreorder -Woverloaded-virtual -ansi
 PLATFORM=-m32
 CC=gcc
 LIB=common/Common.a
 
 main: test/src/ArrayTest/main.cpp
 	(cd common/;make)
-	$(CC) $(WARNING) $(CFLAGS) $(OPTMIZE) $(DEBUG) $(INCLUDE) $(PREPROCESSOR) $(INLINE) -o main test/src/ArrayTest/main.cpp test/src/ArrayTest/allocator_test.cpp test/src/ArrayTest/array_test.cpp test/src/ArrayTest/string_test.cpp  $(LIB)
+	$(CC) $(WARNING) $(CFLAGS) $(OPTMIZE) $(DEBUG) $(INCLUDE) $(PREPROCESSOR) $(INLINE) -o main test/src/ArrayTest/main.cpp test/src/ArrayTest/allocator_test.cpp test/src/ArrayTest/array_test.cpp test/src/ArrayTest/string_test.cpp  $(LIB) -lrt
 
 clean:
 	rm main
