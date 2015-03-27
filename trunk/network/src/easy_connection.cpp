@@ -270,7 +270,7 @@ int EasyConnection::SendMessage()
 				bWriteOK = true;
 				break;
 			}
-			else if (errno = EINTR)
+			else if (errno == EINTR)
 			{
 				printf("send eintr\n");
 				continue;

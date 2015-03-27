@@ -10,7 +10,7 @@ COMPILE=-c
 INCLUDE=-Icommon/src -Itest/src/ArrayTest -Itest/src/NetworkTest -Inetwork/src
 PREPROCESSOR=-D_LINUX=1
 INLINE=-finline-functions
-CFLAGS=-fno-rtti -Wreorder -Woverloaded-virtual -ansi
+CFLAGS=-pthread -fno-rtti -Wreorder -Woverloaded-virtual -ansi
 PLATFORM=-m32
 CC=gcc
 LIB=common/Common.a
@@ -23,6 +23,7 @@ arraytest:
 
 networktest:
 	(cd common/;make)
+	(cd network/;make)
 	$(CC) $(WARNING) $(CFLAGS) $(OPTMIZE) $(DEBUG) $(INCLUDE) $(PREPROCESSOR) $(INLINE) -o networktest \
 		test/src/NetworkTest/main.cpp network/Network.a $(LIB) $(CFLAGS_END)
 			
@@ -34,7 +35,9 @@ main: test/src/ArrayTest/main.cpp
 		$(LIB) $(CFLAGS_END)
 
 clean:
-	rm main
+	rm -f arraytest
+	rm -f networktest
+	rm -f main
 	rm common/*.a
 	rm common/*.o
 	rm network/*.a
