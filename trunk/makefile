@@ -7,18 +7,18 @@ WARNING=-Wall #\
 OPTIMIZE=-O0
 DEBUG=-g3
 COMPILE=-c
-INCLUDE=-Icommon/src/UTool/Base -Icommon/src/UTool/DataStructure -Icommon/src/UTool/Thread -Icommon/src/UTool/Memory -Itest
+INCLUDE=-Icommon/src -Itest/src/ArrayTest -Itest/src/NetworkTest -Inetwork/src
 PREPROCESSOR=-D_LINUX=1
 INLINE=-finline-functions
 CFLAGS=-lstdc++ -fno-rtti -Wreorder -Woverloaded-virtual -ansi -lrt
 PLATFORM=-m32
 CC=gcc
-LIB=common/bin/UTool.a
+LIB=common/Common.a
 
-main: test/main.cpp
+main: test/src/ArrayTest/main.cpp
 	(cd common/;make)
-	$(CC) $(WARNING) $(CFLAGS) $(OPTMIZE) $(DEBUG) $(INCLUDE) $(PREPROCESSOR) $(INLINE) $(PLATFORM) -o main test/main.cpp test/allocator_test.cpp test/array_test.cpp $(LIB)
+	$(CC) $(WARNING) $(CFLAGS) $(OPTMIZE) $(DEBUG) $(INCLUDE) $(PREPROCESSOR) $(INLINE) $(PLATFORM) -o main test/src/ArrayTest/main.cpp test/src/ArrayTest/allocator_test.cpp test/src/ArrayTest/array_test.cpp $(LIB)
 
 clean:
 	rm main
-	rm common/bin/*.*
+	rm common/*.*
