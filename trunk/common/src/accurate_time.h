@@ -1,13 +1,8 @@
 #ifndef _H_ACCURATE_TIME
 #define _H_ACCURATE_TIME
 
-#include "type.h"
+#include "common.h"
 #include "singleton.h"
-#ifdef WIN32
-	#include "win32_base.h"
-#else
-	#include <time.h>
-#endif
 
 namespace Fantuan
 {
