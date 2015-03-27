@@ -10,7 +10,7 @@ class EasyAcceptor
 public:
 #ifdef WIN32
 	// initialize the acceptor, but not running at first
-	int32 Init(PSOCKADDR_IN addr, EasyWorker* pWorker);
+	int32 Init(uint32 ip, uint16 port, EasyWorker* pWorker);
 	// stop and destroy the acceptor, close all connection
 	void Destroy();
 
@@ -22,7 +22,7 @@ public:
 	void Accept();
 
 	// use these two static functions to create and destroy acceptor
-	static EasyAcceptor* CreateAcceptor(PSOCKADDR_IN addr, EasyWorker* pWorker);
+	static EasyAcceptor* CreateAcceptor(uint32 ip, uint16 port, EasyWorker* pWorker);
 	static void DestroyAcceptor(EasyAcceptor*);
 
 public:
@@ -34,7 +34,7 @@ public:
 #endif
 
 #ifdef _LINUX
-	EasyAcceptor(unsigned int ip, unsigned short port);
+	EasyAcceptor(uint32 ip, uint16 port);
 
 	void AcceptConnection();
 

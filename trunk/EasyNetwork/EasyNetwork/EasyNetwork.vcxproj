@@ -19,7 +19,7 @@
     <ClInclude Include="easy_worker.h" />
     <ClInclude Include="linux_base.h" />
     <ClInclude Include="type.h" />
-    <ClInclude Include="win32_common.h" />
+    <ClInclude Include="win32_base.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="easy_acceptor.cpp" />

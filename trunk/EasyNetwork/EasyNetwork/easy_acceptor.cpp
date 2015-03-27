@@ -5,7 +5,7 @@
 #include "easy_network.h"
 
 #ifdef WIN32
-int32 EasyAcceptor::Init(PSOCKADDR_IN addr, EasyWorker* pWorker)
+int32 EasyAcceptor::Init(uint32 ip, uint16 port, EasyWorker* pWorker)
 {
 	int32 rc = 0;
 	DWORD val = 0;
@@ -43,8 +43,13 @@ int32 EasyAcceptor::Init(PSOCKADDR_IN addr, EasyWorker* pWorker)
 		return -4;
 	}
 
+	sockaddr_in addr;
+	addr.sin_family = AF_INET;
+	addr.sin_addr.s_addr = htonl(ip);
+	addr.sin_port = htons(port);
+
 	// bind acceptor's socket to assigned ip address
-	rc = bind(socket_, (sockaddr*)addr, sizeof(*addr));
+	rc = bind(socket_, (sockaddr*)&addr, sizeof(addr));
 	_ASSERT(rc == 0);
 	if (rc != 0)
 	{
@@ -132,12 +137,12 @@ void EasyAcceptor::Stop()
 	running_ = 0;
 }
 
-EasyAcceptor* EasyAcceptor::CreateAcceptor(PSOCKADDR_IN addr, EasyWorker* pWorker)
+EasyAcceptor* EasyAcceptor::CreateAcceptor(uint32 ip, uint16 port, EasyWorker* pWorker)
 {
 	EasyAcceptor* pAcceptor = (EasyAcceptor*)_aligned_malloc(sizeof(EasyAcceptor), MEMORY_ALLOCATION_ALIGNMENT);
 	if (pAcceptor)
 	{
-		pAcceptor->Init(addr, pWorker);
+		pAcceptor->Init(ip, port, pWorker);
 	}
 
 	return pAcceptor;
