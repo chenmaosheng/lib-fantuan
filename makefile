@@ -22,23 +22,16 @@ arraytest:
 		test/src/ArrayTest/main.cpp test/src/ArrayTest/allocator_test.cpp test/src/ArrayTest/array_test.cpp test/src/ArrayTest/string_test.cpp $(LIB) $(CFLAGS_END)
 
 networktest:
-	(cd common/;make)
+	(cd common/;make) 
 	(cd network/;make)
 	$(CC) $(WARNING) $(CFLAGS) $(OPTMIZE) $(DEBUG) $(INCLUDE) $(PREPROCESSOR) $(INLINE) -o networktest \
 		test/src/NetworkTest/main.cpp network/Network.a $(LIB) $(CFLAGS_END)
 			
-main: test/src/ArrayTest/main.cpp
-	(cd common/;make)
-	$(CC) $(WARNING) $(CFLAGS) $(OPTMIZE) $(DEBUG) $(INCLUDE) $(PREPROCESSOR) $(INLINE) -o main \
-		test/src/ArrayTest/main.cpp test/src/ArrayTest/allocator_test.cpp test/src/ArrayTest/array_test.cpp test/src/ArrayTest/string_test.cpp \
-		#test/src/NetworkTest/main.cpp network/Network.a
-		$(LIB) $(CFLAGS_END)
-
 clean:
 	rm -f arraytest
 	rm -f networktest
 	rm -f main
-	rm common/*.a
-	rm common/*.o
-	rm network/*.a
-	rm network/*.o
+	rm -f common/*.a
+	rm -f common/*.o
+	rm -f network/*.a
+	rm -f network/*.o
