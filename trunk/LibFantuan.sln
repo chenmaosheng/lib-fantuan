@@ -16,6 +16,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NetworkTest", "test\project
 		{9A760EE5-8651-4F11-A724-ED73357B8CA7} = {9A760EE5-8651-4F11-A724-ED73357B8CA7}
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{3A369227-C66B-4224-A19C-7748A05B9020}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -41,5 +43,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{CAC4C062-B334-4FEB-914C-E8CC132D7C99} = {3A369227-C66B-4224-A19C-7748A05B9020}
+		{CF4CDA73-5F2E-4B33-BB64-C85739222681} = {3A369227-C66B-4224-A19C-7748A05B9020}
 	EndGlobalSection
 EndGlobal
