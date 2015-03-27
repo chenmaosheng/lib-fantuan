@@ -11,7 +11,7 @@ private:
 	friend class NonDerivable;
 };
 
-class NonDerivable : private NonDerivableHelper
+class NonDerivable : private virtual NonDerivableHelper
 {
 private:
 	NonDerivable(){}
