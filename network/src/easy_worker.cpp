@@ -205,6 +205,8 @@ void* EasyWorker::WorkerThread(void* ptr)
 			}
 		}
 	}while (true);
+	
+	return NULL;
 }
 
 #endif
