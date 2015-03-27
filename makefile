@@ -16,6 +16,16 @@ CC=gcc
 LIB=common/Common.a
 CFLAGS_END=-lrt -lstdc++
 
+arraytest:
+	(cd common/;make)
+	$(CC) $(WARNING) $(CFLAGS) $(OPTMIZE) $(DEBUG) $(INCLUDE) $(PREPROCESSOR) $(INLINE) -o arraytest \
+		test/src/ArrayTest/main.cpp test/src/ArrayTest/allocator_test.cpp test/src/ArrayTest/array_test.cpp test/src/ArrayTest/string_test.cpp $(LIB) $(CFLAGS_END)
+
+networktest:
+	(cd common/;make)
+	$(CC) $(WARNING) $(CFLAGS) $(OPTMIZE) $(DEBUG) $(INCLUDE) $(PREPROCESSOR) $(INLINE) -o networktest \
+		test/src/NetworkTest/main.cpp network/Network.a $(LIB) $(CFLAGS_END)
+			
 main: test/src/ArrayTest/main.cpp
 	(cd common/;make)
 	$(CC) $(WARNING) $(CFLAGS) $(OPTMIZE) $(DEBUG) $(INCLUDE) $(PREPROCESSOR) $(INLINE) -o main \
@@ -27,3 +37,5 @@ clean:
 	rm main
 	rm common/*.a
 	rm common/*.o
+	rm network/*.a
+	rm network/*.o
