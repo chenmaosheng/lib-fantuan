@@ -2,7 +2,7 @@
 #define _H_COMMON
 
 #ifdef WIN32
-	#include "win32_common.h"
+	#include "win32_base.h"
 #endif
 
 #ifdef _LINUX
@@ -21,16 +21,19 @@
 #include <stddef.h>
 #include "type.h"
 
+#define MAX_BUFFER	65536
+#define MAXLINE		2
+
 #ifdef WIN32
-#define _CRTDBG_MAP_ALLOC
-#include <crtdbg.h>
-#define FT_ASSERT(expr) _ASSERT(expr)
+	#define _CRTDBG_MAP_ALLOC
+	#include <crtdbg.h>
+	#define FT_ASSERT(expr) _ASSERT(expr)
 
 #else
-#include <assert.h>
-#define FT_ASSERT(expr) assert(expr)
+	#include <assert.h>
+	#define FT_ASSERT(expr) assert(expr)
 #endif
 
-#define MAX_BUFFER 65536
+
 
 #endif
