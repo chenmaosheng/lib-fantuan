@@ -1,7 +1,7 @@
 #ifndef _H_MUTEX
 #define _H_MUTEX
 
-#include "base.h"
+#include "common.h"
 
 namespace Fantuan
 {

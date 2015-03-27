@@ -17,7 +17,7 @@
     <ClInclude Include="..\src\array.h" />
     <ClInclude Include="..\src\array_base.h" />
     <ClInclude Include="..\src\auto_locker.h" />
-    <ClInclude Include="..\src\base.h" />
+    <ClInclude Include="..\src\common.h" />
     <ClInclude Include="..\src\ds_aux.h" />
     <ClInclude Include="..\src\dy_array.h" />
     <ClInclude Include="..\src\dy_string.h" />

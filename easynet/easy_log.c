@@ -79,8 +79,11 @@ bool PushEasyLog(int iLogLevel, char* strFormat, ...)
 	
 	va_list Args;
 	va_start(Args, strFormat);
-	iLength = vprintf(strFormat, Args) + 1;
+	iLength = vsnprintf(buffer, 0, strFormat, Args) + 1;
+	va_end(Args);
+	va_start(Args, strFormat);
 	vsnprintf(buffer, iLength, strFormat, Args);
+	va_end(Args);
 	snprintf(realBuffer, BUFFER_MAX_SIZE, "[%s]%s\r\n", Level2String(iLogLevel), buffer);
 	pthread_mutex_lock(&easy_log_.lock_);
 	PushToEasyBuf(easy_log_.easy_buf_, realBuffer, (int)strlen(realBuffer));
