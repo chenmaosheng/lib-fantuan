@@ -3,8 +3,6 @@
 
 #include "common.h"
 
-#ifdef WIN32
-
 enum
 {
 	INVALID_OPERATION,
@@ -15,10 +13,8 @@ enum
 	OPERATION_SEND,			// send data operation
 };
 
-#define CTXOFFSET	FIELD_OFFSET(EasyContext, overlapped_)	// overlapped_ offset
-#define BUFOFFSET	FIELD_OFFSET(EasyContext, buffer_)		// buffer_ offset
-
-#endif
+#define CTXOFFSET	offsetof(EasyContext, overlapped_)	// overlapped_ offset
+#define BUFOFFSET	offsetof(EasyContext, buffer_)		// buffer_ offset
 
 class EasyConnection;
 class EasyContext

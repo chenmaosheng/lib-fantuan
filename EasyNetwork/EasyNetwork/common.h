@@ -22,16 +22,28 @@
 #include "type.h"
 
 #define MAX_BUFFER	65536
-#define MAXLINE		2
+#define MAXLINE		1024
+#define SAFE_DELETE(ptr) if (ptr) { delete (ptr); (ptr) = nullptr; }
 
 #ifdef WIN32
 	#define _CRTDBG_MAP_ALLOC
 	#include <crtdbg.h>
-	#define FT_ASSERT(expr) _ASSERT(expr)
+	#define EASY_ASSERT(expr)	_ASSERT(expr)
+	#define LAST_ERROR			WSAGetLastError()
 
-#else
+#endif
+
+#ifdef _LINUX
 	#include <assert.h>
-	#define FT_ASSERT(expr) assert(expr)
+	#define EASY_ASSERT(expr)	assert(expr)
+	#define SOCKET				int32
+	#define closesocket			close
+	#define LAST_ERROR			errno
+	#define INVALID_SOCKET		(-1)
+	#define SOCKET_ERROR		(-1)
+
+	typedef sockaddr_in	SOCKADDR_IN;
+
 #endif
 
 
