@@ -17,8 +17,9 @@ LIB=common/Common.a
 
 main: test/src/ArrayTest/main.cpp
 	(cd common/;make)
-	$(CC) $(WARNING) $(CFLAGS) $(OPTMIZE) $(DEBUG) $(INCLUDE) $(PREPROCESSOR) $(INLINE) $(PLATFORM) -o main test/src/ArrayTest/main.cpp test/src/ArrayTest/allocator_test.cpp test/src/ArrayTest/array_test.cpp $(LIB)
+	$(CC) $(WARNING) $(CFLAGS) $(OPTMIZE) $(DEBUG) $(INCLUDE) $(PREPROCESSOR) $(INLINE) -o main test/src/ArrayTest/main.cpp test/src/ArrayTest/allocator_test.cpp test/src/ArrayTest/array_test.cpp test/src/ArrayTest/string_test.cpp  $(LIB)
 
 clean:
 	rm main
-	rm common/*.*
+	rm common/*.a
+	rm common/*.o
