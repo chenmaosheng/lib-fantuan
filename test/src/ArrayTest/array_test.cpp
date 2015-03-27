@@ -1,3 +1,4 @@
+#include "common.h"
 #include "array_test.h"
 #include <cstdio>
 #include "dy_array.h"
