@@ -19,7 +19,7 @@ namespace Fantuan
 			};
 		};
 
-		enum { OBJECT_OFFSET = DATA_OFFSET(Object, data), };
+		enum { OBJECT_OFFSET = offsetof(Object, data), };
 		enum { ALIGNMENT = 8, MAX_BYTES = 256, NUM_LIST = MAX_BYTES / ALIGNMENT,};
 
 		class DefaultAllocator

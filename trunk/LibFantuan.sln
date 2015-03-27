@@ -10,6 +10,12 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ArrayTest", "test\project\A
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Common", "common\project\Common.vcxproj", "{9A760EE5-8651-4F11-A724-ED73357B8CA7}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NetworkTest", "test\project\NetworkTest.vcxproj", "{CF4CDA73-5F2E-4B33-BB64-C85739222681}"
+	ProjectSection(ProjectDependencies) = postProject
+		{6A9A0D64-0E1D-48C0-9FBC-75DF857486AA} = {6A9A0D64-0E1D-48C0-9FBC-75DF857486AA}
+		{9A760EE5-8651-4F11-A724-ED73357B8CA7} = {9A760EE5-8651-4F11-A724-ED73357B8CA7}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -28,6 +34,10 @@ Global
 		{9A760EE5-8651-4F11-A724-ED73357B8CA7}.Debug|Win32.Build.0 = Debug|Win32
 		{9A760EE5-8651-4F11-A724-ED73357B8CA7}.Release|Win32.ActiveCfg = Release|Win32
 		{9A760EE5-8651-4F11-A724-ED73357B8CA7}.Release|Win32.Build.0 = Release|Win32
+		{CF4CDA73-5F2E-4B33-BB64-C85739222681}.Debug|Win32.ActiveCfg = Debug|Win32
+		{CF4CDA73-5F2E-4B33-BB64-C85739222681}.Debug|Win32.Build.0 = Debug|Win32
+		{CF4CDA73-5F2E-4B33-BB64-C85739222681}.Release|Win32.ActiveCfg = Release|Win32
+		{CF4CDA73-5F2E-4B33-BB64-C85739222681}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

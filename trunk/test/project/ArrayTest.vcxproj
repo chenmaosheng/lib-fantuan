@@ -10,6 +10,18 @@
       <Platform>Win32</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\ArrayTest\allocator_test.cpp" />
+    <ClCompile Include="..\src\ArrayTest\array_test.cpp" />
+    <ClCompile Include="..\src\ArrayTest\main.cpp" />
+    <ClCompile Include="..\src\ArrayTest\string_test.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\ArrayTest\allocator_test.h" />
+    <ClInclude Include="..\src\ArrayTest\array_test.h" />
+    <ClInclude Include="..\src\ArrayTest\string_test.h" />
+    <ClInclude Include="..\src\ArrayTest\time_scope.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{CAC4C062-B334-4FEB-914C-E8CC132D7C99}</ProjectGuid>
     <RootNamespace>Test</RootNamespace>
@@ -92,18 +104,6 @@
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="..\src\allocator_test.cpp" />
-    <ClCompile Include="..\src\array_test.cpp" />
-    <ClCompile Include="..\src\main.cpp" />
-    <ClCompile Include="..\src\string_test.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\src\allocator_test.h" />
-    <ClInclude Include="..\src\array_test.h" />
-    <ClInclude Include="..\src\string_test.h" />
-    <ClInclude Include="..\src\time_scope.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

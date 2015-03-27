@@ -2,6 +2,7 @@
 #include "easy_acceptor.h"
 #include "easy_connection.h"
 #include <pthread.h>
+
 EasyWorker::EasyWorker(EasyAcceptor* pAcceptor)
 {
 	pthread_create(&thread_, NULL, &EasyWorker::WorkerThread, pAcceptor);
