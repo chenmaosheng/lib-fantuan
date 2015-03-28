@@ -1,9 +1,6 @@
 #ifndef _H_SINGLETON
 #define _H_SINGLETON
 
-namespace Fantuan
-{
-
 template<typename T>
 class Singleton
 {
@@ -25,8 +22,6 @@ private:
 
 template<typename T>
 T* Singleton<T>::m_pInstance = 0;
-
-}
 
 #endif
 

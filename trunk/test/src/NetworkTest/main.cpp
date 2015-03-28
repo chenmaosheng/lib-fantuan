@@ -3,6 +3,7 @@
 #include "easy_connection.h"
 #include "easy_network.h"
 #include "easy_contextpool.h"
+#include "easy_log.h"
 
 bool __stdcall OnConnection(ConnID connId)
 {
@@ -36,6 +37,8 @@ int main(int argc, char* argv[])
 	addr.sin_family = AF_INET;
 	addr.sin_port = htons(9001);
 	addr.sin_addr.s_addr = htonl(0);
+
+	EasyLog::Instance()->Init();
 
 #ifdef WIN32
 	EasyNetwork::Init();
