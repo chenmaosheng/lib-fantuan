@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\src\easy_acceptor.cpp" />
+    <ClCompile Include="..\src\easy_connection.cpp" />
+    <ClCompile Include="..\src\easy_network.cpp" />
+    <ClCompile Include="..\src\easy_worker.cpp" />
+    <ClCompile Include="..\src\easy_contextpool.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\easy_acceptor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\easy_connection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\easy_context.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\easy_contextpool.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\easy_network.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\easy_worker.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\easy_handler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{8cf9f8cc-931a-4021-b6af-0cc2b1b66727}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

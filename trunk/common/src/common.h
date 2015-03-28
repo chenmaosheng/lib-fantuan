@@ -26,6 +26,8 @@
 #define SAFE_DELETE(ptr)		if (ptr) { delete (ptr); (ptr) = nullptr; }
 #define SAFE_DELETE_ARRAY(ptr)	if (ptr) { delete [] (ptr); (ptr) = NULL; }
 
+typedef void*				ConnID;
+
 #ifdef WIN32
 	#define _CRTDBG_MAP_ALLOC
 	#include <crtdbg.h>
@@ -42,11 +44,14 @@
 	#define LAST_ERROR			errno
 	#define INVALID_SOCKET		(-1)
 	#define SOCKET_ERROR		(-1)
-
+	#define __stdcall
 	typedef sockaddr_in	SOCKADDR_IN;
+	#define _T(x)				L ## x
 
 #endif
 
-
+#define LOG_DBG(Expression, ...)	wprintf(Expression, __VA_ARGS__);wprintf(_T("\n"))
+#define LOG_ERR(Expression, ...)	wprintf(Expression, __VA_ARGS__);wprintf(_T("\n"))
+#define LOG_STT(Expression, ...)	wprintf(Expression, __VA_ARGS__);wprintf(_T("\n"))
 
 #endif

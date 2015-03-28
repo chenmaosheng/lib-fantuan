@@ -14,12 +14,15 @@
     <ClInclude Include="..\src\easy_acceptor.h" />
     <ClInclude Include="..\src\easy_connection.h" />
     <ClInclude Include="..\src\easy_context.h" />
+    <ClInclude Include="..\src\easy_contextpool.h" />
+    <ClInclude Include="..\src\easy_handler.h" />
     <ClInclude Include="..\src\easy_network.h" />
     <ClInclude Include="..\src\easy_worker.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\easy_acceptor.cpp" />
     <ClCompile Include="..\src\easy_connection.cpp" />
+    <ClCompile Include="..\src\easy_contextpool.cpp" />
     <ClCompile Include="..\src\easy_network.cpp" />
     <ClCompile Include="..\src\easy_worker.cpp" />
   </ItemGroup>
