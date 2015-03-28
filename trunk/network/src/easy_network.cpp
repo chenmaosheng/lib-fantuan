@@ -15,19 +15,19 @@ int32 EasyNetwork::Init()
 	// start WSA
 	if (WSAStartup(MAKEWORD(2,2), &wsd) != 0)
 	{
-		printf("WSAStartup failed\n");
+		LOG_ERR(_T("WSAStartup failed"));
 		return -1;
 	}
 
-	// create a socket to initialize asynchorous operation function pointer, need to close when finished
+	// create a socket to initialize asynchronous operation function pointer, need to close when finished
 	s = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 	_ASSERT(s != INVALID_SOCKET);
 	if (s == INVALID_SOCKET)
 	{
-		printf("Create socket failed\n");
+		LOG_ERR(_T("Create socket failed"));
 		return -2;
 	}
-	
+
 	GUID GuidAcceptEx = WSAID_ACCEPTEX, GuidConnectEx = WSAID_CONNECTEX, GuidDisconnectEx = WSAID_DISCONNECTEX, GuidGetAcceptExSockaddrs = WSAID_GETACCEPTEXSOCKADDRS;
 	WSAIoctl(s, SIO_GET_EXTENSION_FUNCTION_POINTER, &GuidAcceptEx, sizeof(GuidAcceptEx), &acceptex_, sizeof(acceptex_), &cb, NULL, NULL);
 	WSAIoctl(s, SIO_GET_EXTENSION_FUNCTION_POINTER, &GuidConnectEx, sizeof(GuidConnectEx), &connectex_, sizeof(connectex_), &cb, NULL, NULL);
@@ -35,7 +35,7 @@ int32 EasyNetwork::Init()
 	WSAIoctl(s, SIO_GET_EXTENSION_FUNCTION_POINTER, &GuidGetAcceptExSockaddrs, sizeof(GuidGetAcceptExSockaddrs), &getacceptexsockaddrs_, sizeof(getacceptexsockaddrs_), &cb, NULL, NULL);
 	closesocket(s);
 
-	printf("Intialize Network success\n");
+	LOG_STT(_T("Intialize network success"));
 	return 0;
 }
 
