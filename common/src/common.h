@@ -61,8 +61,8 @@ typedef void*					ConnID;
 
 #endif
 
-#define LOG_DBG(Expression, ...)	wprintf(Expression, __VA_ARGS__);wprintf(_T("\n"))
-#define LOG_ERR(Expression, ...)	wprintf(Expression, __VA_ARGS__);wprintf(_T("\n"))
-#define LOG_STT(Expression, ...)	wprintf(Expression, __VA_ARGS__);wprintf(_T("\n"))
+#define LOG_DBG(Expression, ...)	wprintf(Expression, ##__VA_ARGS__); wprintf(_T("\n"))
+#define LOG_ERR(Expression, ...)	wprintf(Expression, ##__VA_ARGS__); wprintf(_T("\n"))
+#define LOG_STT(Expression, ...)	wprintf(Expression, ##__VA_ARGS__); wprintf(_T("\n"))
 
 #endif
