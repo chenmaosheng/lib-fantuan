@@ -3,7 +3,7 @@
 
 #ifdef WIN32
 
-void EasyContextPool::Init(uint32 input_buffer_size, uint32 output_buffer_size)
+EasyContextPool::EasyContextPool(uint32 input_buffer_size, uint32 output_buffer_size)
 {
 	input_buffer_size_ = input_buffer_size;
 	output_buffer_size_ = output_buffer_size;
@@ -17,7 +17,7 @@ void EasyContextPool::Init(uint32 input_buffer_size, uint32 output_buffer_size)
 	printf("Initialize context pool success\n");
 }
 
-void EasyContextPool::Destroy()
+EasyContextPool::~EasyContextPool()
 {
 	while (QueryDepthSList(&input_context_pool_) != input_context_count_)
 	{
@@ -115,23 +115,6 @@ char* EasyContextPool::PopOutputBuffer()
 void EasyContextPool::PushOutputBuffer(char* buffer)
 {
 	PushOutputContext((EasyContext*)((char*)buffer - BUFOFFSET));
-}
-
-EasyContextPool* EasyContextPool::CreateContextPool(uint32 input_buffer_size, uint32 output_buffer_size)
-{
-	EasyContextPool* pContextPool = (EasyContextPool*)_aligned_malloc(sizeof(EasyContextPool), MEMORY_ALLOCATION_ALIGNMENT);
-	if (pContextPool)
-	{
-		pContextPool->Init(input_buffer_size, output_buffer_size);
-	}
-
-	return pContextPool;
-}
-
-void EasyContextPool::DestroyContextPool(EasyContextPool* pContextPool)
-{
-	pContextPool->Destroy();
-	_aligned_free(pContextPool);
 }
 
 #endif
