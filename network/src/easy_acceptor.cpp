@@ -1,17 +1,21 @@
 #include "easy_acceptor.h"
 #include "easy_connection.h"
 #include "easy_worker.h"
+#include "easy_contextpool.h"
 #include "easy_context.h"
 #include "easy_network.h"
 
 #ifdef WIN32
-int32 EasyAcceptor::Init(uint32 ip, uint16 port, EasyWorker* pWorker)
+
+int32 EasyAcceptor::Init(PSOCKADDR_IN addr, EasyWorker* pWorker, EasyContextPool* pContextPool, EasyHandler* pHandler)
 {
 	int32 rc = 0;
 	DWORD val = 0;
-	
+
+	iorefs_ = 0;
 	running_ = 0;
-	
+	total_connection_ = 0;
+
 	// initialize acceptor's tcp socket
 	socket_ = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 	_ASSERT(socket_ != INVALID_SOCKET);
@@ -31,6 +35,19 @@ int32 EasyAcceptor::Init(uint32 ip, uint16 port, EasyWorker* pWorker)
 
 	printf("Create and configure acceptor socket\n");
 
+	// create slist of free connection
+	free_connection_ = (PSLIST_HEADER)_aligned_malloc(sizeof(SLIST_HEADER), MEMORY_ALLOCATION_ALIGNMENT);
+	_ASSERT(free_connection_);
+	if (!free_connection_)
+	{
+		LOG_ERR(_T("Allocate SList of free connection failed, err=%d"), GetLastError());
+		return -2;
+	}
+
+	InitializeSListHead(free_connection_);
+
+	LOG_STT(_T("Create and initialize SList of free connection"));
+
 	// initialize the context and set io type to accept
 	ZeroMemory(&context_.overlapped_, sizeof(WSAOVERLAPPED));
 	context_.operation_type_ = OPERATION_ACCEPT;
@@ -38,22 +55,17 @@ int32 EasyAcceptor::Init(uint32 ip, uint16 port, EasyWorker* pWorker)
 	// bind acceptor's socket to iocp handle
 	if (!CreateIoCompletionPort((HANDLE)socket_, pWorker->iocp_, (ULONG_PTR)this, 0))
 	{
-		_ASSERT(false && "CreateIoCompletionPort failed");
-		printf("CreateIoCompletionPort failed, err=%d\n", WSAGetLastError());
+		_ASSERT(false && _T("CreateIoCompletionPort failed"));
+		LOG_ERR(_T("CreateIoCompletionPort failed, err=%d"), WSAGetLastError());
 		return -4;
 	}
 
-	sockaddr_in addr;
-	addr.sin_family = AF_INET;
-	addr.sin_addr.s_addr = htonl(ip);
-	addr.sin_port = htons(port);
-
 	// bind acceptor's socket to assigned ip address
-	rc = bind(socket_, (sockaddr*)&addr, sizeof(addr));
+	rc = bind(socket_, (sockaddr*)addr, sizeof(*addr));
 	_ASSERT(rc == 0);
 	if (rc != 0)
 	{
-		printf("bind to address failed, err=%d\n", rc);
+		LOG_ERR(_T("bind to address failed, err=%d"), rc);
 		return -5;
 	}
 
@@ -62,13 +74,16 @@ int32 EasyAcceptor::Init(uint32 ip, uint16 port, EasyWorker* pWorker)
 	_ASSERT(rc == 0);
 	if (rc != 0)
 	{
-		printf("listen to the socket, err=%d\n", rc);
+		LOG_ERR(_T("listen to the socket, err=%d"), rc);
 		return -6;
 	}
 
 	worker_ = pWorker;
-	
-	printf("Initialize acceptor success\n");
+	handler_ = *pHandler;
+	context_pool_ = pContextPool;
+	server_ = NULL;
+
+	LOG_STT(_T("Initialize acceptor success"));
 
 	return 0;
 }
@@ -78,9 +93,29 @@ void EasyAcceptor::Destroy()
 	// first stop the acceptor
 	Stop();
 
-	// todo: io may not fully handled
+	// if some io are not released, wait a while
+	while (iorefs_)
+	{
+		Sleep(100);
+	}
 
-	printf("Clear all connections in free list\n");
+	// clear all connections in free list
+	if (free_connection_)
+	{
+		while (QueryDepthSList(free_connection_) != total_connection_)
+		{
+			Sleep(100);
+		}
+
+		while (QueryDepthSList(free_connection_))
+		{
+			EasyConnection::Close((EasyConnection*)InterlockedPopEntrySList(free_connection_));
+		}
+
+		_aligned_free(free_connection_);
+	}
+
+	LOG_STT(_T("Clear all connections in free list"));
 
 	// close the accept socket
 	if (socket_ != INVALID_SOCKET)
@@ -88,16 +123,35 @@ void EasyAcceptor::Destroy()
 		closesocket(socket_);
 	}
 
-	printf("Destroy acceptor success\n");
+	LOG_STT(_T("Destroy acceptor success"));
 }
 
 void EasyAcceptor::Accept()
 {
-	EasyConnection* pConnection = EasyConnection::Create(worker_, this);
-	printf("Get a new connection and wait for incoming connect\n");
+	// get one connection from free list
+	EasyConnection* pConnection = (EasyConnection*)InterlockedPopEntrySList(free_connection_);
+	if (!pConnection)
+	{
+		pConnection = EasyConnection::Create(&handler_, context_pool_, worker_, this);
+		_ASSERT(pConnection);
+		if (!pConnection)
+		{
+			LOG_ERR(_T("Create connection failed, err=%d"), GetLastError());
+			running_ = 0;
+			return;
+		}
+	}
+	else
+	{
+		total_connection_--;
+	}
 
+	LOG_DBG(_T("Get a new connection and wait for incoming connect"));
+
+	pConnection->client_ = NULL;
 	context_.connection_ = pConnection;
 
+	InterlockedIncrement(&iorefs_);
 	DWORD dwXfer;
 
 	// post an asychronous accept
@@ -108,18 +162,21 @@ void EasyAcceptor::Accept()
 		_ASSERT(iLastError == ERROR_IO_PENDING);
 		if (iLastError != ERROR_IO_PENDING)
 		{
-			printf("AcceptEx failed, err=%d\n", iLastError);
+			LOG_ERR(_T("AcceptEx failed, err=%d"), iLastError);
 
 			EasyConnection::Close(pConnection);
+			InterlockedPushEntrySList(free_connection_, pConnection);
+			total_connection_++;
+			InterlockedDecrement(&iorefs_);
 			running_ = 0;
 		}
 		else
 		{
-			printf("Acceptex pending\n");
+			LOG_DBG(_T("Acceptex pending"));
 		}
 	}
 
-	printf("AcceptEx success\n");
+	LOG_DBG(_T("AcceptEx success"));
 }
 
 void EasyAcceptor::Start()
@@ -127,6 +184,12 @@ void EasyAcceptor::Start()
 	// check if running is not 0
 	if (!InterlockedCompareExchange(&running_, 1, 0))
 	{
+		// confirm there is no uncomplete io request
+		while (iorefs_)
+		{
+			Sleep(100);
+		}
+
 		Accept();
 	}
 }
@@ -137,12 +200,22 @@ void EasyAcceptor::Stop()
 	running_ = 0;
 }
 
-EasyAcceptor* EasyAcceptor::CreateAcceptor(uint32 ip, uint16 port, EasyWorker* pWorker)
+void EasyAcceptor::SetServer(void* pServer)
+{
+	server_ = pServer;
+}
+
+void* EasyAcceptor::GetServer()
+{
+	return server_;
+}
+
+EasyAcceptor* EasyAcceptor::CreateAcceptor(PSOCKADDR_IN addr, EasyWorker* pWorker, EasyContextPool* pContextPool, EasyHandler* pHandler)
 {
 	EasyAcceptor* pAcceptor = (EasyAcceptor*)_aligned_malloc(sizeof(EasyAcceptor), MEMORY_ALLOCATION_ALIGNMENT);
 	if (pAcceptor)
 	{
-		pAcceptor->Init(ip, port, pWorker);
+		pAcceptor->Init(addr, pWorker, pContextPool, pHandler);
 	}
 
 	return pAcceptor;
@@ -153,6 +226,7 @@ void EasyAcceptor::DestroyAcceptor(EasyAcceptor* pAcceptor)
 	pAcceptor->Destroy();
 	_aligned_free(pAcceptor);
 }
+
 #endif
 
 #ifdef _LINUX
