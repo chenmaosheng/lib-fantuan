@@ -21,18 +21,24 @@
 #include <stddef.h>
 #include "type.h"
 
-#define MAX_BUFFER	65536
-#define MAXLINE		1024
+#define MAXLINE					1024
+#define MAX_INPUT_BUFFER		1024	// max size from client to server
+#define MAX_OUTPUT_BUFFER		65500	// max size from server to client
 #define SAFE_DELETE(ptr)		if (ptr) { delete (ptr); (ptr) = nullptr; }
 #define SAFE_DELETE_ARRAY(ptr)	if (ptr) { delete [] (ptr); (ptr) = NULL; }
+#define EASY_INLINE				static inline
 
-typedef void*				ConnID;
+typedef void*					ConnID;
 
 #ifdef WIN32
 	#define _CRTDBG_MAP_ALLOC
 	#include <crtdbg.h>
 	#define EASY_ASSERT(expr)	_ASSERT(expr)
-	#define LAST_ERROR			WSAGetLastError()
+	
+	EASY_INLINE int32 easy_last_error()
+	{
+		return WSAGetLastError();
+	}
 
 #endif
 
@@ -41,12 +47,17 @@ typedef void*				ConnID;
 	#define EASY_ASSERT(expr)	assert(expr)
 	#define SOCKET				int32
 	#define closesocket			close
-	#define LAST_ERROR			errno
 	#define INVALID_SOCKET		(-1)
 	#define SOCKET_ERROR		(-1)
 	#define __stdcall
-	typedef sockaddr_in	SOCKADDR_IN;
+	typedef sockaddr_in			SOCKADDR_IN;
+	typedef sockaddr_in*		PSOCKADDR_IN;
 	#define _T(x)				L ## x
+
+	EASY_INLINE int32 easy_last_error()
+	{
+		return errno;
+	}
 
 #endif
 

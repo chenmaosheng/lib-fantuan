@@ -7,7 +7,7 @@
 
 #ifdef WIN32
 
-int32 EasyAcceptor::Init(PSOCKADDR_IN addr, EasyWorker* pWorker, EasyContextPool* pContextPool, EasyHandler* pHandler)
+EasyAcceptor::EasyAcceptor(PSOCKADDR_IN addr, EasyWorker* pWorker, EasyContextPool* pContextPool, EasyHandler* pHandler)
 {
 	int32 rc = 0;
 	DWORD val = 0;
@@ -18,11 +18,11 @@ int32 EasyAcceptor::Init(PSOCKADDR_IN addr, EasyWorker* pWorker, EasyContextPool
 
 	// initialize acceptor's tcp socket
 	socket_ = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-	_ASSERT(socket_ != INVALID_SOCKET);
+	EASY_ASSERT(socket_ != INVALID_SOCKET);
 	if (socket_ == INVALID_SOCKET)
 	{
-		printf("Create acceptor socket failed, err=%d\n", WSAGetLastError());
-		return -1;
+		printf("Create acceptor socket failed, err=%d\n", easy_last_error());
+		return;
 	}
 
 	// set snd buf and recv buf to 0, it's said that it must improve the performance
@@ -33,7 +33,7 @@ int32 EasyAcceptor::Init(PSOCKADDR_IN addr, EasyWorker* pWorker, EasyContextPool
 	setsockopt(socket_, SOL_SOCKET, SO_REUSEADDR, (const char *)&val, sizeof(val));
 	setsockopt(socket_, IPPROTO_TCP, TCP_NODELAY, (const char *)&val, sizeof(val));
 
-	printf("Create and configure acceptor socket\n");
+	LOG_STT(_T("Create and configure acceptor socket"));
 
 	// create slist of free connection
 	free_connection_ = (PSLIST_HEADER)_aligned_malloc(sizeof(SLIST_HEADER), MEMORY_ALLOCATION_ALIGNMENT);
@@ -41,7 +41,7 @@ int32 EasyAcceptor::Init(PSOCKADDR_IN addr, EasyWorker* pWorker, EasyContextPool
 	if (!free_connection_)
 	{
 		LOG_ERR(_T("Allocate SList of free connection failed, err=%d"), GetLastError());
-		return -2;
+		return;
 	}
 
 	InitializeSListHead(free_connection_);
@@ -57,7 +57,7 @@ int32 EasyAcceptor::Init(PSOCKADDR_IN addr, EasyWorker* pWorker, EasyContextPool
 	{
 		_ASSERT(false && _T("CreateIoCompletionPort failed"));
 		LOG_ERR(_T("CreateIoCompletionPort failed, err=%d"), WSAGetLastError());
-		return -4;
+		return;
 	}
 
 	// bind acceptor's socket to assigned ip address
@@ -66,7 +66,7 @@ int32 EasyAcceptor::Init(PSOCKADDR_IN addr, EasyWorker* pWorker, EasyContextPool
 	if (rc != 0)
 	{
 		LOG_ERR(_T("bind to address failed, err=%d"), rc);
-		return -5;
+		return;
 	}
 
 	// set socket into listening for incoming connection
@@ -75,7 +75,7 @@ int32 EasyAcceptor::Init(PSOCKADDR_IN addr, EasyWorker* pWorker, EasyContextPool
 	if (rc != 0)
 	{
 		LOG_ERR(_T("listen to the socket, err=%d"), rc);
-		return -6;
+		return;
 	}
 
 	worker_ = pWorker;
@@ -84,11 +84,9 @@ int32 EasyAcceptor::Init(PSOCKADDR_IN addr, EasyWorker* pWorker, EasyContextPool
 	server_ = NULL;
 
 	LOG_STT(_T("Initialize acceptor success"));
-
-	return 0;
 }
 
-void EasyAcceptor::Destroy()
+EasyAcceptor::~EasyAcceptor()
 {
 	// first stop the acceptor
 	Stop();
@@ -210,40 +208,71 @@ void* EasyAcceptor::GetServer()
 	return server_;
 }
 
-EasyAcceptor* EasyAcceptor::CreateAcceptor(PSOCKADDR_IN addr, EasyWorker* pWorker, EasyContextPool* pContextPool, EasyHandler* pHandler)
-{
-	EasyAcceptor* pAcceptor = (EasyAcceptor*)_aligned_malloc(sizeof(EasyAcceptor), MEMORY_ALLOCATION_ALIGNMENT);
-	if (pAcceptor)
-	{
-		pAcceptor->Init(addr, pWorker, pContextPool, pHandler);
-	}
-
-	return pAcceptor;
-}
-
-void EasyAcceptor::DestroyAcceptor(EasyAcceptor* pAcceptor)
-{
-	pAcceptor->Destroy();
-	_aligned_free(pAcceptor);
-}
-
 #endif
 
 #ifdef _LINUX
 
-EasyAcceptor::EasyAcceptor(unsigned int ip, unsigned short port)
+EasyAcceptor::EasyAcceptor(PSOCKADDR_IN addr, EasyHandler* pHandler)
 {
+	int32 rc = 0;
+	uint32 val = 0;
+
 	epfd_ = epoll_create(256);
 	socket_ = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+	EASY_ASSERT(socket_ != INVALID_SOCKET);
+	if (socket_ == INVALID_SOCKET)
+	{
+		printf("Create acceptor socket failed, err=%d\n", easy_last_error());
+		return;
+	}
+
+	// set snd buf and recv buf to 0, it's said that it must improve the performance
+	// notice!, this two statments will impact performance in linux
+	//setsockopt(socket_, SOL_SOCKET, SO_RCVBUF, (const char *)&val, sizeof(val));
+	//setsockopt(socket_, SOL_SOCKET, SO_SNDBUF, (const char *)&val, sizeof(val));
+
+	val = 1;
+	setsockopt(socket_, SOL_SOCKET, SO_REUSEADDR, (const char *)&val, sizeof(val));
+	setsockopt(socket_, IPPROTO_TCP, TCP_NODELAY, (const char *)&val, sizeof(val));
+
+	printf("Create and configure acceptor socket");
+
 	ev_.data.fd = socket_;
 	ev_.events = EPOLLIN | EPOLLET | EPOLLOUT;
 	epoll_ctl(epfd_, EPOLL_CTL_ADD, socket_, &ev_);
-	sockaddr_in addr;
-	addr.sin_family = AF_INET;
-	addr.sin_addr.s_addr = htonl(ip);
-	addr.sin_port = htons(port);
-	bind(socket_, (sockaddr*)&addr, sizeof(addr));
-	listen(socket_, SOMAXCONN);
+	
+	// bind acceptor's socket to assigned ip address
+	rc = bind(socket_, (sockaddr*)addr, sizeof(*addr));
+	EASY_ASSERT(rc == 0);
+	if (rc != 0)
+	{
+		printf("bind to address failed, err=%d\n", rc);
+		return;
+	}
+
+	// set socket into listening for incoming connection
+	rc = listen(socket_, SOMAXCONN);
+	EASY_ASSERT(rc == 0);
+	if (rc != 0)
+	{
+		printf("listen to the socket, err=%d", rc);
+		return;
+	}
+
+	handler_ = *pHandler;
+
+	printf("Initialize acceptor success\n");
+}
+
+EasyAcceptor::~EasyAcceptor()
+{
+	// close the accept socket
+	if (socket_ != INVALID_SOCKET)
+	{
+		close(socket_);
+	}
+
+	printf("Destroy acceptor success\n");
 }
 
 void EasyAcceptor::AcceptConnection()
@@ -259,6 +288,8 @@ void EasyAcceptor::AcceptConnection()
 	pConnection->ev_.events = EPOLLIN | EPOLLET;
 	epoll_ctl(epfd_, EPOLL_CTL_ADD, pConnection->socket_, &pConnection->ev_);
 	printf("receive a new connection\n");
+
+	handler_.OnConnection((ConnID)pConnection);
 }
 
 #endif

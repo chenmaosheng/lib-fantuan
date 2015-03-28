@@ -358,6 +358,7 @@ int EasyConnection::HandleMessage()
 	{
 		recv_context_->buffer_[recv_context_->len_] = '\0';
 		printf("message=%s, len=%d\n", recv_context_->buffer_, recv_context_->len_);
+		acceptor_->handler_.OnData((ConnID)this, recv_context_->len_, recv_context_->buffer_);
 	}
 
 	return recv_context_->len_;

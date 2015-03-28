@@ -18,24 +18,20 @@ enum
 
 struct EasyConnection;
 class EasyContextPool;
-
+struct EasyContext 
 #ifdef WIN32
-struct EasyContext : SLIST_ENTRY
+	: SLIST_ENTRY
 {
-	WSAOVERLAPPED	overlapped_;		// overlapped io
-	WSABUF			wsabuf_;			// overlapped buf
-	int32			operation_type_;	// overlapped operation type
+	WSAOVERLAPPED		overlapped_;		// overlapped io
+	WSABUF				wsabuf_;			// overlapped buf
+	int32				operation_type_;	// overlapped operation type
 	EasyConnection*		connection_;		// context's connection
 	EasyContextPool*	context_pool_;		// the pool which is based on
 
-	char			buffer_[(sizeof(SOCKADDR)+16)*2];		// received buffer, at least save 2 sockaddrs(acceptex needed)
-};
-
+	char				buffer_[(sizeof(SOCKADDR)+16)*2];		// received buffer, at least save 2 sockaddrs(acceptex needed)
 #endif
 
 #ifdef _LINUX
-
-struct EasyContext
 {
 	EasyContext()
 	{
@@ -45,9 +41,7 @@ struct EasyContext
 
 	char*			buffer_;
 	int				len_;
+#endif
 };
-#endif
-
 
 #endif
-
