@@ -195,6 +195,8 @@ EasyWorker::EasyWorker(EasyAcceptor* pAcceptor)
 {
 	pthread_t thread_;
 	pthread_create(&thread_, NULL, &EasyWorker::WorkerThread, pAcceptor);
+
+	LOG_STT(_T("Initialize worker success"));
 }
 
 void* EasyWorker::WorkerThread(void* ptr)
@@ -220,7 +222,7 @@ void* EasyWorker::WorkerThread(void* ptr)
 				else if (pAcceptor->events_[i].events & EPOLLOUT)
 				{
 					EasyConnection* pConnection = (EasyConnection*)pAcceptor->events_[i].data.ptr;
-					printf("trigger, epolllout\n");
+					LOG_DBG(_T("trigger, epolllout"));
 					pConnection->SendMessage();
 				}
 			}

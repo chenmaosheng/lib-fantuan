@@ -7,6 +7,12 @@
     <ClCompile Include="..\src\util.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\easy_log.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\easy_buffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\accurate_time.h">
@@ -85,6 +91,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\src\win32_base.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\easy_log.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\easy_buffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\base.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
