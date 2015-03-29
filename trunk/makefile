@@ -14,7 +14,7 @@ CFLAGS=-pthread -fno-rtti -Wreorder -Woverloaded-virtual -ansi
 PLATFORM=-m32
 CC=gcc
 LIB=common/Common.a
-CFLAGS_END=-lrt -lstdc++
+CFLAGS_END=-lrt -lstdc++ -std=c++0x
 
 arraytest:
 	(cd common/;make)

@@ -28,7 +28,7 @@ bool	EasyBuffer::Push(const void* pItem, uint32 iLength)
 
 uint32	EasyBuffer::Pop(void* pItem, uint32 iLength)
 {
-	if (pItem == nullptr)
+	if (pItem == NULL)
 	{
 		return 0;
 	}
