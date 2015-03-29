@@ -8,9 +8,6 @@
 #include <stdexcept>
 #include <fcntl.h>
 #include <stdio.h>
-#include <string.h>
-#include <errno.h>
-#include <stdlib.h>
 #include <stddef.h>
 #include "easy_log.h"
 
@@ -43,7 +40,6 @@ typedef void*					ConnID;
 	#define __stdcall
 	typedef sockaddr_in			SOCKADDR_IN;
 	typedef sockaddr_in*		PSOCKADDR_IN;
-	#define _T(x)				L ## x
 
 	EASY_INLINE int32 easy_last_error()
 	{

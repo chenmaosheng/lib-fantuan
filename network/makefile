@@ -8,7 +8,7 @@ INLINE=-finline-functions
 CFLAGS=-pthread -fno-rtti -Wreorder -Woverloaded-virtual -ansi
 PLATFORM=-m32
 CC=gcc
-CFLAG_END=-lrt -lstdc
+CFLAG_END=-lrt -lstdc++ -std=c++0x
 
 Network.a:
 	$(CC) $(WARNING) $(CFLAGS) $(OPTIMIZE) $(DEBUG) $(INCLUDE) $(PREPROCESSOR) $(INLINE) -o easy_connection.o -c src/easy_connection.cpp $(CFLAG_END)
