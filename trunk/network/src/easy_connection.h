@@ -60,6 +60,8 @@ struct EasyConnection
 	void	SetClient(void*);
 	void*	GetClient();
 
+	static void				Close(EasyConnection*);
+
 	int				socket_;
 	sockaddr_in		addr_;
 	EasyAcceptor*	acceptor_;

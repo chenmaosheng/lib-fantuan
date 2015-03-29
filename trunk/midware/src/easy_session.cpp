@@ -60,7 +60,9 @@ void EasySession::Disconnect()
 {
 	if (m_pConnection)
 	{
+#ifdef WIN32
 		m_pConnection->AsyncDisconnect();
+#endif
 	}
 	else
 	{
@@ -82,7 +84,12 @@ int32 EasySession::SendData(uint16 iTypeId, uint16 iLen, char* pData)
 	pPacket->m_iTypeId = iTypeId;
 
 	memcpy(pPacket->m_Buf, pData, iLen);
+#ifdef WIN32
 	m_pConnection->AsyncSend(pPacket->m_iLen + PACKET_HEAD, buf);
+#endif
+#ifdef _LINUX
+	m_pConnection->SendMessage(buf, pPacket->m_iLen + PACKET_HEAD);
+#endif
 
 	return 0;
 }
