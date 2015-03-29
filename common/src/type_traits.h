@@ -4,9 +4,6 @@
 #include "type_list.h"
 #include "type.h"
 
-namespace Fantuan
-{
-
 typedef TYPELIST_4(uint8, uint16, uint32, uint64)	UnsignedInts;
 typedef TYPELIST_4(int8, int16, int32, int64)		SignedInts;
 typedef TYPELIST_3(bool, char, wchar_t)				OtherInts;
@@ -130,7 +127,5 @@ public:
 	enum { isScalar = is_scalar::value, 
 			isClass = !isScalar && !isArray && !isReference && !isVoid, };
 };
-
-}
 
 #endif

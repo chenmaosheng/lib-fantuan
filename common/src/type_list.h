@@ -1,9 +1,6 @@
 #ifndef _H_TYPELIST
 #define _H_TYPELIST
 
-namespace Fantuan
-{
-
 class NullType{};
 
 template<typename T, typename U>
@@ -103,8 +100,6 @@ struct Select<false, T, U>
 {
 	typedef U Result;
 };
-
-}
 
 #endif
 

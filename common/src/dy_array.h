@@ -14,10 +14,6 @@
 
 #define ARRAY_INC_FACTOR	2
 
-namespace Fantuan
-{
-
-
 template<typename T, std::size_t N=ARRAY_MIN_SIZE>
 class DyArray : public ArrayBase<T>
 {
@@ -85,7 +81,8 @@ public:
 
 	~DyArray()
 	{
-		if (TypeTraits<T>::isClass)
+		if (std::is_class<T>::value)
+		//if (TypeTraits<T>::isClass)
 		{
 			if (m_pDynamicElements)
 			{
@@ -396,8 +393,6 @@ public:
 		return placeholder;
 	}
 };
-
-}
 
 #ifdef WIN32
 #pragma warning(pop)

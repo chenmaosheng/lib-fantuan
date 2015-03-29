@@ -15,9 +15,6 @@
 #include <algorithm>
 #endif
 
-namespace Fantuan
-{
-
 // object swap
 template<typename T>
 inline void object_swap(T& lhs, T& rhs)
@@ -119,8 +116,6 @@ inline void object_fill_n(T* first, size_t count, const T& value)
 			object_construct(first, value);
 		}
 	}
-}
-
 }
 
 #endif

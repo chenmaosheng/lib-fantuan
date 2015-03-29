@@ -3,11 +3,10 @@
 
 #include "common.h"
 
-#ifdef WIN32
-
 struct EasyContext;
 class EasyContextPool
 {
+#ifdef WIN32
 public:
 	// initialize context pool with initial input size and output size
 	EasyContextPool(uint32 input_buffer_size=MAX_INPUT_BUFFER, uint32 output_buffer_size=MAX_OUTPUT_BUFFER);
@@ -34,8 +33,9 @@ public:
 
 	SLIST_HEADER	input_context_pool_;	// SList of input pool
 	SLIST_HEADER	output_context_pool_;	// SList of output pool
+#endif
 };
 
-#endif
+
 
 #endif

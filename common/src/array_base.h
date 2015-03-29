@@ -3,9 +3,6 @@
 
 #include "ft_assert.h"
 
-namespace Fantuan
-{
-
 #define ARRAY_MIN_SIZE		1
 
 template<typename T>
@@ -97,7 +94,5 @@ public:
 protected:
 	T*						m_pHead;
 };
-
-}
 
 #endif
