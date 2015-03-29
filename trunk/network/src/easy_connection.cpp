@@ -483,4 +483,15 @@ int EasyConnection::SendMessage(char* buffer, int len)
 
 	return 0;
 }
+
+void EasyConnection::SetClient(void* pClient)
+{
+	client_ = pClient;
+}
+
+void* EasyConnection::GetClient()
+{
+	return client_;
+}
+
 #endif

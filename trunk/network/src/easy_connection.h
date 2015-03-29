@@ -57,6 +57,8 @@ struct EasyConnection
 	int HandleMessage();
 	int SendMessage();
 	int SendMessage(char* buffer, int len);
+	void	SetClient(void*);
+	void*	GetClient();
 
 	int				socket_;
 	sockaddr_in		addr_;
@@ -65,6 +67,7 @@ struct EasyConnection
 	EasyContext*	recv_context_;
 	EasyContext*	send_context_;
 	sem_t			sem_;
+	void*			client_;
 };
 #endif
 

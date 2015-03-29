@@ -14,7 +14,7 @@ EasyContextPool::EasyContextPool(uint32 input_buffer_size, uint32 output_buffer_
 	InitializeSListHead(&input_context_pool_);
 	InitializeSListHead(&output_context_pool_);
 
-	printf("Initialize context pool success\n");
+	LOG_STT(_T("Initialize context pool success"));
 }
 
 EasyContextPool::~EasyContextPool()
@@ -39,7 +39,7 @@ EasyContextPool::~EasyContextPool()
 		_aligned_free(InterlockedPopEntrySList(&output_context_pool_));
 	}
 
-	printf("Destroy context pool success\n");
+	LOG_STT(_T("Destroy context pool success\n"));
 }
 
 EasyContext* EasyContextPool::PopInputContext()
@@ -51,7 +51,7 @@ EasyContext* EasyContextPool::PopInputContext()
 		_ASSERT(pContext);
 		if (!pContext)
 		{
-			printf("Allocate context failed, err=%d\n", GetLastError());
+			LOG_ERR(_T("Allocate context failed, err=%d"), GetLastError());
 			return NULL;
 		}
 
@@ -74,7 +74,7 @@ EasyContext* EasyContextPool::PopOutputContext()
 		_ASSERT(pContext);
 		if (!pContext)
 		{
-			printf("Allocate context failed, err=%d\n", GetLastError());
+			LOG_ERR(_T("Allocate context failed, err=%d"), GetLastError());
 			return NULL;
 		}
 
@@ -107,7 +107,7 @@ char* EasyContextPool::PopOutputBuffer()
 		return pContext->buffer_;
 	}
 
-	printf("Pop a buffer from pool failed, err=%d\n", GetLastError());
+	LOG_DBG(_T("Pop a buffer from pool failed, err=%d"), GetLastError());
 
 	return NULL;
 }

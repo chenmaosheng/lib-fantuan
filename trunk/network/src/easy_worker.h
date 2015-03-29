@@ -8,7 +8,7 @@ class EasyWorker
 {
 public:
 #ifdef WIN32
-	EasyWorker(uint32 iThreadCount);
+	EasyWorker(uint32 iThreadCount=2);
 	~EasyWorker();
 
 	static uint32 WINAPI WorkerThread(PVOID);
