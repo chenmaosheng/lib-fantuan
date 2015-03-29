@@ -2,18 +2,15 @@
 #include "easy_buffer.h"
 
 EasyLog::EasyLog() :
-	m_iLogLevel(LOG_DEBUG_LEVEL),
-	m_OutputEvent(NULL)
+	m_iLogLevel(LOG_DEBUG_LEVEL)
 {
 	memset(m_strBuffer, 0, sizeof(m_strBuffer));
 	m_pEasyBuffer = new EasyBuffer(BUFFER_MAX_SIZE);
-	m_OutputEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
 }
 
 EasyLog::~EasyLog()
 {
 	SAFE_DELETE(m_pEasyBuffer);
-	CloseHandle(m_OutputEvent);
 }
 
 void EasyLog::Init(int32 iLogLevel)
@@ -27,30 +24,27 @@ void EasyLog::Destroy()
 	m_pThread->join();
 }
 
-bool EasyLog::Push(int32 iLogLevel, wchar_t* strFormat, ...)
+bool EasyLog::Push(int32 iLogLevel, const wchar_t* strFormat, ...)
 {
 	wchar_t Buffer[BUFFER_MAX_SIZE] = {0};
 	wchar_t RealBuffer[BUFFER_MAX_SIZE] = {0};
 	va_list Args;
 
 	va_start(Args, strFormat);
-	int32 iLength = vswprintf(NULL, 0, strFormat, Args) + 1;
-	va_end(Args);
-	va_start(Args, strFormat);
-	vswprintf(Buffer, iLength, strFormat, Args);
+	int32 iLength = vswprintf(Buffer, BUFFER_MAX_SIZE, strFormat, Args) + 1;
 	va_end(Args);
 	time_t now = time(NULL);
 	tm* currentTime = localtime(&now);
-	swprintf(RealBuffer, BUFFER_MAX_SIZE, _T("[%02d.%02d.%02d %02d:%02d:%02d][%s]%s\n"), 
+	swprintf(RealBuffer, BUFFER_MAX_SIZE, _T("[%02d.%02d.%02d %02d:%02d:%02d][%ls]%ls\n"), 
 		currentTime->tm_year+1900, currentTime->tm_mon+1, currentTime->tm_mday, currentTime->tm_hour, currentTime->tm_min, currentTime->tm_sec,
 		_Level2String(iLogLevel), Buffer);
 
-	std::lock_guard<std::mutex> guard(m_Mutex);
-	SetEvent(m_OutputEvent);
+	std::unique_lock<std::mutex> lock(m_Mutex);
+	m_OutputEvent.notify_one();
 	return m_pEasyBuffer->Push(RealBuffer, (int32)wcslen(RealBuffer) * sizeof(wchar_t));
 }
 
-uint32 __stdcall EasyLog::_LogOutput(void* pParam)
+uint32 EasyLog::_LogOutput(void* pParam)
 {
 	EasyLog* pLog = (EasyLog*)pParam;
 	while (true)
@@ -61,7 +55,7 @@ uint32 __stdcall EasyLog::_LogOutput(void* pParam)
 	return 0;
 }
 
-wchar_t* EasyLog::_Level2String(int32 iLogLevel)
+const wchar_t* EasyLog::_Level2String(int32 iLogLevel)
 {
 	switch(iLogLevel)
 	{
@@ -84,23 +78,23 @@ wchar_t* EasyLog::_Level2String(int32 iLogLevel)
 
 void EasyLog::_Tick()
 {
-	DWORD ret = ::WaitForSingleObject(m_OutputEvent, INFINITE);
-	if (ret == WAIT_OBJECT_0)
+	std::unique_lock<std::mutex> lock(m_Mutex);
+	m_OutputEvent.wait(lock);
+	uint16 iSize = (uint16)m_pEasyBuffer->Size();
+	uint16 iLength = 0;
+	memset(m_strBuffer, 0, sizeof(m_strBuffer));
+	iLength = m_pEasyBuffer->Pop(m_strBuffer, iSize);
+	if (iLength)
 	{
-		std::lock_guard<std::mutex> guard(m_Mutex);
-		uint16 iSize = (uint16)m_pEasyBuffer->Size();
-		uint16 iLength = 0;
-		memset(m_strBuffer, 0, sizeof(m_strBuffer));
-		iLength = m_pEasyBuffer->Pop(m_strBuffer, iSize);
-		if (iLength)
-		{
-			ResetEvent(m_OutputEvent);
-			_Output(m_strBuffer, iLength);
-		}
+		_Output(m_strBuffer, iLength);
 	}
 }
 
 void EasyLog::_Output(wchar_t* strBuffer, uint16 iCount)
 {
+#ifdef WIN32
 	wprintf(_T("%s"), strBuffer);
+#else
+	printf("%ls", strBuffer);
+#endif
 }
