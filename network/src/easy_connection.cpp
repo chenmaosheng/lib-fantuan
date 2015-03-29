@@ -494,4 +494,9 @@ void* EasyConnection::GetClient()
 	return client_;
 }
 
+void EasyConnection::Close(EasyConnection* pConnection)
+{
+	close(pConnection->socket_);
+}
+
 #endif

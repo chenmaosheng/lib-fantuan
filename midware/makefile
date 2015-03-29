@@ -16,8 +16,12 @@ Midware.a:
 	$(CC) $(WARNING) $(CFLAGS) $(OPTIMIZE) $(DEBUG) $(INCLUDE) $(PREPROCESSOR) $(INLINE) -o easy_command.o -c src/easy_command.cpp $(CFLAG_END)
 	
 	$(CC) $(WARNING) $(CFLAGS) $(OPTIMIZE) $(DEBUG) $(INCLUDE) $(PREPROCESSOR) $(INLINE) -o easy_dispatcher.o -c src/easy_dispatcher.cpp $(CFLAG_END)
+	
+	$(CC) $(WARNING) $(CFLAGS) $(OPTIMIZE) $(DEBUG) $(INCLUDE) $(PREPROCESSOR) $(INLINE) -o easy_baseloop.o -c src/easy_baseloop.cpp $(CFLAG_END)
+	
+	$(CC) $(WARNING) $(CFLAGS) $(OPTIMIZE) $(DEBUG) $(INCLUDE) $(PREPROCESSOR) $(INLINE) -o easy_session.o -c src/easy_session.cpp $(CFLAG_END)
 
-	ar crv Midware.a easy_baseserver.o easy_command.o easy_dispatcher.o
+	ar crv Midware.a easy_baseserver.o easy_command.o easy_dispatcher.o easy_baseloop.o easy_session.o
 
 clean:
 	rm *.o
