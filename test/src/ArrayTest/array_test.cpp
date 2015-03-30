@@ -53,16 +53,10 @@ inline void object_swap(AA& lhs, AA& val)
 {
 	lhs.TransferOwnership(val);
 }
-
-namespace Fantuan
-{
-
 template<>
 inline void object_swap(std::string& lhs, std::string& rhs)
 {
 	lhs.swap(rhs);
-}
-
 }
 
 void ArrayTest1()

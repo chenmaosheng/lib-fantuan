@@ -28,7 +28,6 @@ int32 EasySession::OnConnection(ConnID connId)
 	int32 iRet = 0;
 
 	// reset sequence
-	((SessionId*)(&m_iSessionID))->sValue_.sequence_++;
 	m_pConnection = (EasyConnection*)connId;
 	m_pConnection->SetClient(this);
 
@@ -44,9 +43,6 @@ void EasySession::OnDisconnect()
 	{
 		EasyConnection::Close(m_pConnection);
 	}
-
-	// reset sequence
-	((SessionId*)(&m_iSessionID))->sValue_.sequence_++;
 
 	Reset();
 }

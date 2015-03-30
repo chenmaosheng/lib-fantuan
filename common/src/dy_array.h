@@ -50,7 +50,8 @@ public:
 		{
 			if (TypeTraits<T>::isScalar)
 			{
-				std::copy((T*)rhs.m_Elements, (T*)rhs.m_Elements + _size, (T*)m_Elements);
+				memcpy(m_Elements, rhs.m_Elements, sizeof(T)*_size);
+				//std::copy((T*)rhs.m_Elements, (T*)rhs.m_Elements + _size, (T*)m_Elements);
 			}
 			else if (TypeTraits<T>::isClass)
 			{
@@ -66,7 +67,8 @@ public:
 			_buy(rhs.max_size());
 			if (TypeTraits<T>::isScalar)
 			{
-				std::copy(rhs.m_pDynamicElements, rhs.m_pDynamicElements + _size, m_pDynamicElements);
+				memcpy(m_pDynamicElements, rhs.m_pDynamicElements, sizeof(T)*_size);
+				//std::copy(rhs.m_pDynamicElements, rhs.m_pDynamicElements + _size, m_pDynamicElements);
 			}
 			else if (TypeTraits<T>::isClass)
 			{
@@ -124,7 +126,8 @@ public:
 		iterator _where = const_cast<iterator>(value);
 		if (TypeTraits<T>::isScalar)
 		{
-			std::copy(_where + 1, end(), _where);
+			memmove(_where, _where + 1, sizeof(T)*(end() - _where - 1));
+			//std::copy(_where + 1, end(), _where);
 		}
 		else
 		{
@@ -154,7 +157,8 @@ public:
 
 		if (TypeTraits<T>::isScalar)
 		{
-			std::copy(_last, end(), _first);
+			memmove(_first, _last, sizeof(T)*(end() - _last));
+			//std::copy(_last, end(), _first);
 		}
 		else if (TypeTraits<T>::isClass)
 		{
@@ -207,6 +211,11 @@ public:
 	inline size_type	size() const
 	{
 		return m_iCount;
+	}
+
+	inline bool			empty() const
+	{
+		return m_iCount == 0;
 	}
 
 	inline void			assign(const T* pData, size_type len)
@@ -281,11 +290,13 @@ private:
 		{
 			if (!m_pDynamicElements)
 			{
-				std::copy((T*)m_Elements, (T*)m_Elements + iOldSize, pData);	
+				memcpy(pData, m_Elements, sizeof(T)*iOldSize);
+				//std::copy((T*)m_Elements, (T*)m_Elements + iOldSize, pData);	
 			}
 			else
 			{
-				std::copy(m_pDynamicElements, m_pDynamicElements + iOldSize, pData);
+				memcpy(pData, m_pDynamicElements, sizeof(T)*iOldSize);
+				//std::copy(m_pDynamicElements, m_pDynamicElements + iOldSize, pData);
 				object_free(m_pDynamicElements);
 			}
 

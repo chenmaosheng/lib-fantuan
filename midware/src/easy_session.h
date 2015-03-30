@@ -3,26 +3,6 @@
 
 #include "common.h"
 
-#pragma pack(1)
-// better way to generate sessionid
-union SessionId
-{
-	struct  
-	{
-		uint8 sequence_;		// when it's been reused, add 1
-		uint16 session_index_;	// session index in session server
-		uint8 serverId_;		// session server's id
-	}sValue_;
-
-	uint32 iValue_;
-
-	SessionId()
-	{
-		iValue_ = 0;
-	}
-};
-#pragma pack()
-
 struct EasyConnection;
 struct EasyPacket;
 class EasyBaseServer;
@@ -32,6 +12,10 @@ public:
 	EasySession();
 	virtual ~EasySession();
 	void	Reset();
+	void	SetSessionID(uint32 iSessionID)
+	{
+		m_iSessionID = iSessionID;
+	}
 
 	virtual int32	OnConnection(ConnID);
 	virtual void	OnDisconnect();

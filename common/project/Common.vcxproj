@@ -24,6 +24,7 @@
     <ClInclude Include="..\src\dy_string.h" />
     <ClInclude Include="..\src\easy_buffer.h" />
     <ClInclude Include="..\src\easy_log.h" />
+    <ClInclude Include="..\src\easy_pool.h" />
     <ClInclude Include="..\src\format.h" />
     <ClInclude Include="..\src\ft_assert.h" />
     <ClInclude Include="..\src\linux_base.h" />
