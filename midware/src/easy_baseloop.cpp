@@ -1,5 +1,7 @@
 #include "easy_baseloop.h"
 #include "easy_command.h"
+#include "easy_connection.h"
+#include "easy_session.h"
 
 EasyBaseLoop::EasyBaseLoop(uint32 iMaxSession) : m_iShutdownStatus(NOT_SHUTDOWN), m_iCurrTime(0), m_iDeltaTime(0), m_iWorldTime(0), m_iMaxSession(iMaxSession)
 {
@@ -119,6 +121,9 @@ bool EasyBaseLoop::_OnCommand(EasyCommand* pCommand)
 bool EasyBaseLoop::_OnCommandOnConnect(EasyCommand* pCommand)
 {
 	EasyCommandOnConnect* pCommandOnConnect = (EasyCommandOnConnect*)pCommand;
+	EasySession* pSession = m_SessionPool.Allocate();
+	m_SessionMap.insert(std::make_pair(pSession->GetSessionID(), pSession));
+	pSession->OnConnection(pCommandOnConnect->m_ConnId);
 
 	return true;
 }
@@ -126,31 +131,75 @@ bool EasyBaseLoop::_OnCommandOnConnect(EasyCommand* pCommand)
 bool EasyBaseLoop::_OnCommandOnDisconnect(EasyCommand* pCommand)
 {
 	EasyCommandOnDisconnect* pCommandOnDisconnect = (EasyCommandOnDisconnect*)pCommand;
-	return true;
+	EasyConnection* pConnection = (EasyConnection*)pCommandOnDisconnect->m_ConnId;
+	EasySession* pSession = (EasySession*)pConnection->GetClient();
+	if (pSession)
+	{
+		std::unordered_map<uint32, EasySession*>::iterator mit = m_SessionMap.find(pSession->GetSessionID());
+		if (mit != m_SessionMap.end())
+		{
+			m_SessionMap.erase(mit);
+		}
+		pSession->OnDisconnect();
+		m_SessionPool.Free(pSession);
+
+		return true;
+	}
+
+	return false;
 }
 
 bool EasyBaseLoop::_OnCommandOnData(EasyCommand* pCommand)
 {
 	EasyCommandOnData* pCommandOnData = (EasyCommandOnData*)pCommand;
-
-	return true;
+	EasyConnection* pConnection = (EasyConnection*)pCommandOnData->m_ConnId;
+	EasySession* pSession = (EasySession*)pConnection->GetClient();
+	if (pSession)
+	{
+		pSession->OnData(pCommandOnData->m_iLen, pCommandOnData->m_pData);
+		return true;
+	}
+	return false;
 }
 
 bool EasyBaseLoop::_OnCommandDisconnect(EasyCommand* pCommand)
 {
 	EasyCommandDisconnect* pCommandDisconnect = (EasyCommandDisconnect*)pCommand;
+	EasySession* pSession = m_SessionArray[pCommandDisconnect->m_iSessionId];
+	if (pSession)
+	{
+		pSession->Disconnect();
+		return true;
+	}
 
-	return true;
+	return false;
 }
 
 bool EasyBaseLoop::_OnCommandSendData(EasyCommand* pCommand)
 {
 	EasyCommandSendData* pCommandSendData = (EasyCommandSendData*)pCommand;
-	return true;
+	EasySession* pSession = m_SessionArray[pCommandSendData->m_iSessionId];
+	if (pSession)
+	{
+		if (pSession->SendData(pCommandSendData->m_iTypeId, pCommandSendData->m_iLen, pCommandSendData->m_pData) != 0)
+		{
+			LOG_ERR(_T("SendData failed, sid=%08x"), pCommandSendData->m_iSessionId);
+			return false;
+		}
+
+		return true;
+	}
+	
+	return false;
 }
 
 bool EasyBaseLoop::_OnCommandShutdown()
 {
+	m_iShutdownStatus = READY_FOR_SHUTDOWN;
+	for (std::unordered_map<uint32, EasySession*>::iterator mit = m_SessionMap.begin(); mit != m_SessionMap.end(); ++mit)
+	{
+		mit->second->Disconnect();
+	}
 	return true;
 }
 

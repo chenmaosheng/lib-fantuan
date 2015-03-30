@@ -13,8 +13,6 @@ public:
 	virtual EasyBaseLoop* _CreateServerLoop() { return new EasyLoop; }
 };
 
-
-
 int main(int argc, char* argv[])
 {
 	EasyServer* pServer = new EasyServer();

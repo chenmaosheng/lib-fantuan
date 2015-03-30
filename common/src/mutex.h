@@ -3,9 +3,6 @@
 
 #include "common.h"
 
-namespace Fantuan
-{
-
 #ifdef WIN32
 	typedef CRITICAL_SECTION ft_mutex;
 #else
@@ -48,6 +45,5 @@ inline void ft_mutex_unlock(ft_mutex* pMutex)
 #endif
 }
 
-}
 #endif
 

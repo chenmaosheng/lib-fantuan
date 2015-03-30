@@ -3,9 +3,6 @@
 
 #include "mutex.h"
 
-namespace Fantuan
-{
-
 class MutexLocker
 {
 public:
@@ -32,8 +29,6 @@ public:
 private:
 	ft_mutex m_Mutex;
 };
-
-}
 
 #endif
 

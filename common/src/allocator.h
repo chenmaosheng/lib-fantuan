@@ -5,75 +5,57 @@
 #include "util.h"
 #include "type.h"
 
-namespace Fantuan
+namespace Allocator
 {
-	namespace Allocator
+	struct Object
 	{
-		struct Object
+		uint32			obj_size;
+		union
 		{
-			uint32			obj_size;
-			union
-			{
-				Object*		free_list_link;
-				uint8		data[1];
-			};
+			Object*		free_list_link;
+			uint8		data[1];
 		};
+	};
 
-		enum { OBJECT_OFFSET = offsetof(Object, data), };
-		enum { ALIGNMENT = 8, MAX_BYTES = 256, NUM_LIST = MAX_BYTES / ALIGNMENT,};
+	enum { OBJECT_OFFSET = offsetof(Object, data), };
+	enum { ALIGNMENT = 8, MAX_BYTES = 512, NUM_LIST = MAX_BYTES / ALIGNMENT,};
 
-		class DefaultAllocator
+	class DefaultAllocator
+	{
+	public:
+		static void*	allocate(size_t bytes);
+		static void		deallocate(void* ptr, size_t = 0);
+	};
+
+	class FTAllocator
+	{
+	public:
+		static void*	allocate(size_t bytes);
+		static void		deallocate(void* ptr);
+
+	private:
+		static size_t	_round_up(size_t bytes)
 		{
-		public:
-			static void*	allocate(size_t bytes);
-			static void		deallocate(void* ptr, size_t = 0);
-		};
+			return ROUND_UP(bytes, ALIGNMENT);
+		}
 
-		class FTAllocator
+		static size_t	_index(size_t bytes)
 		{
-			friend class AllocatorAutoLocker;
-			class AllocatorAutoLocker
-			{
-			public:
-				AllocatorAutoLocker()
-				{
-					FTAllocator::m_Locker.AcquireLock();
-				}
+			return (bytes + ALIGNMENT - 1) / ALIGNMENT - 1;
+		}
 
-				~AllocatorAutoLocker()
-				{
-					FTAllocator::m_Locker.ReleaseLock();
-				}
-			};
+		static uint8*	_refill(size_t bytes);
+		static uint8*	_chunk_alloc(size_t bytes, int32& num_object);
 
-		public:
-			static void*	allocate(size_t bytes);
-			static void		deallocate(void* ptr);
+	private:
+		static Object*	m_pFreeList[NUM_LIST];
+		static size_t	m_iTotalSize[NUM_LIST];
 
-		private:
-			static size_t	_round_up(size_t bytes)
-			{
-				return ROUND_UP(bytes, ALIGNMENT);
-			}
-			
-			static size_t	_index(size_t bytes)
-			{
-				return (bytes + ALIGNMENT - 1) / ALIGNMENT - 1;
-			}
-
-			static uint8*	_refill(size_t bytes);
-			static uint8*	_chunk_alloc(size_t bytes, int32& num_object);
-
-		private:
-			static Object*	m_pFreeList[NUM_LIST];
-			static size_t	m_iTotalSize[NUM_LIST];
-
-			static MutexLocker	m_Locker;
-		};
-	}
-
-	typedef Allocator::FTAllocator FT_Alloc;
+		static std::mutex	m_Locker;
+	};
 }
+
+typedef Allocator::FTAllocator FT_Alloc;
 
 #endif // _H_ALLOCATOR
 
