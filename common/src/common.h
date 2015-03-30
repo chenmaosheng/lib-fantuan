@@ -29,6 +29,8 @@ typedef void*					ConnID;
 		return WSAGetLastError();
 	}
 
+	#define easy_sleep(x)	Sleep(x)
+
 #endif
 
 #ifdef _LINUX
@@ -47,12 +49,14 @@ typedef void*					ConnID;
 		return errno;
 	}
 
-	uint32	timeGetTime()
+	EASY_INLINE uint32	timeGetTime()
 	{
 		timespec ts;
 		clock_gettime(CLOCK_MONOTONIC, &ts);
 		return (ts.tv_sec * 1000 + ts.tv_nsec / 1000000);
 	}
+
+	#define easy_sleep(x)	usleep(x * 1000)
 
 #endif
 

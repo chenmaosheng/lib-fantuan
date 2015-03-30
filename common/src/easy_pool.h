@@ -15,7 +15,7 @@ public:
 	~EasyPool()
 	{
 		std::unique_lock<std::mutex> lock(m_Mutex);
-		for (std::list<T*>::iterator it = m_ObjectList.begin(); it != m_ObjectList.end(); ++it)
+		for (typename std::list<T*>::iterator it = m_ObjectList.begin(); it != m_ObjectList.end(); ++it)
 		{
 			SAFE_DELETE(*it);
 		}
