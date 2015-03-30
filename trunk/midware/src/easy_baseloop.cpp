@@ -163,7 +163,7 @@ uint32 EasyBaseLoop::_CommandHandler(void* pParam)
 		// update time control
 		pBaseLoop->_UpdateTimeControl();
 		std::unique_lock<std::mutex> lock(pBaseLoop->m_CommandMutex);
-		if (pBaseLoop->m_CommandEvent.wait_for(lock, std::chrono::milliseconds(iSleepTime)))
+		if (pBaseLoop->m_CommandEvent.wait_for(lock, std::chrono::milliseconds(iSleepTime)) != std::cv_status::timeout)
 		{
 			for (DyArray<EasyCommand*>::iterator it = pBaseLoop->m_CommandList.begin(); it != pBaseLoop->m_CommandList.end(); ++it)
 			{

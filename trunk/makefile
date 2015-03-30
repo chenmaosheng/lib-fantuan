@@ -7,7 +7,7 @@ WARNING=-Wall #\
 OPTIMIZE=-O0
 DEBUG=-g3
 COMPILE=-c
-INCLUDE=-Icommon/src -Itest/src/ArrayTest -Itest/src/NetworkTest -Inetwork/src
+INCLUDE=-Icommon/src -Itest/src/ArrayTest -Itest/src/NetworkTest -Inetwork/src -Imidware/src -Itest/src/MidwareTest
 PREPROCESSOR=-D_LINUX=1
 INLINE=-finline-functions
 CFLAGS=-pthread -fno-rtti -Wreorder -Woverloaded-virtual -ansi
@@ -26,12 +26,22 @@ networktest:
 	(cd network/;make)
 	$(CC) $(WARNING) $(CFLAGS) $(OPTMIZE) $(DEBUG) $(INCLUDE) $(PREPROCESSOR) $(INLINE) -o networktest \
 		test/src/NetworkTest/main.cpp network/Network.a $(LIB) $(CFLAGS_END)
+		
+midwaretest:
+	(cd common/;make) 
+	(cd network/;make)
+	(cd midware/;make)
+	$(CC) $(WARNING) $(CFLAGS) $(OPTMIZE) $(DEBUG) $(INCLUDE) $(PREPROCESSOR) $(INLINE) -o midwaretest \
+		test/src/MidwareTest/main.cpp midware/Midware.a network/Network.a $(LIB) $(CFLAGS_END)
 			
 clean:
 	rm -f arraytest
 	rm -f networktest
+	rm -f midwaretest
 	rm -f main
 	rm -f common/*.a
 	rm -f common/*.o
 	rm -f network/*.a
 	rm -f network/*.o
+	rm -f midwaretest/*.a
+	rm -f midwaretest/*.o
