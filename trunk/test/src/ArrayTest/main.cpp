@@ -30,9 +30,9 @@ int main(int argc, char* argv[])
 {
 	argc = argc; argv = argv;
 	
-	/*ArrayTest1();
+	ArrayTest1();
 	printf("\n\n");
-	ArrayTest2();
+	/*ArrayTest2();
 	printf("\n\n");
 	ArrayTest3();
 	printf("\n\n");
@@ -49,8 +49,8 @@ int main(int argc, char* argv[])
 	AllocatorTest3();
 	printf("\n\n");*/
 
-	StringTest1();
-	printf("\n\n");
+	//StringTest1();
+	//printf("\n\n");
 	
 	getchar();
 

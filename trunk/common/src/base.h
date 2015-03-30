@@ -28,6 +28,7 @@
 #include <mutex>
 #include <thread>
 #include <condition_variable>
+#include <atomic>
 
 #define SAFE_DELETE(ptr)		if (ptr) { delete (ptr); (ptr) = nullptr; }
 #define SAFE_DELETE_ARRAY(ptr)	if (ptr) { delete [] (ptr); (ptr) = NULL; }

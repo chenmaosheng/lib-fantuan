@@ -14,6 +14,7 @@
 #define MAXLINE					1024
 #define MAX_INPUT_BUFFER		1024	// max size from client to server
 #define MAX_OUTPUT_BUFFER		65500	// max size from server to client
+#define MAX_SESSION				32768
 #define EASY_INLINE				static inline
 
 typedef void*					ConnID;
