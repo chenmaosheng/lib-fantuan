@@ -12,7 +12,12 @@ public:
 	EasySession();
 	virtual ~EasySession();
 	void	Reset();
-	void	SetSessionID(uint32 iSessionID)
+	inline uint32	GetSessionID() const
+	{
+		return m_iSessionID;
+	}
+
+	inline void		SetSessionID(uint32 iSessionID)
 	{
 		m_iSessionID = iSessionID;
 	}

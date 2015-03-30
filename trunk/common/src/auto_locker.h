@@ -3,9 +3,6 @@
 
 #include "common.h"
 
-namespace Fantuan
-{
-
 class AutoLocker
 {
 public:
@@ -22,8 +19,6 @@ public:
 private:
 	Mutex*	m_pMutex;
 };
-
-}
 
 #endif
 

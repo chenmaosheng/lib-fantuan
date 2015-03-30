@@ -1,25 +1,87 @@
 #include "easy_baseserver.h"
+#include "easy_baseloop.h"
+#include "easy_command.h"
 #include "easy_network.h"
+#include "easy_connection.h"
+#include "easy_acceptor.h"
 #include "easy_worker.h"
 #include "easy_contextpool.h"
-#include "easy_acceptor.h"
 #include "easy_handler.h"
-#include "easy_baseloop.h"
+
+#ifdef _USE_ALLCATOR
+#include "allocator.h"
+void* operator new(size_t n)
+{
+	return FT_Alloc::allocate(n);
+}
+
+void* operator new[](size_t n)
+{
+	return operator new(n);
+}
+
+void operator delete(void* ptr)
+{
+	FT_Alloc::deallocate(ptr);
+}
+
+void operator delete[](void* ptr)
+{
+	operator delete(ptr);
+}
+#endif
+
 
 bool __stdcall EasyBaseServer::OnConnection(ConnID connId)
 {
-	
+	EasyBaseServer* pServer = (EasyBaseServer*)((EasyConnection*)connId)->acceptor_->GetServer();
+	EasyCommandOnConnect* pCommand = NULL;
+
+	if (pServer->m_bReadyForShutdown)
+	{
+		return false;
+	}
+
+	pCommand = new EasyCommandOnConnect;
+	pCommand->m_ConnId = connId;
+	pServer->m_pMainLoop->PushCommand(pCommand);
+
 	return true;
 }
 
 void __stdcall EasyBaseServer::OnDisconnect(ConnID connId)
 {
-	
+	EasyBaseServer* pServer = (EasyBaseServer*)((EasyConnection*)connId)->acceptor_->GetServer();
+	EasyCommandOnDisconnect* pCommand = NULL;
+
+	if (pServer->m_bReadyForShutdown)
+	{
+		return;
+	}
+
+	pCommand = new EasyCommandOnDisconnect;
+	pCommand->m_ConnId = connId;
+	pServer->m_pMainLoop->PushCommand(pCommand);
 }
 
 void __stdcall EasyBaseServer::OnData(ConnID connId, uint32 iLen, char* pBuf)
 {
-	
+	EasyBaseServer* pServer = (EasyBaseServer*)((EasyConnection*)connId)->acceptor_->GetServer();
+	EasyCommandOnData* pCommand = NULL;
+
+	if (pServer->m_bReadyForShutdown)
+	{
+		return;
+	}
+
+	pCommand = new EasyCommandOnData;
+	pCommand->m_ConnId = connId;
+	if (!pCommand->CopyData(iLen, pBuf))
+	{
+		SAFE_DELETE(pCommand);
+		return;
+	}
+	pServer->m_pMainLoop->PushCommand(pCommand);
 }
 
 void __stdcall EasyBaseServer::OnConnectFailed(void*)
@@ -143,6 +205,7 @@ int32 EasyBaseServer::_InitializeNetwork(uint32 ip, uint16 port)
 	m_pAcceptor = new EasyAcceptor(&addr, m_pHandler);
 	m_pWorker = new EasyWorker(m_pAcceptor);
 #endif
+	m_pAcceptor->SetServer(this);
 
 	LOG_STT(_T("Initialize network success, IP=%d, port=%d"), ip, port);
 
