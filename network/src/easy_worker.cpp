@@ -195,7 +195,7 @@ EasyWorker::EasyWorker(EasyAcceptor* pAcceptor)
 	LOG_STT(_T("Initialize worker success"));
 }
 
-void* EasyWorker::WorkerThread(void* ptr)
+uint32 EasyWorker::WorkerThread(void* ptr)
 {
 	EasyAcceptor* pAcceptor = (EasyAcceptor*)ptr;
 	do
@@ -225,7 +225,7 @@ void* EasyWorker::WorkerThread(void* ptr)
 		}
 	}while (true);
 
-	return NULL;
+	return 0;
 }
 
 #endif

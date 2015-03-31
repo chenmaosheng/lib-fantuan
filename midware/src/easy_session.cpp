@@ -84,7 +84,7 @@ int32 EasySession::SendData(uint16 iTypeId, uint16 iLen, char* pData)
 	m_pConnection->AsyncSend(pPacket->m_iLen + PACKET_HEAD, buf);
 #endif
 #ifdef _LINUX
-	m_pConnection->SendMessage(buf, pPacket->m_iLen + PACKET_HEAD);
+	m_pConnection->SendMessage(pPacket->m_iLen + PACKET_HEAD, buf);
 #endif
 
 	return 0;
