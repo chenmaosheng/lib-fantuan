@@ -32,15 +32,8 @@ struct EasyContext
 #endif
 
 #ifdef _LINUX
-{
-	EasyContext()
-	{
-		buffer_ = NULL;
-		len_ = 0;
-	}
-
-	char*			buffer_;
-	int				len_;
+	char*				buffer_;
+	int					len_;
 #endif
 };
 

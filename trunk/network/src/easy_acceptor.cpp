@@ -198,16 +198,6 @@ void EasyAcceptor::Stop()
 	running_ = 0;
 }
 
-void EasyAcceptor::SetServer(void* pServer)
-{
-	server_ = pServer;
-}
-
-void* EasyAcceptor::GetServer()
-{
-	return server_;
-}
-
 #endif
 
 #ifdef _LINUX
@@ -235,7 +225,7 @@ EasyAcceptor::EasyAcceptor(PSOCKADDR_IN addr, EasyHandler* pHandler)
 	setsockopt(socket_, SOL_SOCKET, SO_REUSEADDR, (const char *)&val, sizeof(val));
 	setsockopt(socket_, IPPROTO_TCP, TCP_NODELAY, (const char *)&val, sizeof(val));
 
-	printf("Create and configure acceptor socket");
+	LOG_STT(_T("Create and configure acceptor socket"));
 
 	ev_.data.fd = socket_;
 	ev_.events = EPOLLIN | EPOLLET | EPOLLOUT;
@@ -246,7 +236,7 @@ EasyAcceptor::EasyAcceptor(PSOCKADDR_IN addr, EasyHandler* pHandler)
 	EASY_ASSERT(rc == 0);
 	if (rc != 0)
 	{
-		printf("bind to address failed, err=%d\n", rc);
+		LOG_ERR(_T("bind to address failed, err=%d"), rc);
 		return;
 	}
 
@@ -255,13 +245,13 @@ EasyAcceptor::EasyAcceptor(PSOCKADDR_IN addr, EasyHandler* pHandler)
 	EASY_ASSERT(rc == 0);
 	if (rc != 0)
 	{
-		printf("listen to the socket, err=%d", rc);
+		LOG_ERR(_T("listen to the socket, err=%d"), rc);
 		return;
 	}
 
 	handler_ = *pHandler;
 
-	printf("Initialize acceptor success\n");
+	LOG_STT(_T("Initialize acceptor success"));
 }
 
 EasyAcceptor::~EasyAcceptor()
@@ -272,22 +262,20 @@ EasyAcceptor::~EasyAcceptor()
 		close(socket_);
 	}
 
-	printf("Destroy acceptor success\n");
+	LOG_STT(_T("Destroy acceptor success"));
 }
 
 void EasyAcceptor::AcceptConnection()
 {
-	printf("ready to accept connection\n");
+	LOG_DBG(_T("ready to accept connection"));
 	EasyConnection* pConnection = new EasyConnection(this);
-	printf("new connection\n");
 	socklen_t clilen;
 	pConnection->socket_ = accept(socket_, (sockaddr*)&pConnection->addr_, &clilen);
 	fcntl(pConnection->socket_, F_SETFL, O_NONBLOCK);
-	printf("set to nonblock\n");
 	pConnection->ev_.data.ptr = pConnection;
 	pConnection->ev_.events = EPOLLIN | EPOLLET;
 	epoll_ctl(epfd_, EPOLL_CTL_ADD, pConnection->socket_, &pConnection->ev_);
-	printf("receive a new connection\n");
+	LOG_DBG(_T("receive a new connection"));
 
 	handler_.OnConnection((ConnID)pConnection);
 }

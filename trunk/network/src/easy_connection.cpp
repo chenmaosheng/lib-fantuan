@@ -149,26 +149,6 @@ void EasyConnection::AsyncSend(uint32 len, char* buf)
 	AsyncSend(pContext);
 }
 
-void EasyConnection::SetClient(void* pClient)
-{
-	client_ = pClient;
-}
-
-void* EasyConnection::GetClient()
-{
-	return client_;
-}
-
-void EasyConnection::SetRefMax(uint16 iMax)
-{
-	iorefmax_ = iMax;
-}
-
-bool EasyConnection::IsConnected()
-{
-	return connected_ ? true : false;
-}
-
 EasyConnection* EasyConnection::Create(EasyHandler* pHandler, EasyContextPool* pContextPool, EasyWorker* pWorker, EasyAcceptor* pAcceptor)
 {
 	EasyConnection* pConnection = (EasyConnection*)_aligned_malloc(sizeof(EasyConnection), MEMORY_ALLOCATION_ALIGNMENT);
@@ -300,16 +280,23 @@ void EasyConnection::Delete(EasyConnection* pConnection)
 EasyConnection::EasyConnection(EasyAcceptor* pAcceptor) : acceptor_(pAcceptor)
 {
 	recv_context_ = new EasyContext;
-	recv_context_->buffer_ = (char*)malloc(1024);
+	recv_context_->buffer_ = (char*)_aligned_malloc(MAX_INPUT_BUFFER, MEMORY_ALLOCATION_ALIGNMENT);
 	send_context_ = new EasyContext;
 	sem_init(&sem_, 0, 1);
 }
 
-int EasyConnection::HandleMessage()
+EasyConnection::~EasyConnection()
+{
+	SAFE_DELETE(send_context_);
+	_aligned_free(recv_context_->buffer_);
+	SAFE_DELETE(recv_context_);
+}
+
+int32 EasyConnection::RecvData()
 {
 	bool bReadOK = false;
-	int recvNum = 0;
-	printf("start to receve message\n");
+	int32 recvNum = 0;
+	LOG_DBG(_T("start to receive message"));
 	recv_context_->buffer_[0] = '\n';
 	recv_context_->len_ = 0;
 	while (true)
@@ -319,32 +306,31 @@ int EasyConnection::HandleMessage()
 		{
 			if (errno == EAGAIN)
 			{
-				printf("recv eagain\n");
+				LOG_DBG(_T("recv eagain"));
 				bReadOK = true;
 				break;
 			}
 			else if (errno == EINTR)
 			{
-				printf("recv eintr\n");
+				LOG_DBG(_T("recv eintr"));
 				continue;
 			}
 			else
 			{
-				printf("other recv error\n");
+				LOG_DBG(_T("other recv error"));
 				break;
 			}
 		}
 		else if (recvNum == 0)
 		{
-			printf("close and leave\n");
-			close(socket_);
+			LOG_DBG(_T("close and leave"));
 			break;
 		}
 
 		recv_context_->len_ += recvNum;
 		if (recvNum == MAXLINE)
 		{
-			printf("hit maxline, continue\n");
+			LOG_DBG(_T("hit maxline, continue"));
 			continue;
 		}
 		else
@@ -356,12 +342,14 @@ int EasyConnection::HandleMessage()
 
 	if (bReadOK)
 	{
-		recv_context_->buffer_[recv_context_->len_] = '\0';
-		printf("message=%s, len=%d\n", recv_context_->buffer_, recv_context_->len_);
+		LOG_DBG(_T("message=%s, len=%d"), recv_context_->buffer_, recv_context_->len_);
 		acceptor_->handler_.OnData((ConnID)this, recv_context_->len_, recv_context_->buffer_);
+
+		return recv_context_->len_;
 	}
 
-	return recv_context_->len_;
+	Close();
+	return -1;
 }
 
 int EasyConnection::SendMessage()
@@ -494,9 +482,9 @@ void* EasyConnection::GetClient()
 	return client_;
 }
 
-void EasyConnection::Close(EasyConnection* pConnection)
+void EasyConnection::Close()
 {
-	close(pConnection->socket_);
+	close(socket_);
 }
 
 #endif

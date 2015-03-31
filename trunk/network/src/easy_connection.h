@@ -34,10 +34,22 @@ struct EasyConnection : SLIST_ENTRY
 	void				AsyncRecv(EasyContext*);
 	void				AsyncSend(uint32 len, char* buf);
 
-	void				SetClient(void*);
-	void*				GetClient();
-	void				SetRefMax(uint16 iMax);
-	bool				IsConnected();
+	inline void			SetClient(void* pClient)
+	{
+		client_ = pClient;
+	}
+	inline void*		GetClient() const
+	{
+		return client_;
+	}
+	inline void			SetRefMax(uint16 iMax)
+	{
+		iorefmax_ = iMax;
+	}
+	inline bool			IsConnected() const
+	{
+		return connected_ ? true : false;
+	}
 
 	// static function to create and close
 	static EasyConnection*	Create(EasyHandler* pHandler, EasyContextPool* pContextPool, EasyWorker* pWorker, EasyAcceptor* pAcceptor);
@@ -53,16 +65,23 @@ struct EasyConnection : SLIST_ENTRY
 struct EasyConnection
 {
 	EasyConnection(EasyAcceptor* pAcceptor);
+	~EasyConnection();
 
-	int HandleMessage();
-	int SendMessage();
-	int SendMessage(char* buffer, int len);
-	void	SetClient(void*);
-	void*	GetClient();
+	int32		RecvData();
+	int32		SendMessage();
+	int32		SendMessage(uint32 len, char* buf);
+	inline void			SetClient(void* pClient)
+	{
+		client_ = pClient;
+	}
+	inline void*		GetClient() const
+	{
+		return client_;
+	}
 
-	static void				Close(EasyConnection*);
+	void	Close();
 
-	int				socket_;
+	SOCKET			socket_;
 	sockaddr_in		addr_;
 	EasyAcceptor*	acceptor_;
 	epoll_event		ev_;

@@ -23,8 +23,14 @@ public:
 	void				Accept();
 
 	// set the bind server from app layer
-	void				SetServer(void*);
-	void*				GetServer();
+	void				SetServer(void* pServer)
+	{
+		server_ = pServer;
+	}
+	void*				GetServer()
+	{
+		return server_;
+	}
 
 public:
 	SOCKET				socket_;
@@ -49,12 +55,22 @@ public:
 	EasyAcceptor(PSOCKADDR_IN addr, EasyHandler* pHandler);
 	~EasyAcceptor();
 
-	void AcceptConnection();
+	void	AcceptConnection();
+
+	// set the bind server from app layer
+	void	SetServer(void* pServer)
+	{
+		server_ = pServer;
+	}
+	void*	GetServer()
+	{
+		return server_;
+	}
 
 	int			socket_;
 	int			epfd_;
 	epoll_event	ev_;
-	epoll_event	events_[20];
+	epoll_event	events_[MAX_EVENT];
 	EasyHandler	handler_;				// io handler
 	EasyConnection* conn_;
 };
