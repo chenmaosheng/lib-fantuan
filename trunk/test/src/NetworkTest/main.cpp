@@ -71,7 +71,7 @@ int main(int argc, char* argv[])
 				ch[i] = 'a';
 			}
 			printf("ready to send message\n");
-			pAcceptor->conn_->SendMessage(ch, strlen(ch));
+			pAcceptor->conn_->SendMessage(strlen(ch), ch);
 		}
 		sleep(1);	
 	}

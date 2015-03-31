@@ -67,11 +67,12 @@ public:
 		return server_;
 	}
 
-	int			socket_;
-	int			epfd_;
-	epoll_event	ev_;
-	epoll_event	events_[MAX_EVENT];
-	EasyHandler	handler_;				// io handler
+	int				socket_;
+	int				epfd_;
+	epoll_event		ev_;
+	epoll_event		events_[MAX_EVENT];
+	EasyHandler		handler_;				// io handler
+	void*			server_;
 	EasyConnection* conn_;
 };
 
