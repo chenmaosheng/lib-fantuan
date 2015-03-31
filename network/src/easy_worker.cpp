@@ -13,9 +13,7 @@ EasyWorker::EasyWorker(uint32 iThreadCount) : thread_count_(0)
 	// create all thread
 	while (thread_count_ < iThreadCount)
 	{
-		HANDLE hWorkerThread = (HANDLE)_beginthreadex(NULL, 0, &EasyWorker::WorkerThread, this, 0, NULL);
-		CloseHandle(hWorkerThread);
-
+		std::thread thread_(&EasyWorker::WorkerThread, this);
 		++thread_count_;
 	}
 
@@ -41,7 +39,7 @@ EasyWorker::~EasyWorker()
 	LOG_STT(_T("destroy iocp handle"));
 }
 
-uint32 WINAPI EasyWorker::WorkerThread(PVOID pParam)
+uint32 EasyWorker::WorkerThread(PVOID pParam)
 {
 	BOOL bResult;
 	DWORD dwNumRead;
@@ -193,9 +191,7 @@ uint32 WINAPI EasyWorker::WorkerThread(PVOID pParam)
 
 EasyWorker::EasyWorker(EasyAcceptor* pAcceptor)
 {
-	pthread_t thread_;
-	pthread_create(&thread_, NULL, &EasyWorker::WorkerThread, pAcceptor);
-
+	std::thread thread_(&EasyWorker::WorkerThread, pAcceptor);
 	LOG_STT(_T("Initialize worker success"));
 }
 
@@ -204,7 +200,7 @@ void* EasyWorker::WorkerThread(void* ptr)
 	EasyAcceptor* pAcceptor = (EasyAcceptor*)ptr;
 	do
 	{
-		int nfds = epoll_wait(pAcceptor->epfd_, pAcceptor->events_, 20, 500);
+		int nfds = epoll_wait(pAcceptor->epfd_, pAcceptor->events_, MAX_EVENT, 500);
 		for (int i = 0; i < nfds; ++i)
 		{
 			if (pAcceptor->events_[i].data.fd == pAcceptor->socket_)
@@ -217,7 +213,7 @@ void* EasyWorker::WorkerThread(void* ptr)
 				{
 					EasyConnection* pConnection = (EasyConnection*)pAcceptor->events_[i].data.ptr;
 					pAcceptor->conn_ = pConnection;
-					pConnection->HandleMessage();
+					pConnection->RecvData();
 				}
 				else if (pAcceptor->events_[i].events & EPOLLOUT)
 				{

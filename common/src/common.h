@@ -11,7 +11,7 @@
 #include <stddef.h>
 #include "easy_log.h"
 
-#define MAXLINE					1024
+#define MAXLINE					256
 #define MAX_INPUT_BUFFER		1024	// max size from client to server
 #define MAX_OUTPUT_BUFFER		65500	// max size from server to client
 #define MAX_SESSION				32768
@@ -40,6 +40,7 @@ typedef void*					ConnID;
 	#define closesocket			close
 	#define INVALID_SOCKET		(-1)
 	#define SOCKET_ERROR		(-1)
+	#define MAX_EVENT			8192
 	#define __stdcall
 	typedef sockaddr_in			SOCKADDR_IN;
 	typedef sockaddr_in*		PSOCKADDR_IN;
