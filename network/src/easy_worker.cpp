@@ -13,7 +13,7 @@ EasyWorker::EasyWorker(uint32 iThreadCount) : thread_count_(0)
 	// create all thread
 	while (thread_count_ < iThreadCount)
 	{
-		std::thread thread_(&EasyWorker::WorkerThread, this);
+		uintptr_t thread_ = _beginthreadex(NULL, 0,  &EasyWorker::WorkerThread, this, 0, NULL);
 		++thread_count_;
 	}
 
@@ -191,11 +191,12 @@ uint32 EasyWorker::WorkerThread(PVOID pParam)
 
 EasyWorker::EasyWorker(EasyAcceptor* pAcceptor)
 {
-	std::thread thread_(&EasyWorker::WorkerThread, pAcceptor);
+	pthread_t thread_;
+	pthread_create(&thread_, NULL, &EasyWorker::WorkerThread, pAcceptor);
 	LOG_STT(_T("Initialize worker success"));
 }
 
-uint32 EasyWorker::WorkerThread(void* ptr)
+void* EasyWorker::WorkerThread(void* ptr)
 {
 	EasyAcceptor* pAcceptor = (EasyAcceptor*)ptr;
 	do
@@ -225,7 +226,7 @@ uint32 EasyWorker::WorkerThread(void* ptr)
 		}
 	}while (true);
 
-	return 0;
+	return NULL;
 }
 
 #endif

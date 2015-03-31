@@ -11,7 +11,7 @@ public:
 	EasyWorker(uint32 iThreadCount=2);
 	~EasyWorker();
 
-	static uint32 WorkerThread(void*);
+	static uint32 WINAPI WorkerThread(void*);
 
 public:
 	HANDLE  iocp_;			// binded iocp handle
@@ -20,7 +20,7 @@ public:
 
 #ifdef _LINUX
 	EasyWorker(EasyAcceptor* pAcceptor);
-	static uint32 WorkerThread(void*);
+	static void* WorkerThread(void*);
 #endif
 };
 

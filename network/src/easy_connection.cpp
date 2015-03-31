@@ -419,7 +419,7 @@ int EasyConnection::SendMessage()
 	return 0;
 }
 
-int EasyConnection::SendMessage(char* buffer, int len)
+int EasyConnection::SendMessage(uint32 len, char* buffer)
 {
 	sem_wait(&sem_);
 	bool bWriteOK = false;
@@ -470,16 +470,6 @@ int EasyConnection::SendMessage(char* buffer, int len)
 	sem_post(&sem_);
 
 	return 0;
-}
-
-void EasyConnection::SetClient(void* pClient)
-{
-	client_ = pClient;
-}
-
-void* EasyConnection::GetClient()
-{
-	return client_;
 }
 
 void EasyConnection::Close()
