@@ -43,5 +43,5 @@ clean:
 	rm -f common/*.o
 	rm -f network/*.a
 	rm -f network/*.o
-	rm -f midwaretest/*.a
-	rm -f midwaretest/*.o
+	rm -f midware/*.a
+	rm -f midware/*.o

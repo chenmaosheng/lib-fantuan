@@ -41,7 +41,11 @@ void EasySession::OnDisconnect()
 {
 	if (m_pConnection)
 	{
+#ifdef WIN32
 		EasyConnection::Close(m_pConnection);
+#else
+		m_pConnection->Close();
+#endif
 	}
 
 	Reset();
