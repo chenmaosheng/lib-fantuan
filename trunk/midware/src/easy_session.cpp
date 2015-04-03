@@ -118,7 +118,12 @@ void EasySession::Disconnect()
 
 int32 EasySession::SendData(uint16 iTypeId, uint16 iLen, const char* pData)
 {
+#ifdef WIN32
 	char* buf = m_pServer->PopOutputBuffer();
+#endif
+#ifdef _LINUX
+	char* buf = m_SendBuf;
+#endif
 	EASY_ASSERT(buf);
 	if (!buf)
 	{
