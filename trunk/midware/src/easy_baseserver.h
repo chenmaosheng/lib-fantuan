@@ -24,6 +24,10 @@ public:
 	void	Destroy();
 	void	Shutdown();
 	char*	PopOutputBuffer();
+	EasyBaseLoop*	GetMainLoop() const
+	{
+		return m_pMainLoop;
+	}
 
 private:
 	int32	_InitializeLog();
