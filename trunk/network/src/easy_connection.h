@@ -79,6 +79,7 @@ struct EasyConnection
 		return client_;
 	}
 
+	void	Disconnect();
 	void	Close();
 
 	SOCKET			socket_;

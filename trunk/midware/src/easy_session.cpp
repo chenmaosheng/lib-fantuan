@@ -45,6 +45,7 @@ void EasySession::OnDisconnect()
 		EasyConnection::Close(m_pConnection);
 #else
 		m_pConnection->Close();
+		SAFE_DELETE(m_pConnection);
 #endif
 	}
 
