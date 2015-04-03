@@ -474,7 +474,7 @@ int EasyConnection::SendMessage(uint32 len, char* buffer)
 
 void EasyConnection::Disconnect()
 {
-	handler_.OnDisconnect((ConnID)this);
+	acceptor_->handler_.OnDisconnect((ConnID)this);
 }
 
 void EasyConnection::Close()
