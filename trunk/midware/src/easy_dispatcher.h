@@ -11,7 +11,7 @@ public:
 	static int32 SendPacket(void*, uint16 iTypeId, uint16 iLen, const char* pBuf);
 
 public:
-	typedef bool (__stdcall* Func)(void*, Stream&);
+	typedef bool (__stdcall* Func)(void*, InputStream&);
 	static Func* m_pFuncList;
 };
 

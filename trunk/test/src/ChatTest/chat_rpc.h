@@ -3,6 +3,7 @@
 
 #include "common.h"
 
+extern int32 PingAck(void* pServer, uint32 iVersion);
 extern int32 ChatAck(void* pServer, uint32 iLen, char* strMessage);
 
 #endif

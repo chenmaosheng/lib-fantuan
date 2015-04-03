@@ -2,6 +2,11 @@
 #include "easy_dispatcher.h"
 #include "chat_rpc.h"
 
+void ChatSession::OnPingReq(uint32 iVersion)
+{
+	PingAck(this, iVersion);
+}
+
 void ChatSession::OnChatReq(uint32 iLen, char* message)
 {
 	ChatAck(this, iLen, message);
