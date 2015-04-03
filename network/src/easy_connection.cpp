@@ -480,9 +480,6 @@ void EasyConnection::Disconnect()
 void EasyConnection::Close()
 {
 	close(socket_);
-	_aligned_free(recv_context_->buffer_);
-	SAFE_DELETE(send_context_);
-	SAFE_DELETE(recv_context_);
 }
 
 #endif
