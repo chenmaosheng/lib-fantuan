@@ -36,6 +36,9 @@ protected:
 	EasyConnection*	m_pConnection;
 	uint16			m_iRecvBufLen;
 	char			m_RecvBuf[MAX_INPUT_BUFFER];
+#ifdef _LINUX
+	char			m_SendBuf[MAX_OUTPUT_BUFFER];
+#endif
 
 public:
 	static EasyBaseServer*	m_pServer;
