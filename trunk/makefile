@@ -34,10 +34,18 @@ midwaretest:
 	$(CC) $(WARNING) $(CFLAGS) $(OPTMIZE) $(DEBUG) $(INCLUDE) $(PREPROCESSOR) $(INLINE) -o midwaretest \
 		test/src/MidwareTest/main.cpp midware/Midware.a network/Network.a $(LIB) $(CFLAGS_END)
 			
+chattest:
+	(cd common/;make) 
+	(cd network/;make)
+	(cd midware/;make)
+	$(CC) $(WARNING) $(CFLAGS) $(OPTMIZE) $(DEBUG) $(INCLUDE) $(PREPROCESSOR) $(INLINE) -o chattest \
+		test/src/ChatTest/chat_rpc.cpp test/src/ChatTest/chat_session.cpp test/src/ChatTest/main.cpp midware/Midware.a network/Network.a $(LIB) $(CFLAGS_END)
+		
 clean:
 	rm -f arraytest
 	rm -f networktest
 	rm -f midwaretest
+	rm -f chattest
 	rm -f main
 	rm -f common/*.a
 	rm -f common/*.o

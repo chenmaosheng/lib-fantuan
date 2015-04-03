@@ -37,7 +37,7 @@ public:
 	bool Serialize(const T& value)
 	{
 		// serialize common type
-		if (m_iDataLen + sizeof(T) <= sizeof(m_pDataBuffer))
+		if (m_iDataLen + sizeof(T) <= MAX_OUTPUT_BUFFER)
 		{
 			memcpy(m_pDataBuffer+m_iDataLen, &value, sizeof(T));
 			m_iDataLen += sizeof(T);
@@ -52,7 +52,7 @@ public:
 	{
 		// serialize array type
 		iCount *= sizeof(T);
-		if (m_iDataLen + iCount <= sizeof(m_pDataBuffer))
+		if (m_iDataLen + iCount <= MAX_OUTPUT_BUFFER)
 		{
 			memcpy(m_pDataBuffer + m_iDataLen, array, iCount);
 			m_iDataLen += iCount;

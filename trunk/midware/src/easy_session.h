@@ -26,7 +26,7 @@ public:
 	virtual void	OnDisconnect();
 	virtual void	OnData(uint32 iLen, char* pData);
 	virtual void	Disconnect();
-	virtual	int32	SendData(uint16 iTypeId, uint16 iLen, char* pData);
+	virtual	int32	SendData(uint16 iTypeId, uint16 iLen, const char* pData);
 
 protected:
 	virtual int32	_HandlePacket(EasyPacket*);
@@ -37,6 +37,7 @@ protected:
 	uint16			m_iRecvBufLen;
 	char			m_RecvBuf[MAX_INPUT_BUFFER];
 
+public:
 	static EasyBaseServer*	m_pServer;
 };
 
