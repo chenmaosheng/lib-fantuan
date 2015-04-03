@@ -65,10 +65,12 @@ protected:
 	uint32					m_iDeltaTime;	// unit frame time cost (ms)
 	uint64					m_iWorldTime;	// world real time (s)
 
-	std::unordered_map<uint32, EasySession*>	m_SessionMap;
 	EasyPool<EasySession>	m_SessionPool;
 	EasySession**			m_SessionArray;
 	uint32					m_iMaxSession;
+
+public:
+	std::unordered_map<uint32, EasySession*>	m_SessionMap;
 };
 
 
