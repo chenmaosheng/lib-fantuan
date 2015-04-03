@@ -7,6 +7,7 @@
 #include "easy_worker.h"
 #include "easy_contextpool.h"
 #include "easy_handler.h"
+#include "easy_session.h"
 
 #ifdef _USE_ALLCATOR
 #include "allocator.h"
@@ -122,6 +123,8 @@ int32 EasyBaseServer::Initialize(uint32 ip, uint16 port)
 		LOG_ERR(_T("Initialize MainLoop failed"));
 		return -3;
 	}
+
+	EasySession::m_pServer = this;
 
 	LOG_STT(_T("Initialize success, server is started!"));
 
