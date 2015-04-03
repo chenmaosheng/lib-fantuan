@@ -348,7 +348,7 @@ int32 EasyConnection::RecvData()
 		return recv_context_->len_;
 	}
 
-	Close();
+	Disconnect();
 	return -1;
 }
 
@@ -389,7 +389,7 @@ int EasyConnection::SendMessage()
 		else if (writeNum == 0)
 		{
 			printf("send close and leave\n");
-			close(socket_);
+			Disconnect();
 			break;
 		}
 
@@ -444,7 +444,7 @@ int EasyConnection::SendMessage(uint32 len, char* buffer)
 		else if (writeNum == 0)
 		{
 			printf("sendmessage close and leave\n");
-			close(socket_);
+			Disconnect();
 			break;
 		}
 
@@ -472,9 +472,17 @@ int EasyConnection::SendMessage(uint32 len, char* buffer)
 	return 0;
 }
 
+void EasyConnection::Disconnect()
+{
+	handler_.OnDisconnect((ConnID)this);
+}
+
 void EasyConnection::Close()
 {
 	close(socket_);
+	_aligned_free(recv_context_->buffer_);
+	SAFE_DELETE(send_context_);
+	SAFE_DELETE(recv_context_);
 }
 
 #endif
