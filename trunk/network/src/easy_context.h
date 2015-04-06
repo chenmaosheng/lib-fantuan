@@ -34,7 +34,7 @@ struct EasyContext
 #ifdef _LINUX
 {
 	char*				buffer_;
-	int					len_;
+	int32				len_;
 #endif
 };
 

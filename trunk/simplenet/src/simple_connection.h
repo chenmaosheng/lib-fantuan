@@ -1,0 +1,23 @@
+#ifndef _H_SIMPLE_CONNECTION
+#define _H_SIMPLE_CONNECTION
+
+#include "simple_handler.h"
+
+struct SimpleContext;
+struct SimpleConnection
+{
+	SimpleConnection();
+	~SimpleConnection();
+
+	int32	Connect(const char* ip, uint16 port);
+	int32	RecvData();
+	int32	SendData(uint32 len, char* buf);
+	void	Disconnect();
+	void	Close();
+	SOCKET			socket_;
+	SOCKADDR_IN		addr_;
+	SimpleContext*	recv_context_;
+	SimpleContext*	send_context_;
+	SimpleHandler	handler_;
+};
+#endif

@@ -83,8 +83,8 @@
     <IntDir>..\..\obj\$(ProjectName)\$(ConfigurationName)</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>$(SolutionDir)\Common\Bin\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)\Common\obj\$(ProjectName)\$(Configuration)\</IntDir>
+    <OutDir>..\..\bin\$(ConfigurationName)</OutDir>
+    <IntDir>..\..\obj\$(ProjectName)\$(ConfigurationName)</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
