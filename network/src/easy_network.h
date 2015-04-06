@@ -8,9 +8,9 @@
 class EasyNetwork
 {
 public:
-	// intialize starnet
+	// intialize
 	static int32 Init();
-	// destroy starnet
+	// destroy
 	static void Destroy();
 	
 public:
