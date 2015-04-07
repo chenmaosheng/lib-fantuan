@@ -6,6 +6,8 @@
 #include <process.h>
 #include <tchar.h>
 #include <mmsystem.h>
+#include <Psapi.h>
+#include <DbgHelp.h>
 
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN

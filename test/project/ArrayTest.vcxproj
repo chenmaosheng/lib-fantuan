@@ -53,8 +53,8 @@
     <_ProjectFileVersion>11.0.61030.0</_ProjectFileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>..\..\..\bin\$(ConfigurationName)</OutDir>
-    <IntDir>..\..\..\obj\$(ProjectName)\$(ConfigurationName)</IntDir>
+    <OutDir>..\..\bin\$(ConfigurationName)</OutDir>
+    <IntDir>..\..\obj\$(ProjectName)\$(ConfigurationName)</IntDir>
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

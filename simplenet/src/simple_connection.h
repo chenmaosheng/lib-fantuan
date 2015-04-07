@@ -9,10 +9,9 @@ struct SimpleConnection
 	SimpleConnection();
 	~SimpleConnection();
 
-	int32	Connect(const char* ip, uint16 port);
+	int32	Connect(const char* ip, uint16 port, SimpleHandler* pHandler);
 	int32	RecvData();
 	int32	SendData(uint32 len, char* buf);
-	void	Disconnect();
 	void	Close();
 	SOCKET			socket_;
 	SOCKADDR_IN		addr_;

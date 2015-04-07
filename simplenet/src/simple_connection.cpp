@@ -15,10 +15,11 @@ SimpleConnection::~SimpleConnection()
 	SAFE_DELETE(recv_context_);
 }
 
-int32 SimpleConnection::Connect(const char* ip, uint16 port)
+int32 SimpleConnection::Connect(const char* ip, uint16 port, SimpleHandler* pHandler)
 {
-	unsigned long nNoBlock = 1;
 	socket_ = socket( AF_INET, SOCK_STREAM, IPPROTO_TCP );
+	handler_ = *pHandler;
+	//unsigned long nNoBlock = 1;
 	//ioctlsocket(socket_, FIONBIO, &nNoBlock);
 
 	SOCKADDR_IN addr;
@@ -37,6 +38,8 @@ int32 SimpleConnection::Connect(const char* ip, uint16 port)
 		}	
 	}
 
+	handler_.OnConnection((ConnID)this);
+
 	return 0;
 }
 
@@ -49,7 +52,7 @@ int32 SimpleConnection::RecvData()
 		return -1;
 	}
 
-	//handler_.OnData((ConnID)this, (uint32)recv_context_->len_, recv_context_->buffer_);
+	handler_.OnData((ConnID)this, (uint32)recv_context_->len_, recv_context_->buffer_);
 
 	return 0;
 }
@@ -72,7 +75,7 @@ int32 SimpleConnection::SendData(uint32 len, char* buf)
 		else if (writeNum == 0)
 		{
 			LOG_DBG(_T("sendmessage close and leave"));
-			Disconnect();
+			Close();
 			break;
 		}
 
@@ -99,12 +102,8 @@ int32 SimpleConnection::SendData(uint32 len, char* buf)
 	return 0;
 }
 
-void SimpleConnection::Disconnect()
-{
-	//handler_.OnDisconnect((ConnID)this);
-}
-
 void SimpleConnection::Close()
 {
 	closesocket(socket_);
+	handler_.OnDisconnect((ConnID)this);
 }
