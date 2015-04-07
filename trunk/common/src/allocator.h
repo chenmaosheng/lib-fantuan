@@ -23,33 +23,33 @@ namespace Allocator
 	class DefaultAllocator
 	{
 	public:
-		static void*	allocate(size_t bytes);
-		static void		deallocate(void* ptr, size_t = 0);
+		static void*	allocate(uint32 bytes);
+		static void		deallocate(void* ptr, uint32 = 0);
 	};
 
 	class FTAllocator
 	{
 	public:
-		static void*	allocate(size_t bytes);
+		static void*	allocate(uint32 bytes);
 		static void		deallocate(void* ptr);
 
 	private:
-		static size_t	_round_up(size_t bytes)
+		static uint32	_round_up(uint32 bytes)
 		{
 			return ROUND_UP(bytes, ALIGNMENT);
 		}
 
-		static size_t	_index(size_t bytes)
+		static uint32	_index(uint32 bytes)
 		{
 			return (bytes + ALIGNMENT - 1) / ALIGNMENT - 1;
 		}
 
-		static uint8*	_refill(size_t bytes);
-		static uint8*	_chunk_alloc(size_t bytes, int32& num_object);
+		static uint8*	_refill(uint32 bytes);
+		static uint8*	_chunk_alloc(uint32 bytes, int32& num_object);
 
 	private:
 		static Object*	m_pFreeList[NUM_LIST];
-		static size_t	m_iTotalSize[NUM_LIST];
+		static uint32	m_iTotalSize[NUM_LIST];
 
 		static std::mutex	m_Locker;
 	};

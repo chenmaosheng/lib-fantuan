@@ -108,9 +108,6 @@
     <ClInclude Include="..\src\easy_pool.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\minidump.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\easy_dump.h">
       <Filter>Header Files</Filter>
     </ClInclude>
