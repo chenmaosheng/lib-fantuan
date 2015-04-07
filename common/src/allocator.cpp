@@ -2,23 +2,23 @@
 
 namespace Allocator
 {
-	void* DefaultAllocator::allocate(size_t bytes)
+	void* DefaultAllocator::allocate(uint32 bytes)
 	{
 		Object* pObject = (Object*)malloc(bytes);
 		pObject->obj_size = bytes;
 		return pObject->data;
 	}
 
-	void DefaultAllocator::deallocate(void* ptr, size_t)
+	void DefaultAllocator::deallocate(void* ptr, uint32)
 	{
 		free(ptr);
 	}
 
 	Object* FTAllocator::m_pFreeList[NUM_LIST] = {0};
-	size_t	FTAllocator::m_iTotalSize[NUM_LIST] = {0};
+	uint32	FTAllocator::m_iTotalSize[NUM_LIST] = {0};
 	std::mutex FTAllocator::m_Locker;
 
-	void* FTAllocator::allocate(size_t bytes)
+	void* FTAllocator::allocate(uint32 bytes)
 	{
 		bytes += OBJECT_OFFSET;
 		if (bytes > MAX_BYTES)
@@ -55,7 +55,7 @@ namespace Allocator
 		*freeList = pObject;
 	}
 
-	uint8* FTAllocator::_refill(size_t bytes)
+	uint8* FTAllocator::_refill(uint32 bytes)
 	{
 		int32 nobject = 20;
 		uint8* chunk = _chunk_alloc(bytes, nobject);
@@ -84,9 +84,9 @@ namespace Allocator
 		return pObject->data;
 	}
 
-	uint8* FTAllocator::_chunk_alloc(size_t bytes, int32& nobject)
+	uint8* FTAllocator::_chunk_alloc(uint32 bytes, int32& nobject)
 	{
-		size_t index = _index(bytes);
+		uint32 index = _index(bytes);
 		int32 total_bytes = bytes * nobject;
 		int32 new_bytes = total_bytes * 2 + ROUND_UP((m_iTotalSize[index] >> 4), bytes);
 		uint8* chunk = (uint8*)malloc(new_bytes);
