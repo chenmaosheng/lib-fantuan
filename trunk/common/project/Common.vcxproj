@@ -23,12 +23,14 @@
     <ClInclude Include="..\src\dy_array.h" />
     <ClInclude Include="..\src\dy_string.h" />
     <ClInclude Include="..\src\easy_buffer.h" />
+    <ClInclude Include="..\src\easy_dump.h" />
     <ClInclude Include="..\src\easy_log.h" />
     <ClInclude Include="..\src\easy_pool.h" />
     <ClInclude Include="..\src\format.h" />
     <ClInclude Include="..\src\ft_assert.h" />
     <ClInclude Include="..\src\linux_base.h" />
     <ClInclude Include="..\src\local_string.h" />
+    <ClInclude Include="..\src\minidump.h" />
     <ClInclude Include="..\src\mutex.h" />
     <ClInclude Include="..\src\mutex_locker.h" />
     <ClInclude Include="..\src\noncopyable.h" />
@@ -45,6 +47,7 @@
   <ItemGroup>
     <ClCompile Include="..\src\allocator.cpp" />
     <ClCompile Include="..\src\easy_buffer.cpp" />
+    <ClCompile Include="..\src\easy_dump.cpp" />
     <ClCompile Include="..\src\easy_log.cpp" />
     <ClCompile Include="..\src\util.cpp" />
   </ItemGroup>

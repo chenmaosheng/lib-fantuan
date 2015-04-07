@@ -10,7 +10,7 @@ int main(int argc, char* argv[])
 	EasyLog::Instance()->Init(EasyLog::LOG_WARNING_LEVEL);
 	SimpleNetwork::Init();
 	SimpleConnection* pConnection = new SimpleConnection;
-	pConnection->Connect("127.0.0.1", 9001);
+	pConnection->Connect("127.0.0.1", 9001, NULL);
 	
 	SimpleWorker* pWorker = new SimpleWorker(pConnection);
 	while (true)
