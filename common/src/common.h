@@ -2,13 +2,6 @@
 #define _H_COMMON
 
 #include "base.h"
-#include <errno.h>
-#include <sys/types.h>
-#include <time.h>
-#include <stdexcept>
-#include <fcntl.h>
-#include <stdio.h>
-#include <stddef.h>
 #include "easy_log.h"
 
 #define MAXLINE					256

@@ -1,16 +1,9 @@
 #include "easy_baseserver.h"
-#include "easy_baseloop.h"
-
-class EasyLoop : public EasyBaseLoop
-{
-public:
-	virtual EasySession* _CreateSession() { return new EasySession; }
-};
 
 class EasyServer : public EasyBaseServer
 {
 public:
-	virtual EasyBaseLoop* _CreateServerLoop() { return new EasyLoop; }
+	virtual EasySession* _CreateSession() { return new EasySession; }
 };
 
 int main(int argc, char* argv[])

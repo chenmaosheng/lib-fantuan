@@ -165,7 +165,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\ChatTest\chat_command.h" />
-    <ClInclude Include="..\src\ChatTest\chat_loop.h" />
     <ClInclude Include="..\src\ChatTest\chat_rpc.h" />
     <ClInclude Include="..\src\ChatTest\chat_server.h" />
     <ClInclude Include="..\src\ChatTest\chat_session.h" />

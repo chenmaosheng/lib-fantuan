@@ -19,12 +19,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\accurate_time.h" />
     <ClInclude Include="..\src\allocator.h" />
     <ClInclude Include="..\src\arg.h" />
     <ClInclude Include="..\src\array.h" />
     <ClInclude Include="..\src\array_base.h" />
-    <ClInclude Include="..\src\auto_locker.h" />
     <ClInclude Include="..\src\base.h" />
     <ClInclude Include="..\src\common.h" />
     <ClInclude Include="..\src\ds_aux.h" />
@@ -33,7 +31,9 @@
     <ClInclude Include="..\src\easy_buffer.h" />
     <ClInclude Include="..\src\easy_dump.h" />
     <ClInclude Include="..\src\easy_log.h" />
+    <ClInclude Include="..\src\easy_perf.h" />
     <ClInclude Include="..\src\easy_pool.h" />
+    <ClInclude Include="..\src\easy_time.h" />
     <ClInclude Include="..\src\format.h" />
     <ClInclude Include="..\src\ft_assert.h" />
     <ClInclude Include="..\src\linux_base.h" />

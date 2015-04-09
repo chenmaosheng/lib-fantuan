@@ -29,6 +29,13 @@
 #include <thread>
 #include <condition_variable>
 #include <atomic>
+#include <errno.h>
+#include <sys/types.h>
+#include <time.h>
+#include <stdexcept>
+#include <fcntl.h>
+#include <stdio.h>
+#include <stddef.h>
 
 #define SAFE_DELETE(ptr)		if (ptr) { delete (ptr); (ptr) = nullptr; }
 #define SAFE_DELETE_ARRAY(ptr)	if (ptr) { delete [] (ptr); (ptr) = NULL; }
