@@ -1,28 +1,23 @@
-#ifndef _H_ACCURATE_TIME
-#define _H_ACCURATE_TIME
+#ifndef _H_EASY_TIME
+#define _H_EASY_TIME
 
-#include "type.h"
+#include "base.h"
 #include "singleton.h"
-#ifdef WIN32
-#include <windows.h>
-#else
-#include <time.h>
-#endif
 
-namespace Fantuan
-{
+#define GET_CURR_TIME()	EasyTime::Instance()->GetCurrTime()
 
-class AccurateTime : public Singleton<AccurateTime>
+class EasyTime : public Singleton<EasyTime>
 {
 public:
-	AccurateTime()
+	EasyTime()
 	{
 #ifdef WIN32
 		QueryPerformanceFrequency((_LARGE_INTEGER*)&m_iPerformanceFrequency);
 #endif
 	}
 
-	inline uint64 GetTime()
+	// get nanoseconds
+	inline uint64 GetCurrTime()
 	{
 		uint64 time = 0;
 #ifdef WIN32
@@ -39,9 +34,5 @@ public:
 private:
 	uint64	m_iPerformanceFrequency;
 };
-
-}
-
-#define GET_TIME()	Fantuan::AccurateTime::Instance()->GetTime()
 
 #endif

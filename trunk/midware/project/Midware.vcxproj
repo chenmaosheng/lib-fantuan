@@ -23,7 +23,6 @@
     <ClCompile Include="..\src\easy_baseserver.cpp" />
     <ClCompile Include="..\src\easy_command.cpp" />
     <ClCompile Include="..\src\easy_dispatcher.cpp" />
-    <ClCompile Include="..\src\easy_baseloop.cpp" />
     <ClCompile Include="..\src\easy_session.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -31,8 +30,6 @@
     <ClInclude Include="..\src\easy_baseserver.h" />
     <ClInclude Include="..\src\easy_command.h" />
     <ClInclude Include="..\src\easy_dispatcher.h" />
-    <ClInclude Include="..\src\easy_baseloop.h" />
-    <ClInclude Include="..\src\easy_packet.h" />
     <ClInclude Include="..\src\easy_session.h" />
     <ClInclude Include="..\src\easy_stream.h" />
   </ItemGroup>

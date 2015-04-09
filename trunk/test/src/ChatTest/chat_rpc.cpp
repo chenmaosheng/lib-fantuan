@@ -1,5 +1,4 @@
 #include "chat_rpc.h"
-#include "easy_packet.h"
 #include "easy_dispatcher.h"
 #include "chat_session.h"
 

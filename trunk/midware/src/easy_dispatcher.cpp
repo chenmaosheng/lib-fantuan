@@ -1,5 +1,4 @@
 #include "easy_dispatcher.h"
-#include "easy_packet.h"
 #include "easy_stream.h"
 
 EasyDispatcher::Func* EasyDispatcher::m_pFuncList;

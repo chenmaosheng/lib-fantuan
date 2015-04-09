@@ -1,6 +1,5 @@
 #include "easy_session.h"
 #include "easy_connection.h"
-#include "easy_packet.h"
 #include "easy_dispatcher.h"
 #include "easy_baseserver.h"
 

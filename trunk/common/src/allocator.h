@@ -1,9 +1,8 @@
 #ifndef _H_ALLOCATOR
 #define _H_ALLOCATOR
 
-#include "mutex_locker.h"
+#include "base.h"
 #include "util.h"
-#include "type.h"
 
 namespace Allocator
 {

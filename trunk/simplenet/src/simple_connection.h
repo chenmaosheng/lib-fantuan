@@ -13,10 +13,14 @@ struct SimpleConnection
 	int32	RecvData();
 	int32	SendData(uint32 len, char* buf);
 	void	Close();
+	void	SetClient(void* pClient);
+	void*	GetClient();
+
 	SOCKET			socket_;
 	SOCKADDR_IN		addr_;
 	SimpleContext*	recv_context_;
 	SimpleContext*	send_context_;
 	SimpleHandler	handler_;
+	void*			client_;
 };
 #endif

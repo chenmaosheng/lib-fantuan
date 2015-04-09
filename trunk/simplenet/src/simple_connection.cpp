@@ -107,3 +107,13 @@ void SimpleConnection::Close()
 	closesocket(socket_);
 	handler_.OnDisconnect((ConnID)this);
 }
+
+void SimpleConnection::SetClient(void* pClient)
+{
+	client_ = pClient;
+}
+
+void* SimpleConnection::GetClient()
+{
+	return client_;
+}
