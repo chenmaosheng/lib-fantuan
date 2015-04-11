@@ -34,8 +34,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ChatTest", "test\project\Ch
 		{9A760EE5-8651-4F11-A724-ED73357B8CA7} = {9A760EE5-8651-4F11-A724-ED73357B8CA7}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SimpleNetwork", "simplenet\project\SimpleNetwork.vcxproj", "{2A0C1544-CB42-4AD2-8BDD-86990091337B}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SimpleNetworkTest", "test\project\SimpleNetworkTest.vcxproj", "{1D39109F-CF63-4224-8414-93125728D4DD}"
 	ProjectSection(ProjectDependencies) = postProject
 		{2A0C1544-CB42-4AD2-8BDD-86990091337B} = {2A0C1544-CB42-4AD2-8BDD-86990091337B}
@@ -55,6 +53,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ChatClientTest", "test\proj
 		{F9FBC96E-E6CE-4C6D-A362-671901AD5318} = {F9FBC96E-E6CE-4C6D-A362-671901AD5318}
 		{9A760EE5-8651-4F11-A724-ED73357B8CA7} = {9A760EE5-8651-4F11-A724-ED73357B8CA7}
 	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SimpleNetwork", "simplenetwork\project\SimpleNetwork.vcxproj", "{2A0C1544-CB42-4AD2-8BDD-86990091337B}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UDPNetwork", "udpnetwork\project\UDPNetwork.vcxproj", "{113C8570-E9D0-4FD0-9AFE-31375CC89BBA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -120,14 +122,6 @@ Global
 		{18990254-2A0F-453E-8F3A-AC8133639825}.Release|Win32.Build.0 = Release|Win32
 		{18990254-2A0F-453E-8F3A-AC8133639825}.Release|x64.ActiveCfg = Release|x64
 		{18990254-2A0F-453E-8F3A-AC8133639825}.Release|x64.Build.0 = Release|x64
-		{2A0C1544-CB42-4AD2-8BDD-86990091337B}.Debug|Win32.ActiveCfg = Debug|Win32
-		{2A0C1544-CB42-4AD2-8BDD-86990091337B}.Debug|Win32.Build.0 = Debug|Win32
-		{2A0C1544-CB42-4AD2-8BDD-86990091337B}.Debug|x64.ActiveCfg = Debug|x64
-		{2A0C1544-CB42-4AD2-8BDD-86990091337B}.Debug|x64.Build.0 = Debug|x64
-		{2A0C1544-CB42-4AD2-8BDD-86990091337B}.Release|Win32.ActiveCfg = Release|Win32
-		{2A0C1544-CB42-4AD2-8BDD-86990091337B}.Release|Win32.Build.0 = Release|Win32
-		{2A0C1544-CB42-4AD2-8BDD-86990091337B}.Release|x64.ActiveCfg = Release|x64
-		{2A0C1544-CB42-4AD2-8BDD-86990091337B}.Release|x64.Build.0 = Release|x64
 		{1D39109F-CF63-4224-8414-93125728D4DD}.Debug|Win32.ActiveCfg = Debug|Win32
 		{1D39109F-CF63-4224-8414-93125728D4DD}.Debug|Win32.Build.0 = Debug|Win32
 		{1D39109F-CF63-4224-8414-93125728D4DD}.Debug|x64.ActiveCfg = Debug|x64
@@ -148,6 +142,20 @@ Global
 		{CCCF18F0-72E1-4B93-85F2-AFCCF739EA09}.Release|Win32.ActiveCfg = Release|Win32
 		{CCCF18F0-72E1-4B93-85F2-AFCCF739EA09}.Release|Win32.Build.0 = Release|Win32
 		{CCCF18F0-72E1-4B93-85F2-AFCCF739EA09}.Release|x64.ActiveCfg = Release|Win32
+		{2A0C1544-CB42-4AD2-8BDD-86990091337B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{2A0C1544-CB42-4AD2-8BDD-86990091337B}.Debug|Win32.Build.0 = Debug|Win32
+		{2A0C1544-CB42-4AD2-8BDD-86990091337B}.Debug|x64.ActiveCfg = Debug|x64
+		{2A0C1544-CB42-4AD2-8BDD-86990091337B}.Debug|x64.Build.0 = Debug|x64
+		{2A0C1544-CB42-4AD2-8BDD-86990091337B}.Release|Win32.ActiveCfg = Release|Win32
+		{2A0C1544-CB42-4AD2-8BDD-86990091337B}.Release|Win32.Build.0 = Release|Win32
+		{2A0C1544-CB42-4AD2-8BDD-86990091337B}.Release|x64.ActiveCfg = Release|x64
+		{2A0C1544-CB42-4AD2-8BDD-86990091337B}.Release|x64.Build.0 = Release|x64
+		{113C8570-E9D0-4FD0-9AFE-31375CC89BBA}.Debug|Win32.ActiveCfg = Debug|Win32
+		{113C8570-E9D0-4FD0-9AFE-31375CC89BBA}.Debug|Win32.Build.0 = Debug|Win32
+		{113C8570-E9D0-4FD0-9AFE-31375CC89BBA}.Debug|x64.ActiveCfg = Debug|Win32
+		{113C8570-E9D0-4FD0-9AFE-31375CC89BBA}.Release|Win32.ActiveCfg = Release|Win32
+		{113C8570-E9D0-4FD0-9AFE-31375CC89BBA}.Release|Win32.Build.0 = Release|Win32
+		{113C8570-E9D0-4FD0-9AFE-31375CC89BBA}.Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

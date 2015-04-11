@@ -4,7 +4,7 @@
 #include "base.h"
 #include "singleton.h"
 
-#define GET_CURR_TIME()	EasyTime::Instance()->GetCurrTime()
+#define GET_CURR_TIME	EasyTime::Instance()->GetCurrTime()
 
 class EasyTime : public Singleton<EasyTime>
 {

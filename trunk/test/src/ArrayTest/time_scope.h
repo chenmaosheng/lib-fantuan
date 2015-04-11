@@ -1,19 +1,19 @@
 #ifndef _H_TIME_SCOPE
 #define _H_TIME_SCOPE
 
-#include "accurate_time.h"
+#include "easy_time.h"
 #include <cstdio>
 
 struct TimeScope
 {
 	TimeScope()
 	{
-		start = GET_TIME();
+		start = GET_CURR_TIME;
 	}
 
 	~TimeScope()
 	{
-		printf("cost time: %lluus\n", (GET_TIME() - start) / 1000);
+		printf("cost time: %lluus\n", (GET_CURR_TIME - start) / 1000);
 	}
 
 	uint64 start;
